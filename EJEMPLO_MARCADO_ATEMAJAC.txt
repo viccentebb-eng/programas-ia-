@@ -1,0 +1,87 @@
+# encabezado
+PRE: Solemnes Fiestas en Honor a la
+NOMBRE: Virgen de la Defensa
+FECHAS: Del 5 al 9 de diciembre del 2027
+ANIOS: 385 años
+LEMA: “Una tradición que nos enseña a caminar”
+OBJETIVO: Queremos vivir nuestra fiesta a la Virgen de la Defensa desde cinco momentos: **Caminar, Encontrarnos, Recibir, Dejar nacer algo nuevo y Ponernos al servicio**, de tal manera que se conviertan en un camino que nos conduzca a Dios y a su proyecto de salvación.
+MENSAJE: No queremos separar la tradición de la fe, sino descubrir que la tradición puede ser un camino para llegar al Evangelio. Que aquello que nuestros mayores nos enseñaron con sus pasos pueda ayudarnos hoy a enseñar a caminar a las nuevas generaciones con nuestra vida. Porque quizá el mejor modo de honrar lo que hemos recibido no sea solamente conservarlo tal como lo encontramos, sino hacer que siga dando fruto. Y si María de la Defensa ha acompañado durante 385 años el caminar de este pueblo, que también nos ayude a descubrir hacia dónde quiere llevarnos Dios hoy.
+PIE: Atemajac de Brizuela, Jal. · Diciembre 2027
+# programa
+CINTILLA: DÍAS PREVIOS A LA FIESTA
+PREVIO: **Domingo 1.º de agosto:** Apertura de la fiesta patronal.
+PREVIO: **Lunes 2 de agosto:** Llegada de la Imagen peregrina a la Cd. de Guadalajara. Visita a las familias hasta el 5 de septiembre.
+PREVIO: **Del lunes 2 al sábado 7 de agosto:** Semana Bíblica como preparación a la fiesta.
+DIA: SÁBADO 4 DE DICIEMBRE
+TEXTO: Anuncio de la fiesta de parte de la Mayordomía, Moros y Chirimía.
+CINTILLA: DÍAS DE FIESTA
+DIA: DOMINGO 5
+EVENTO: 2:00 p.m. | Llegada de la Virgen al Barrio San José.
+EVENTO: 4:00 p.m. | De cada domicilio se recogen las coronas que acompañarán a la Santísima Virgen.
+EVENTO: 5:00 p.m. | Recepción de la Imagen peregrina, Enroso y Bendición de la fiesta.
+EVENTO: 7:00 p.m. | Celebración Eucarística en el atrio. Terminando, se traslada la imagen al Barrio Ocotito.
+TEMA: “Atemajac, un pueblo de fe, siempre en camino”.
+EVENTO: 9:30 p.m. | Serenata y quema de castillo en el jardín principal.
+DIA: LUNES 6
+EVENTO: 6:00 a.m. | Mañanitas y Eucaristía en el Barrio.
+EVENTO: 12:00 p.m. | Recepción en Agua Prieta de la Imagen Original de Nuestra Señora de la Defensa. Traslado a la Capilla de Santo Santiago.
+EVENTO: 6:00 p.m. | Traslado de la imagen peregrina a la Capilla de Santo Santiago.
+EVENTO: 7:00 p.m. | Celebración Eucarística en la Capilla de Santo Santiago.
+TEMA: “Encontrarnos hace que la fe se vuelva fraternidad”.
+EVENTO: 9:30 p.m. | Serenata y quema de castillo en el barrio Santo Santiago.
+DIA: MARTES 7
+EVENTO: 6:00 a.m. | Mañanitas y celebración de la Eucaristía, Capilla Santo Santiago.
+EVENTO: 12:00 p.m. | Celebración Eucarística y Bautismos.
+EVENTO: 4:00 p.m. | Solemne entrada de Nuestra Señora de la Defensa en sus 385 años de su llegada. Llegando, Solemne Eucaristía.
+TEMA: “Recibir a María, para entrar con ella a la vida del Reino”.
+EVENTO: 9:30 p.m. | Serenata y quema de castillo.
+DIA: MIÉRCOLES 8
+EVENTO: 6:00 a.m. | Mañanitas y celebración de la Eucaristía en el templo parroquial.
+EVENTO: 12:00 p.m. | Peregrinación de los Hijos Ausentes (parten de la Capilla del Ocotito).
+EVENTO: 1:00 p.m. | Celebración de la Eucaristía y cambio de Mayordomía.
+TEMA: “La Natividad de la Virgen María, historia que se vuelve vida nueva”.
+EVENTO: 5:00 p.m. | Peregrinación y homenaje de los niños y niñas de la catequesis (parten del Ocotito). Llegando, celebración de la Eucaristía y convivencia para los niños.
+EVENTO: 9:30 p.m. | Serenata y quema de castillo.
+DIA: JUEVES 9
+EVENTO: 6:00 a.m. | Mañanitas y celebración de la Eucaristía en favor de los Difuntos.
+EVENTO: 5:00 p.m. | Recorrido con la imagen peregrina para bendecir a los enfermos.
+EVENTO: 6:00 p.m. | Peregrinación de todas las comisiones. Parten de la Capilla del Ocotito.
+EVENTO: 7:00 p.m. | Eucaristía de acción de gracias por la fiesta.
+TEMA: “Acción de gracias: lo recibido se vuelve misión”.
+EVENTO: 8:00 p.m. | Convivencia en el jardín principal.
+EVENTO: 9:30 p.m. | Serenata y quema de castillo.
+CINTILLA: NOVENARIO DE VISITAS
+SUBTITULO: Virgen de la Defensa y Sr. del Ocotito
+SUB2: Peregrinos (juntos) a las comunidades 2027
+LISTA: **Viernes 10 de septiembre:** La Granja. 7:00 p.m. 1.ª Tanda de Reconciliaciones.
+LISTA: **Sábado 11:** Con Rito De la Torre.
+LISTA: **Domingo 12:** Con Juan.
+LISTA: **Lunes 13:** Regreso al templo parroquial, llegar a misa de 7:00 p.m.
+LISTA: **Martes 14:** 6:00 p.m. Hora Santa de los Agentes de Pastoral.
+LISTA: **Miércoles 15:** Celebración de la Eucaristía.
+LISTA: **Jueves 16:** Celebración de la Eucaristía.
+LISTA: **Viernes 17:** 7:00 p.m. 2.ª Tanda de Reconciliaciones.
+NUM: Del sábado 18 de septiembre (7:00 a.m.) al domingo 26 (1:00 p.m.): **Llanitos, Tacuaches, Agua Caliente y Tierra Blanca.** Parten y regresan las imágenes al templo parroquial.
+NUM: Del domingo 26 (2:00 p.m.) al domingo 3 de octubre (12:00 p.m.): **San Miguel y Lagunillas.** Parten del templo y regresan las imágenes a la Loma.
+NUM: Del domingo 3 de octubre (2:00 p.m.) al domingo 10 (12:00 p.m.): **Yolosta.** Recogen las imágenes en el templo parroquial y entregan a Telcome y Frontera.
+NUM: Del domingo 10 (12:00 p.m.) al jueves 14 (4:00 p.m.): **Telcome y Frontera.**
+NUM: Del jueves 14 (4:00 p.m.) al sábado 23 (12:00 p.m.): **Sayulapa.** Recogen las imágenes de La Frontera. Sábado 23 y domingo 24: **Zamoranas.**
+NUM: Del domingo 24 (12:00 p.m.) al domingo 31 (10:00 a.m.): **Varillas.** Recogen las imágenes de Zamoranas.
+NUM: Del domingo 31 (10:00 a.m.) al domingo 7 de noviembre (9:00 a.m.): **Pueblo Nuevo.** Recogen las imágenes de Varillas.
+NUM: Domingo 7 (9:00 a.m.): Traslado de las imágenes a la Capilla del Ocotito. 12:30 p.m. **Peregrinación de Hijos Ausentes de Guadalajara. Misa a la 1:00 p.m.**
+PREVIO: **Del jueves 11 al sábado 13 de noviembre:** Virgen en Zacoalco.
+PREVIO: **Del sábado 6 al domingo 14 de noviembre:** Ferrería y anexos.
+CINTILLA: MAYORDOMOS ENTRANTES
+MAYORDOMOS:
+Atemajac: María Tereza González Rubio; Irasema De Jesús Blanco Martínez; Diego Isaac Espinoza Martínez; Ramón Mares Mares
+Guadalajara: Verónica Rosales Gollaz; Yolanda Rivera Hernández; Ofelia Monroy Trinidad; Lizeth Anahí Ramírez Sánchez; Ernesto Mauricio Benito Gutiérrez; María Santos Ramírez Salvador
+Toluca: Cinthia Carrasco Mondragón
+Cd. de México: Jesús Echeverría
+Oakland: Rocío Martínez; Georgina Sención de Ramírez
+Nicasio: Alejandra Vidrio; Verónica Vidrio
+Reno: Isidra Martínez
+Los Ángeles: Ignacio Candelario
+Chicago: Arturo Sención
+San Bernardino: Rubén León Madrigal
+Washington: Sulma Solórzano
+Condado Orange: José Manuel De La Cruz González

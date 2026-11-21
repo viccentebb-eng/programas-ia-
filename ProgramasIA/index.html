@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: sans-serif; font-size: 12px; color: #ddd; background: #323232; margin: 0; padding: 8px; }
+  h1 { font-size: 14px; margin: 0 0 6px 0; color: #fff; }
+  .tabs { display: flex; flex-wrap: wrap; margin-bottom: 8px; }
+  .tabs button { flex: 1; margin: 1px; padding: 5px 2px; font-size: 11px; background: #444; color: #ddd; border: 1px solid #555; border-radius: 3px; }
+  .tabs button.on { background: #1473e6; color: #fff; border-color: #1473e6; }
+  .tab { display: none; }
+  .tab.on { display: block; }
+  label { display: block; margin: 8px 0 3px 0; color: #bbb; }
+  textarea, input, select { width: 100%; box-sizing: border-box; background: #222; color: #eee; border: 1px solid #555; border-radius: 3px; padding: 4px; font-size: 12px; }
+  textarea { font-family: Consolas, monospace; }
+  .btn { display: block; width: 100%; margin-top: 8px; padding: 7px; background: #1473e6; color: #fff; border: none; border-radius: 4px; font-size: 12px; }
+  .btn2 { background: #555; }
+  .row { display: flex; }
+  .row > * { flex: 1; margin-right: 4px; }
+  .row > *:last-child { margin-right: 0; }
+  .chk { display: flex; align-items: center; margin: 4px 0; }
+  .chk input { width: auto; margin-right: 6px; }
+  #estado { margin-top: 8px; padding: 6px; background: #262626; border-radius: 3px; min-height: 18px; color: #9cf; white-space: pre-wrap; }
+  .aviso { padding: 5px; margin: 3px 0; border-left: 3px solid #e8a33d; background: #2a2a2a; }
+  .aviso.fecha { border-color: #e34850; }
+  .aviso small { color: #999; }
+  .msg { padding: 5px; margin: 4px 0; border-radius: 3px; }
+  .msg.yo { background: #2d4a6b; }
+  .msg.ia { background: #2a2a2a; }
+  .nota { color: #999; font-size: 11px; margin-top: 4px; }
+  #archivos div { padding: 2px 0; color: #ccc; }
+</style>
+</head>
+<body>
+  <h1>Programas IA</h1>
+  <div class="tabs">
+    <button data-t="t1" class="on">1 Programa</button>
+    <button data-t="t2">2 Revisar</button>
+    <button data-t="t3">3 Dise&#241;ar</button>
+    <button data-t="t4">4 Corregir</button>
+    <button data-t="t5">Ajustes</button>
+  </div>
+
+  <!-- 1 PROGRAMA -->
+  <div id="t1" class="tab on">
+    <label>Fotos, Word, PDF o texto que mandaron</label>
+    <button class="btn btn2" id="bArchivos">Agregar archivos...</button>
+    <div id="archivos"></div>
+    <button class="btn btn2" id="bLimpiar">Quitar archivos</button>
+    <label>O pega aqu&#237; el texto (y notas para Claude)</label>
+    <textarea id="txtPegado" rows="8" placeholder="Ej.: la fiesta es en diciembre aunque diga septiembre..."></textarea>
+    <button class="btn" id="bLeer">Leer con Claude</button>
+  </div>
+
+  <!-- 2 REVISAR -->
+  <div id="t2" class="tab">
+    <label>Avisos (fechas, ortograf&#237;a, dudas)</label>
+    <div id="avisos"><div class="nota">Todav&#237;a no hay avisos.</div></div>
+    <label>Programa en marcado (lo puedes corregir aqu&#237;)</label>
+    <textarea id="marcado" rows="22"></textarea>
+    <div class="row">
+      <button class="btn btn2" id="bFechas">Revisar fechas</button>
+      <button class="btn btn2" id="bAyuda">Ver formato</button>
+    </div>
+    <div id="ayuda" class="nota" style="display:none"></div>
+  </div>
+
+  <!-- 3 DISENAR -->
+  <div id="t3" class="tab">
+    <label>Formato (tama&#241;o de papel)</label>
+    <select id="formato"></select>
+    <div class="row">
+      <div><label>Columnas</label>
+        <select id="pColumnas"><option value="">Autom&#225;tico</option><option>2</option><option>3</option><option>4</option></select></div>
+      <div><label>Estilo</label>
+        <select id="pEstilo"><option value="barroco">Barroco grabado</option></select></div>
+    </div>
+    <div class="chk"><input type="checkbox" id="pObjetivo" checked> Mostrar objetivo</div>
+    <div class="chk"><input type="checkbox" id="pMensaje" checked> Mostrar mensaje</div>
+    <div class="chk"><input type="checkbox" id="pLema" checked> Mostrar lema</div>
+    <div class="chk"><input type="checkbox" id="pLineas" checked> L&#237;neas entre columnas</div>
+    <button class="btn" id="bGenerar">Generar dise&#241;o</button>
+    <button class="btn btn2" id="bPDF">Exportar PDF para montar en plantilla</button>
+    <div class="nota">Cada vez que generas o corriges se crea el documento de nuevo; haz los retoques a mano al final.</div>
+  </div>
+
+  <!-- 4 CORREGIR -->
+  <div id="t4" class="tab">
+    <div id="chat"><div class="nota">Escribe qu&#233; quieres cambiar: "el t&#237;tulo m&#225;s grande", "quita el objetivo", "los temas en otra l&#237;nea", "cambia el 12:00 a.m. por 12:00 p.m."...</div></div>
+    <textarea id="txtCorr" rows="4"></textarea>
+    <div class="chk"><input type="checkbox" id="cVista" checked> Mandar vista de la p&#225;gina a Claude</div>
+    <button class="btn" id="bCorregir">Aplicar correcci&#243;n</button>
+  </div>
+
+  <!-- AJUSTES -->
+  <div id="t5" class="tab">
+    <label>Clave de API de Claude (console.anthropic.com)</label>
+    <input id="apiKey" type="password" placeholder="sk-ant-...">
+    <label>Modelo</label>
+    <input id="modelo">
+    <label>Formatos (Nombre | ancho mm | alto mm | sangrado mm)</label>
+    <textarea id="formatos" rows="7"></textarea>
+    <button class="btn btn2" id="bMedidas">Importar MEDIDAS_PLANTILLAS.txt</button>
+    <label>Fuentes (deben estar instaladas)</label>
+    <div class="row">
+      <input id="fTit" placeholder="T&#237;tulo">
+      <input id="fDis" placeholder="Encabezados">
+      <input id="fTxt" placeholder="Texto">
+    </div>
+    <button class="btn" id="bGuardar">Guardar ajustes</button>
+  </div>
+
+  <div id="estado">Listo.</div>
+
+  <script src="lib/jszip.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
