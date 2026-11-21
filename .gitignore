@@ -1,3 +1,4 @@
 dist/
 tools/salida/
 plantillas/
+*.ccx
