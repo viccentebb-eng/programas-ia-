@@ -50,7 +50,7 @@ function urlMagnific(q) { return "https://www.magnific.com/search?format=search&
 async function ideasMagnific(enc, estilo) {
   const sys = "Eres diseñador de un taller de impresión que hace reversos de carteles de fiestas patronales católicas a UNA TINTA (negro). " +
     "Propón búsquedas en INGLÉS para Magnific (banco de vectores) que den adornos grabados o de línea, en blanco y negro, apropiados para la advocación. " +
-    "Nada de fotos ni ilustraciones a color. Responde SOLO JSON: {\"busquedas\":[{\"ranura\":\"esquina|divisor|otro\",\"q\":\"...\",\"por_que\":\"...\"}]} con 5 a 7 búsquedas.";
+    REGLAS_ADORNOS + " Las busquedas deben incluir palabras como baroque, ornate, engraving, filigree, acanthus o victorian. Responde SOLO JSON: {\"busquedas\":[{\"ranura\":\"esquina|divisor|otro\",\"q\":\"...\",\"por_que\":\"...\"}]} con 5 a 7 búsquedas.";
   const txt = "Fiesta: " + [enc.pre, enc.nombre, enc.fechas].filter(Boolean).join(" · ") + "\nEstilo elegido: " + estilo.nombre;
   const r = jsonDe(await claude(sys, [{ type: "text", text: txt }], 2000));
   return (r.busquedas || []).filter(b => b && b.q).map(b => [RANURAS[b.ranura] ? b.ranura : "otro", b.q, b.por_que || ""]);
@@ -62,6 +62,7 @@ async function buscarDescargas(dias) {
   const ruta = rutaDescargas(), desde = Date.now() - (dias || 7) * 86400000;
   const indice = await leerIndice(), ya = {};
   indice.forEach(a => { if (a.origen) ya[a.origen.toLowerCase()] = true; });
+  rechazados().forEach(r => { ya[r.toLowerCase()] = true; });
   const dir = await dirEntry(ruta), out = [];
   for (const e of await dir.getEntries()) {
     if (!e.isFile) continue;
@@ -126,18 +127,59 @@ async function agregarABiblioteca(elementos) {
   if (!Array.isArray(res)) res = [res];
   const indice = await leerIndice();
   let agregados = 0;
-  datos.forEach((d, i) => {
-    const r = res.find(x => x.entrada === trabajo[i].entrada) || res[i] || {};
-    if (String(r.resultado || "").indexOf("OK") !== 0) { fallas.push(d.el.item.nombre + ": " + (r.resultado || "sin respuesta")); return; }
-    const kv = {}; String(r.resultado).split("|").slice(1).forEach(p => { const j = p.indexOf("="); kv[p.slice(0, j)] = p.slice(j + 1); });
+  for (let i = 0; i < datos.length; i++) {
+    const d = datos[i], r = res.find(x => x.entrada === trabajo[i].entrada) || res[i] || {};
+    const fuera = async (motivo) => {
+      fallas.push(d.el.item.nombre + ": " + motivo);
+      recordarRechazo(d.el.item.entry.nativePath);
+      for (const n of [d.base + ".pdf", d.base + ".png"]) { try { await (await bib.getEntry(n)).delete(); } catch (e) {} }
+    };
+    if (String(r.resultado || "").indexOf("OK") !== 0) { await fuera(r.resultado || "Illustrator no respondió"); continue; }
+    const kv = {}; String(r.resultado).split("|").slice(1).forEach(p => { const j = p.indexOf("="); kv[p.slice(0, j)] = Number(p.slice(j + 1)); });
+    const motivo = reglasAdorno(kv, d.el.ranura);
+    if (motivo) { await fuera(motivo); continue; }
+    if (d.el.revisarConClaude !== false) {
+      let juicio = null;
+      try { juicio = await juzgarAdorno(trabajo[i].miniatura, d.el.ranura); } catch (e) { juicio = { apto: true, motivo: "sin revisión de Claude (" + e.message + ")" }; }
+      if (juicio && !juicio.apto) { await fuera("Claude lo rechazó: " + (juicio.motivo || "no es del estilo de la casa")); continue; }
+    }
     indice.unshift({ id: d.base, pdf: trabajo[i].salida, png: trabajo[i].miniatura, ranura: d.el.ranura, etiquetas: d.el.etiquetas || "",
-      estilo: d.el.estilo || "", origen: d.el.item.entry.nativePath, fecha: new Date().toISOString().slice(0, 10),
-      aviso: kv.raster && kv.raster !== "0" ? "trae imagen (no vector)" : (kv.con_color && kv.con_color !== "0" ? "quedó algo de color" : "") });
+      estilo: d.el.estilo || "", origen: d.el.item.entry.nativePath, fecha: new Date().toISOString().slice(0, 10), puntos: kv.puntos || 0 });
     agregados++;
-  });
+  }
   await guardarIndice(indice);
   return { agregados, fallas };
 }
+
+// Reglas duras (gratis, sin Claude). Devuelve el motivo de rechazo o "".
+// Solo vectores; a una tinta; con trabajo de ornamento (puntos de curva); forma adecuada a la ranura.
+function reglasAdorno(kv, ranura) {
+  if (kv.raster > 0) return "trae imagen de pixeles; solo se aceptan vectores";
+  if (kv.con_color > 0) return "no quedó a una tinta";
+  const min = MIN_PUNTOS[ranura] || MIN_PUNTOS.otro;
+  if (!(kv.puntos >= min)) return "es demasiado simple (" + (kv.puntos || 0) + " puntos de curva; un adorno barroco de " + (RANURAS[ranura] || "este tipo").toLowerCase() + " pide al menos " + min + ")";
+  const prop = kv.ancho && kv.alto ? kv.ancho / kv.alto : 1;
+  if (ranura === "divisor" && prop < 3) return "no es alargado: un divisor debe ser al menos 3 veces más ancho que alto";
+  if (ranura === "esquina" && (prop < 0.5 || prop > 2)) return "no tiene forma de esquina (casi cuadrada)";
+  return "";
+}
+// Revision visual: Claude compara contra el adorno de referencia de la casa
+async function juzgarAdorno(rutaPng, ranura) {
+  if (!cfg("apiKey", "")) return { apto: true };
+  const pf = await fsys.getPluginFolder();
+  const ref = await (await pf.getEntry("assets/" + (ranura === "divisor" ? "ref_divisor.png" : "ref_esquina.png"))).read({ format: fmts.binary });
+  const cand = await nodeFs.readFile(rutaPng);
+  const sys = "Revisas adornos para un taller que imprime reversos de carteles religiosos a una tinta. " + REGLAS_ADORNOS +
+    " Responde SOLO JSON: {\"apto\": true|false, \"calificacion\": 1-10, \"motivo\": \"frase corta en español\"}. Apto solo si calificacion >= 6.";
+  const r = jsonDe(await claude(sys, [
+    { type: "text", text: "REFERENCIA de la casa:" }, { type: "image", source: { type: "base64", media_type: "image/png", data: b64(ref) } },
+    { type: "text", text: "CANDIDATO para usar como " + (RANURAS[ranura] || "adorno").toLowerCase() + ":" }, { type: "image", source: { type: "base64", media_type: "image/png", data: b64(cand) } }
+  ], 1500));
+  return { apto: !!r.apto && (r.calificacion || 0) >= 6, motivo: r.motivo || "" };
+}
+// lo rechazado no vuelve a salir en "Revisar mis Descargas"
+function rechazados() { try { return JSON.parse(cfg("rechazados", "[]")) || []; } catch (e) { return []; } }
+function recordarRechazo(ruta) { const l = rechazados(); if (l.indexOf(ruta) < 0) l.push(ruta); setCfg("rechazados", JSON.stringify(l.slice(-300))); }
 async function rutaConvertidor() { return (await (await fsys.getPluginFolder()).getEntry("convertir_adornos.ps1")).nativePath; }
 async function miniaturaDataUrl(ruta) {
   try { const b = await nodeFs.readFile(ruta); return "data:image/png;base64," + b64(b); } catch (e) { return ""; }

@@ -31,9 +31,10 @@ var RES = "ERROR|sin resultado";
         // mesa de trabajo al tamano del dibujo
         try { doc.artboards[0].artboardRect = doc.visibleBounds; } catch (e) {}
         // revisar que no quede color
-        var conColor = 0, raster = doc.rasterItems.length;
+        var conColor = 0, raster = doc.rasterItems.length, puntos = 0;
         for (var j = 0; j < doc.pathItems.length; j++) {
             var q = doc.pathItems[j];
+            try { puntos += q.pathPoints.length; } catch (e) {}
             if (q.filled && q.fillColor.typename != "GrayColor" && q.fillColor.typename != "NoColor") conColor++;
             if (q.stroked && q.strokeColor.typename != "GrayColor" && q.strokeColor.typename != "NoColor") conColor++;
         }
@@ -49,7 +50,7 @@ var RES = "ERROR|sin resultado";
                 doc.exportFile(File(MINIATURA), ExportType.PNG24, png);
             } catch (e) {}
         }
-        RES = "OK|trazos=" + doc.pathItems.length + "|con_color=" + conColor + "|raster=" + raster + "|fondo_quitado=" + quitados;
+        RES = "OK|trazos=" + doc.pathItems.length + "|puntos=" + puntos + "|ancho=" + Math.round(doc.visibleBounds[2] - doc.visibleBounds[0]) + "|alto=" + Math.round(doc.visibleBounds[1] - doc.visibleBounds[3]) + "|con_color=" + conColor + "|raster=" + raster + "|fondo_quitado=" + quitados;
     } catch (e) { RES = "ERROR|" + e.message + " (linea " + e.line + ")"; }
     try { if (doc) doc.close(SaveOptions.DONOTSAVECHANGES); } catch (e) {}
     app.userInteractionLevel = nivel;

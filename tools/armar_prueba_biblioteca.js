@@ -15,6 +15,9 @@ const LOGF = path.join(SAL, "biblio_prueba.txt").replace(/\\/g, "/");
   z.file("License free.txt", "x"); z.file("roses-corner/vector.svg", svg); z.file("roses-corner/preview.jpg", "x");
   fs.writeFileSync(path.join(D, "vintage-roses-corner-ornament_123.zip"), await z.generateAsync({ type: "nodebuffer" }));
   fs.writeFileSync(path.join(D, "divider-line.svg"), svg);
+  fs.copyFileSync(path.join(RAIZ, "ProgramasIA", "assets", "esquina.pdf"), path.join(D, "baroque-acanthus-corner.pdf"));
+  const png = fs.readFileSync(path.join(RAIZ, "ProgramasIA", "assets", "ref_esquina.png")).toString("base64");
+  fs.writeFileSync(path.join(D, "corner-con-foto.svg"), '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><image width="200" height="200" xlink:href="data:image/png;base64,' + png + '"/></svg>');
 
   const cuerpo = [
     'const uxp = require("uxp"), fsys = uxp.storage.localFileSystem, fmts = uxp.storage.formats, indesign = require("indesign"), app = indesign.app;',
@@ -33,7 +36,7 @@ const LOGF = path.join(SAL, "biblio_prueba.txt").replace(/\\/g, "/");
     "  const out = [];",
     "  try {",
     "    const r = await buscarDescargas(10); out.push('encontrados: ' + r.archivos.map(a => a.nombre).join(', '));",
-    "    const sel = r.archivos.map(a => ({ item: a, ranura: a.nombre.indexOf('corner') >= 0 ? 'esquina' : 'divisor', etiquetas: 'rosas prueba', estilo: 'guadalupana' }));",
+    "    const sel = r.archivos.map(a => ({ item: a, ranura: a.nombre.indexOf('corner') >= 0 ? 'esquina' : 'divisor', revisarConClaude: false, etiquetas: 'rosas prueba', estilo: 'guadalupana' }));",
     "    const ag = await agregarABiblioteca(sel); out.push('agregados: ' + ag.agregados + ' fallas: ' + JSON.stringify(ag.fallas));",
     "    const ind = await leerIndice(); out.push('indice: ' + JSON.stringify(ind.map(a => [a.ranura, a.etiquetas, a.aviso, a.pdf])));",
     "    const r2 = await buscarDescargas(10); out.push('segunda revision: ' + r2.archivos.length);",

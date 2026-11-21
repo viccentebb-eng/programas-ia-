@@ -93,7 +93,7 @@ async function agregarSeleccion() {
   $("descargas").querySelectorAll(".desc").forEach(d => {
     if (!d.querySelector("input[type=checkbox]").checked) return;
     const a = AD.descargas[Number(d.getAttribute("data-i"))];
-    sel.push({ item: a, ranura: d.querySelector("select").value, etiquetas: d.querySelector(".desc-fila input").value.trim(), estilo: $("eEstilo").value });
+    sel.push({ item: a, ranura: d.querySelector("select").value, etiquetas: d.querySelector(".desc-fila input").value.trim(), estilo: $("eEstilo").value, revisarConClaude: $("cRevisarAdornos").checked });
   });
   if (!sel.length) { estado("Palomea al menos un archivo.", "error"); return; }
   const r = await agregarABiblioteca(sel);
