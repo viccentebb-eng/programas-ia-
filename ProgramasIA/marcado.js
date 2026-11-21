@@ -34,7 +34,7 @@ function revisarFechas(txt) {
 // ------------------------------------------------------------------ marcado -> datos del motor
 const CLAVES = ["PRE", "NOMBRE", "FECHAS", "ANIOS", "AÑOS", "LEMA", "LEMA_ETIQUETA", "OBJETIVO", "MENSAJE", "PIE", "PROGRAMA_TITULO",
   "CINTILLA", "DIA", "DÍA", "EVENTO", "TEMA", "TEXTO", "PREVIO", "SUBTITULO", "SUB2", "LISTA", "NUM", "ORACION", "ORACIÓN", "MAYORDOMOS"];
-const SALTO = String.fromCharCode(0x2028); // salto de linea forzado de InDesign
+const SALTO = String.fromCharCode(10); // en InDesign "\n" es salto de linea forzado ("\r" es parrafo nuevo)
 function limpia(t) { return String(t || "").replace(/[\r\n]+/g, " ").trim(); }
 function parseMarcado(txt) {
   const enc = {}, prog = [];
