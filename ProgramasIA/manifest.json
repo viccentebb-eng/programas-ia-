@@ -2,7 +2,7 @@
   "manifestVersion": 5,
   "id": "mx.venegas.programasia",
   "name": "Programas IA",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "index.html",
   "host": {
     "app": "ID",
@@ -72,7 +72,8 @@
       "domains": [
         "https://api.anthropic.com",
         "https://fonts.googleapis.com",
-        "https://fonts.gstatic.com"
+        "https://fonts.gstatic.com",
+        "http://127.0.0.1:47811"
       ]
     },
     "localFileSystem": "fullAccess",

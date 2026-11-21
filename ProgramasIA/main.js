@@ -143,7 +143,7 @@ async function cargarModelos() {
   const sel = $("modelo"), actual = cfg("modelo", MODELO_DEF);
   let lista = [];
   if (key) {
-    const res = await fetch("https://api.anthropic.com/v1/models?limit=100", { headers: { "x-api-key": key, "anthropic-version": "2023-06-01" } });
+    const res = await red("https://api.anthropic.com/v1/models?limit=100", { headers: { "x-api-key": key, "anthropic-version": "2023-06-01" } });
     if (res.status === 401 || res.status === 403) throw new Error("La clave no es válida o ya venció.");
     if (!res.ok) throw new Error("La API respondió " + res.status + ".");
     const j = await res.json();
@@ -202,11 +202,37 @@ function pedirClave(msg) {
   estado(msg, "error");
 }
 
+// ------------------------------------------------------------------ internet (directo o por el puente local)
+// Si InDesign tiene bloqueada la salida a internet (firewall), las peticiones van por
+// puente.ps1, que corre en esta misma PC y solo deja pasar a Anthropic y Google Fonts.
+const PUENTE = "http://127.0.0.1:47811";
+const RUTAS_PUENTE = [["https://api.anthropic.com", "/anthropic"], ["https://fonts.googleapis.com", "/gfonts"], ["https://fonts.gstatic.com", "/gstatic"]];
+const espera = (ms) => new Promise(r => setTimeout(r, ms));
+let usarPuente = cfg("puente", "") === "1";
+function porPuente(url) { for (const [a, b] of RUTAS_PUENTE) if (url.indexOf(a) === 0) return PUENTE + b + url.slice(a.length); return url; }
+async function puenteVivo() { try { const r = await fetch(PUENTE + "/ping"); return r.ok; } catch (e) { return false; } }
+async function arrancarPuente() {
+  const vbs = (await (await fsys.getPluginFolder()).getEntry("iniciar_puente.vbs")).nativePath;
+  extend('File(' + es3(vbs) + ').execute() ? "ok" : "no";');
+  for (let i = 0; i < 30; i++) { await espera(500); if (await puenteVivo()) return true; }
+  return false;
+}
+async function red(url, opts) {
+  if (!usarPuente) {
+    try { return await fetch(url, opts); }
+    catch (e) { usarPuente = true; setCfg("puente", "1"); }
+  }
+  if (!(await puenteVivo())) {
+    estado("Encendiendo el puente de internet...", "trabajando");
+    if (!(await arrancarPuente())) throw new Error("InDesign no tiene internet y el puente no arrancó. Abre «Puente de Programas IA» en el menú Inicio.");
+  }
+  return await fetch(porPuente(url), opts);
+}
+
 // ------------------------------------------------------------------ Claude
 // Modelos que aceptan el respaldo del servidor cuando el filtro de seguridad rechaza
 // (a veces pasa con textos religiosos que mencionan sangre, muerte, etc.).
 const CON_RESPALDO = /^claude-(sonnet-5-5|opus-5-5|opus-5|fable-5)/;
-const espera = (ms) => new Promise(r => setTimeout(r, ms));
 
 async function claude(system, content, maxTokens) {
   const key = cfg("apiKey", "");
@@ -219,7 +245,7 @@ async function claude(system, content, maxTokens) {
     if (respaldo) { headers["anthropic-beta"] = "server-side-fallback-2026-07-01"; body.fallbacks = "default"; }
     let res;
     try {
-      res = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers, body: JSON.stringify(body) });
+      res = await red("https://api.anthropic.com/v1/messages", { method: "POST", headers, body: JSON.stringify(body) });
     } catch (e) {
       if (intento < 2) { estado("Sin conexión con Claude, reintentando...", "trabajando"); await espera(4000); continue; }
       throw new Error("No hay conexión con Claude. Revisa el internet.");
@@ -412,6 +438,53 @@ function llenarFormatos() {
     o.textContent = f.nombre + " · " + f.ancho + " × " + f.alto + " mm"; sel.appendChild(o);
   });
   sel.value = prev;
+  if (!sel.value && sel.options.length) sel.value = "0";
+  cargarMedidas();
+}
+
+// ---- medidas de este trabajo: parten del tamaño elegido y se pueden cambiar (y girar)
+// Se guardan por tamaño elegido; la lista de Ajustes no cambia salvo con "Guardar como tamaño".
+function orientacionUI() { const b = document.querySelector("#pOrientacion button.on"); return b ? b.getAttribute("data-v") : "v"; }
+function ponerOrientacion(v) { document.querySelectorAll("#pOrientacion button").forEach(b => b.classList.toggle("on", b.getAttribute("data-v") === v)); }
+function formatoElegido() { const l = listaFormatos(); return l[parseInt($("formato").value || "0", 10)] || l[0]; }
+function cargarMedidas() {
+  const f = formatoElegido(); if (!f) return;
+  let m = null; try { m = JSON.parse(cfg("medida", "null")); } catch (e) {}
+  if (!m || m.formato !== $("formato").value) m = { formato: $("formato").value, ancho: f.ancho, alto: f.alto, sangrado: f.sangrado || 0, or: "v" };
+  $("mAncho").value = m.ancho; $("mAlto").value = m.alto; $("mSangrado").value = m.sangrado; ponerOrientacion(m.or);
+  notaMedidas();
+}
+function medidasUI() {
+  return { formato: $("formato").value, ancho: parseFloat($("mAncho").value), alto: parseFloat($("mAlto").value), sangrado: parseFloat($("mSangrado").value) || 0, or: orientacionUI() };
+}
+function guardarMedidasUI() { setCfg("medida", JSON.stringify(medidasUI())); notaMedidas(); }
+function notaMedidas() {
+  const f = formatoElegido(), m = medidasUI(); if (!f) return;
+  const base = m.or === "h" ? [f.alto, f.ancho] : [f.ancho, f.alto];
+  const cambiada = Math.abs(m.ancho - base[0]) > 0.05 || Math.abs(m.alto - base[1]) > 0.05 || Math.abs(m.sangrado - (f.sangrado || 0)) > 0.05;
+  $("notaMedidas").textContent = cambiada ? "Medidas cambiadas solo para este diseño." : "Medidas del papel. El PDF lo montas en tu plantilla de CTP.";
+  $("bGuardarMedida").hidden = !cambiada;
+}
+// al girar se intercambian ancho y alto: horizontal = mas ancho que alto
+function girar(v) {
+  const a = parseFloat($("mAncho").value), h = parseFloat($("mAlto").value);
+  if ((v === "h" && a < h) || (v === "v" && a > h)) { $("mAncho").value = h; $("mAlto").value = a; }
+  ponerOrientacion(v); guardarMedidasUI();
+}
+function formatoTrabajo() {
+  const f = formatoElegido(), m = medidasUI();
+  if (!(m.ancho >= 50) || !(m.alto >= 50)) throw new Error("revisa ancho y alto: van en milímetros (por ejemplo 330 × 465).");
+  if (m.ancho > 1500 || m.alto > 1500) throw new Error("esas medidas son demasiado grandes; van en milímetros.");
+  return { nombre: f ? f.nombre : "Personalizado", ancho: m.ancho, alto: m.alto, sangrado: Math.max(0, m.sangrado) };
+}
+function guardarComoTamano() {
+  const m = medidasUI(), f = formatoElegido(), l = listaFormatos();
+  const nombre = (f ? f.nombre : "Tamaño") + " " + m.ancho + "×" + m.alto + (m.or === "h" ? " horizontal" : "");
+  l.push({ nombre, ancho: m.ancho, alto: m.alto, sangrado: m.sangrado });
+  setCfg("formatoSel", String(l.length - 1));
+  setCfg("medida", JSON.stringify(Object.assign(m, { formato: String(l.length - 1) })));
+  guardarFormatos(l); pintarEditorFormatos();
+  estado("Guardé «" + nombre + "» en tus tamaños. Puedes cambiarle el nombre en Ajustes.", "ok");
 }
 async function importarMedidas() {
   const f = await fsys.getFileForOpening({ types: ["txt"] });
@@ -456,6 +529,7 @@ async function generar() {
   const fms = listaFormatos(), fi = parseInt($("formato").value || "0", 10);
   if (!fms.length) { estado("No hay tamaños de papel. Agrégalos en Ajustes.", "error"); return false; }
   setCfg("formatoSel", String(fi));
+  const formato = formatoTrabajo(); guardarMedidasUI();
   const marcado = $("marcado").value; setCfg("marcado", marcado);
   if (!marcado.trim()) { estado("No hay programa. Léelo en el paso 1 o pégalo en el 2.", "error"); return false; }
   const datos = parseMarcado(marcado);
@@ -467,7 +541,7 @@ async function generar() {
   for (const [k, n] of [["esquina", "esquina.pdf"], ["banda_h", "banda_h.pdf"], ["banda_v", "banda_v.pdf"], ["div_izq", "divisor_izq.pdf"], ["div_der", "divisor_der.pdf"]])
     A[k] = (await rutaPlugin("assets", n)).nativePath;
   const DATA = {
-    formato: fms[fi] || fms[0], enc: datos.enc, prog: datos.prog, params: paramsUI(), assets: A, cerrarId: S.docId,
+    formato, enc: datos.enc, prog: datos.prog, params: paramsUI(), assets: A, cerrarId: S.docId,
     fuentes: { titulo: cfg("fTit", "Pinyon Script"), display: cfg("fDis", "Playfair Display"), texto: cfg("fTxt", "Lora") }
   };
   // con funcion para que un "$" del programa no se tome como patron de reemplazo
@@ -600,6 +674,10 @@ document.querySelectorAll("#pColumnas button").forEach(b => b.addEventListener("
 $("bGenerar").addEventListener("click", accion(generar, "Generando el diseño..."));
 $("bPDF").addEventListener("click", accion(exportarPDF, "Exportando..."));
 $("bReiniciar").addEventListener("click", reiniciarParams);
+$("formato").addEventListener("change", () => { setCfg("formatoSel", $("formato").value); cargarMedidas(); });
+document.querySelectorAll("#pOrientacion button").forEach(b => b.addEventListener("click", () => girar(b.getAttribute("data-v"))));
+["mAncho", "mAlto", "mSangrado"].forEach(id => $(id).addEventListener("change", guardarMedidasUI));
+$("bGuardarMedida").addEventListener("click", guardarComoTamano);
 document.querySelectorAll("#sugerencias button").forEach(b => b.addEventListener("click", () => {
   const t = $("txtCorr"); t.value = (t.value.trim() ? t.value.trim() + ". " : "") + b.textContent; crecer(t); try { t.focus(); } catch (e) {}
 }));

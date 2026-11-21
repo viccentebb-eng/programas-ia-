@@ -21,7 +21,11 @@ try {
     var D = DATA, P = D.params || {}, FN = D.fuentes || {};
     var F_TIT = FN.titulo || "Pinyon Script", F_DIS = FN.display || "Playfair Display", F_TXT = FN.texto || "Lora";
     var W = D.formato.ancho, H = D.formato.alto, BL = D.formato.sangrado || 0;
-    var k = W / 330.298;
+    // escala respecto al reverso de referencia (330 x 465 vertical); en horizontal manda el alto
+    var k = Math.min(W / 330.298, H / 464.989);
+    var HORIZ = W > H;
+    // en horizontal el objetivo y el mensaje tienen mucho ancho: no se achican tanto como el encabezado
+    var kI = HORIZ ? Math.min(W / 330.298, k * 1.35) : k;
     var MMPT = 2.834645669;
     var avisos = [];
 
@@ -166,8 +170,8 @@ try {
         anios: PS("enc_anios", { appliedFont: F_TIT, fontStyle: "Regular", pointSize: 34 * k * eE, justification: Cc }),
         lema_lbl: PS("enc_lema_lbl", { appliedFont: F_DIS, fontStyle: "Regular", pointSize: 10.5 * k * eE, tracking: 380, justification: Cc }),
         lema: PS("enc_lema", { appliedFont: F_DIS, fontStyle: "Bold Italic", pointSize: 21 * k * eE, justification: Cc }),
-        intro_tit: PS("intro_tit", { appliedFont: F_DIS, fontStyle: "Bold", pointSize: 11 * k * eE, tracking: 300, justification: Cc, spaceAfter: 1.6 * k }),
-        intro_txt: PS("intro_txt", { appliedFont: F_TXT, fontStyle: "Italic", pointSize: 10.6 * k * eE, leading: 14.2 * k * eE, justification: LJ, hyphenation: true }),
+        intro_tit: PS("intro_tit", { appliedFont: F_DIS, fontStyle: "Bold", pointSize: 11 * kI * eE, tracking: 300, justification: Cc, spaceAfter: 1.6 * kI }),
+        intro_txt: PS("intro_txt", { appliedFont: F_TXT, fontStyle: "Italic", pointSize: 10.6 * kI * eE, leading: 14.2 * kI * eE, justification: LJ, hyphenation: true }),
         programa: PS("programa_tit", { appliedFont: F_DIS, fontStyle: "Regular", pointSize: 24 * k * eE, tracking: 550, justification: Cc }),
         pie: PS("pie", { appliedFont: F_DIS, fontStyle: "Regular", pointSize: 15 * k * eE, tracking: 450, justification: Cc })
     };
@@ -265,7 +269,7 @@ try {
     // =================== PROGRAMA (columnas) ===================
     var cTop = y, cBot = H - 38.65 * k;
     if (cBot - cTop < 60) avisos.push("Queda poco espacio para el programa (" + Math.round(cBot - cTop) + " mm). Considera ocultar objetivo/mensaje.");
-    var ncol = num(P.columnas, W < 260 ? 2 : 3), gut = 7 * k;
+    var ncol = num(P.columnas, HORIZ ? (W >= 560 ? 5 : 4) : (W < 260 ? 2 : 3)), gut = 7 * k;
     var LS = 1.28, prog = {};
     function PP(name, f, p) { var s = PS(name, p); prog[name] = [s, f]; return s; }
     var sDia = num(P.espacio_dias, 2.6), sCin = num(P.espacio_cintilla, 4.2), tD = num(P.sombra_dias, 16), tC = num(P.sombra_cintillas, 20);
@@ -365,7 +369,8 @@ try {
     try { story.paragraphs[0].spaceBefore = 1.5; } catch (e) {}
 
     // tamano mas grande que cabe (busqueda binaria)
-    var lo = num(P.cuerpo_min, 6), hi = num(P.cuerpo_max, 14), best = lo;
+    // el tope de letra crece con el papel: en un cuatro oficios cabe letra mas grande
+    var lo = num(P.cuerpo_min, 6), hi = num(P.cuerpo_max, 14 * Math.max(1, k)), best = lo;
     for (var it = 0; it < 8; it++) {
         var mid = (lo + hi) / 2; escala(mid); doc.recompose();
         if (ptf.overflows) hi = mid; else { best = mid; lo = mid; }

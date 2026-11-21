@@ -24,7 +24,7 @@ async function bajarFamilia(familia, carpeta) {
   const intentos = [q + ":ital,wght@0,400;0,700;1,400;1,700", q + ":ital@0;1", q];
   let css = "";
   for (const fam of intentos) {
-    const r = await fetch("https://fonts.googleapis.com/css2?family=" + fam + "&display=swap", { headers: { "user-agent": "ProgramasIA/1.0" } });
+    const r = await red("https://fonts.googleapis.com/css2?family=" + fam + "&display=swap", { headers: { "user-agent": "ProgramasIA/1.0" } });
     if (r.ok) { css = await r.text(); break; }
   }
   if (!css) throw new Error("\"" + familia + "\" no está en Google Fonts. Instálala a mano o actívala en Adobe Fonts.");
@@ -40,7 +40,7 @@ async function bajarFamilia(familia, carpeta) {
   if (!caras.length) throw new Error("Google Fonts no dio archivos instalables para \"" + familia + "\".");
   const dir = await carpeta.createFolder(familia.replace(/[\\/:*?"<>|]/g, ""), { overwrite: true }).catch(() => carpeta.getEntry(familia));
   for (const c of caras) {
-    const r = await fetch(c.url);
+    const r = await red(c.url);
     if (!r.ok) throw new Error("No pude bajar " + c.archivo + " (" + r.status + ")");
     const f = await dir.createFile(c.archivo, { overwrite: true });
     await f.write(await r.arrayBuffer(), { format: fmts.binary });

@@ -135,7 +135,20 @@ $l = $sh.CreateShortcut((Join-Path $menu "Leeme de Programas IA.lnk")); $l.Targe
 $l = $sh.CreateShortcut((Join-Path $menu "Carpeta de Programas IA.lnk")); $l.TargetPath = $destino; $l.Save()
 $l = $sh.CreateShortcut((Join-Path $menu "Desinstalar Programas IA.lnk"))
 $l.TargetPath = "powershell.exe"; $l.Arguments = "-NoProfile -ExecutionPolicy Bypass -File `"$destino\desinstalar.ps1`""; $l.Save()
-$reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\ProgramasIA"
+
+# puente de internet: InDesign puede tener la salida bloqueada por el firewall; el puente
+# (solo en 127.0.0.1) lleva las consultas a Claude y Google Fonts. Arranca con Windows.
+$vbs = Join-Path $destino "ProgramasIA\iniciar_puente.vbs"
+$l = $sh.CreateShortcut((Join-Path $menu "Puente de Programas IA.lnk")); $l.TargetPath = "wscript.exe"; $l.Arguments = "`"$vbs`""; $l.Save()
+$l = $sh.CreateShortcut((Join-Path ([Environment]::GetFolderPath("Startup")) "Puente de Programas IA.lnk")); $l.TargetPath = "wscript.exe"; $l.Arguments = "`"$vbs`""; $l.Save()
+Get-NetTCPConnection -LocalPort 47811 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
+Start-Sleep -Milliseconds 500
+Start-Process wscript.exe -ArgumentList "`"$vbs`""
+$vivo = $false
+for ($i = 0; $i -lt 20 -and -not $vivo; $i++) { Start-Sleep -Milliseconds 500; try { $vivo = ((Invoke-WebRequest -UseBasicParsing "http://127.0.0.1:47811/ping" -TimeoutSec 2).Content -match "puente") } catch {} }
+if ($vivo) { Bien "puente de internet encendido (arranca solo con Windows)" } else { Ojo "El puente de internet no arranco. Abrelo desde menu Inicio > Programas IA > Puente de Programas IA." }
+
+$reg ="HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\ProgramasIA"
 New-Item $reg -Force | Out-Null
 Set-ItemProperty $reg DisplayName "Programas IA (panel para InDesign)"
 Set-ItemProperty $reg DisplayVersion "$version"

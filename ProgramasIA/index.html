@@ -56,7 +56,18 @@
       <h2>Diseño</h2>
       <label for="formato">Tamaño de papel</label>
       <select id="formato"></select>
-      <p class="ayuda">Siempre vertical, al tamaño del papel. El PDF lo montas en tu plantilla de CTP.</p>
+      <div class="seg seg-or" id="pOrientacion" role="radiogroup">
+        <button data-v="v" class="on">Vertical</button><button data-v="h">Horizontal</button>
+      </div>
+      <div class="medidas">
+        <div><label for="mAncho">Ancho (mm)</label><input id="mAncho" type="number" step="0.1" min="50"></div>
+        <div><label for="mAlto">Alto (mm)</label><input id="mAlto" type="number" step="0.1" min="50"></div>
+        <div><label for="mSangrado">Sangrado</label><input id="mSangrado" type="number" step="0.5" min="0"></div>
+      </div>
+      <div class="fila-tit">
+        <span class="ayuda" id="notaMedidas">Medidas del papel. El PDF lo montas en tu plantilla de CTP.</span>
+        <button class="lnk" id="bGuardarMedida" hidden>Guardar como tamaño</button>
+      </div>
       <label for="pColumnas">Columnas del programa</label>
       <div class="seg" id="pColumnas" role="radiogroup">
         <button data-v="" class="on">Auto</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button>

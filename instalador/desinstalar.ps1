@@ -6,6 +6,9 @@ if (-not $env:PROGRAMASIA_SILENCIO) {
   $r = [System.Windows.Forms.MessageBox]::Show("¿Quitar Programas IA de esta computadora?`nLas fuentes y tus documentos se quedan.", "Programas IA", "YesNo", "Question")
   if ($r -ne "Yes") { exit }
 }
+# apagar el puente de internet y quitarlo del inicio de Windows
+Get-NetTCPConnection -LocalPort 47811 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
+Remove-Item (Join-Path ([Environment]::GetFolderPath("Startup")) "Puente de Programas IA.lnk") -Force -ErrorAction SilentlyContinue
 $upia = Join-Path ${env:CommonProgramFiles} "Adobe\Adobe Desktop Common\RemoteComponents\UPI\UnifiedPluginInstallerAgent\UnifiedPluginInstallerAgent.exe"
 if (Test-Path $upia) { & $upia /remove "Programas IA" | Out-Null }
 # por si se instalo con el plan B (copia directa)

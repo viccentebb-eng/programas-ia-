@@ -121,6 +121,12 @@ textarea.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12
 .seg button { flex: 1; background: var(--sup2); color: var(--texto2); border: none; padding: 6px 0; cursor: pointer; min-height: 30px; }
 .seg button + button { border-left: 1px solid var(--borde-f); }
 .seg button.on { background: var(--acento); color: #fff; }
+.seg-or { margin-top: 8px; }
+.medidas { display: flex; }
+.medidas > div { flex: 1; }
+.medidas > div + div { margin-left: 6px; }
+.medidas input { text-align: right; }
+.medidas label { margin-top: 8px; }
 .interruptores { display: flex; flex-wrap: wrap; }
 .interruptores .sw { width: 50%; }
 .sw { display: flex; align-items: center; margin: 6px 0; color: var(--texto); font-size: 13px; cursor: pointer; }
