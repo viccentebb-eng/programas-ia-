@@ -124,6 +124,8 @@ async function ccx(destino) {
     require("child_process").execFileSync("iexpress.exe", ["/N", "/Q", sedPath], { stdio: "inherit" });
     if (!fs.existsSync(exe)) throw new Error("IExpress no generó el .exe");
   }
+  // copia fija para el repo: en otra computadora se baja de instalable/ y se le da doble clic
+  if (fs.existsSync(exe)) { fs.mkdirSync(path.join(RAIZ, "instalable"), { recursive: true }); fs.copyFileSync(exe, path.join(RAIZ, "instalable", "Instalar Programas IA.exe")); }
   console.log("Listo: versión " + version + " en " + DIST);
 })().catch(e => { console.error(e); process.exit(1); });
 

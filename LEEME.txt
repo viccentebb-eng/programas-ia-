@@ -2,7 +2,8 @@
 ====================================================================================
 
 INSTALAR
-  Dale doble clic a "Instalar Programas IA.exe". No pide permisos de administrador.
+  Dale doble clic a "Instalar Programas IA.exe" (en GitHub está en la carpeta
+  instalable/ del repo). No pide permisos de administrador.
   Si Windows dice "Windows protegió su PC": Más información > Ejecutar de todas formas.
   El instalador:
     - instala las fuentes Lora, Playfair Display y Pinyon Script (si falta
