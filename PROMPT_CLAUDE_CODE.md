@@ -52,7 +52,10 @@ MAYORDOMOS:
 Ciudad: Nombre 1; Nombre 2
 ```
 
-## Estado (21-nov-2026, versión 1.1.0)
+## Estado (21-nov-2026, versión 1.2.0)
+- 1.2.0: InDesign.exe tiene salida bloqueada por la regla de firewall "Adobe-Block" (no tocarla). `puente.ps1` (TCP en 127.0.0.1:47811, solo api.anthropic.com y Google Fonts) + `red()` en main.js: intenta directo y si falla usa el puente; lo arranca con `iniciar_puente.vbs` vía `File.execute()`. Probado desde el UXP real.
+- Medidas por trabajo en Diseñar (ancho/alto/sangrado + Vertical/Horizontal). Motor: `k = min(W/330.298, H/464.989)`, 4-5 columnas en horizontal, tope de letra `14*k`. Tamaños de fábrica = área dentro de márgenes de sus plantillas.
+- UPIA SÍ instala cuando se corre el .exe (desde la terminal de Claude da -198). El instalador confirma leyendo `%CommonProgramFiles%AdobeUXPPluginsInfo1ID.json` y borra la copia del plan B para que no haya dos.
 - Motor probado en InDesign 2026 real por COM (`tools/correr_jsx.ps1 tools/salida/prueba_com.jsx`): arma Atemajac completo en ~6 s (antes 2.5 min) con `UndoModes.ENTIRE_SCRIPT` + `enableRedraw=false`. OJO: `FAST_ENTIRE_SCRIPT` rompe la creación del documento.
 - Corregido en InDesign: fecha encimada bajo el título manuscrito (se mide desde la línea base), horas de dos cifras rebasando el tabulador y ciudades largas en mayordomos (tabuladores medidos con el texto real en `escala()`), capitular con cola (ahora en la letra de encabezados).
 - Confirmado desde UXP (script .idjs por COM): `app.doScript(code, ScriptLanguage.JAVASCRIPT)` regresa el texto; `app.insertLabel/extractLabel("programasia_result")` como respaldo. Un U+2028 literal en el código rompe ExtendScript: todo JSON va por `es3()`.

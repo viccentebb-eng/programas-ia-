@@ -75,7 +75,8 @@ async function ccx(destino) {
 
   // 2) panel empaquetado
   const version = JSON.parse(fs.readFileSync(path.join(PANEL, "manifest.json"), "utf8")).version;
-  fs.rmSync(DIST, { recursive: true, force: true });
+  // borrar lo de antes; si Windows tiene algo abierto (por ejemplo el .exe), se sobrescribe
+  for (const e of fs.existsSync(DIST) ? fs.readdirSync(DIST) : []) { try { fs.rmSync(path.join(DIST, e), { recursive: true, force: true }); } catch (err) { console.warn("no pude borrar " + e + ": " + err.code); } }
   await ccx(path.join(DIST, "ProgramasIA.ccx"));
 
   // 3) paquete del instalador

@@ -96,8 +96,25 @@ $manifest = Get-Content (Join-Path $destino "ProgramasIA\manifest.json") -Raw | 
 if (Test-Path $upia) {
   # UPIA sale con 0 aunque falle: hay que leer lo que escribe
   $salida = (& $upia /install "$ccx" 2>&1 | Out-String)
-  if ($salida -match "(?i)successfully" -and $salida -notmatch "(?i)failed") { $listo = $true; Bien "panel instalado con el instalador de Adobe" }
-  else { Write-Host ("   el instalador de Adobe respondio: " + ($salida.Trim() -replace "\s+", " ")) }
+  # se confirma leyendo el registro del sistema, no solo lo que dice UPIA
+  $infoSis = Join-Path ${env:CommonProgramFiles} "Adobe\UXP\PluginsInfo\v1\ID.json"
+  $verSis = $null
+  try { $verSis = ((Get-Content $infoSis -Raw | ConvertFrom-Json).plugins | Where-Object { $_.pluginId -eq $manifest.id }).versionString } catch {}
+  if ($verSis -eq $manifest.version) {
+    $listo = $true; Bien "panel instalado con el instalador de Adobe"
+    # quitar la copia por usuario (plan B) de instalaciones anteriores: dos copias se estorban
+    $uxpU = Join-Path $env:APPDATA "Adobe\UXP"
+    Get-ChildItem (Join-Path $uxpU "Plugins\External") -Directory -Filter "$($manifest.id)_*" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
+    $infoU = Join-Path $uxpU "PluginsInfo\v1\ID.json"
+    if (Test-Path $infoU) {
+      $dU = Get-Content $infoU -Raw | ConvertFrom-Json
+      $dU = [pscustomobject]@{ plugins = @($dU.plugins | Where-Object { $_.pluginId -ne $manifest.id }) }
+      [IO.File]::WriteAllText($infoU, ($dU | ConvertTo-Json -Depth 5), (New-Object System.Text.UTF8Encoding($false)))
+    }
+  } else {
+    Write-Host ("   el instalador de Adobe respondio: " + ($salida.Trim() -replace "\s+", " "))
+    if ($verSis) { Ojo "Hay una version $verSis del panel instalada para todo el equipo que no se pudo actualizar; InDesign usara esa. Vuelve a correr este instalador con doble clic." }
+  }
 }
 if (-not $listo) {
   # Plan B: lo mismo que hace el instalador de Adobe, a mano: copiar el panel a la carpeta

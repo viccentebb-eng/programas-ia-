@@ -10,6 +10,7 @@ INSTALAR
     - pone la prueba del motor y MedidasPlantillas en el panel Scripts de
       InDesign (carpeta "Programas IA")
     - instala el panel en InDesign
+    - enciende el "puente de internet" (ver abajo) y lo deja arrancando con Windows
     - deja accesos en el menú Inicio > Programas IA (y para desinstalar)
   Luego cierra y abre InDesign: menú Complementos (Plug-ins) > Programas IA.
   Si el panel no aparece, dale doble clic a ProgramasIA.ccx (menú Inicio >
@@ -35,7 +36,9 @@ CÓMO SE USA
   2 Revisar   Lee los avisos (fechas, ortografía, dudas) y corrige el texto
               ahí mismo. "Revisar fechas" vuelve a checar días contra fechas
               sin gastar saldo.
-  3 Diseñar   Elige tamaño y opciones > "Generar diseño" (tarda unos segundos).
+  3 Diseñar   Elige tamaño, Vertical u Horizontal, y si hace falta cambia ancho,
+              alto o sangrado solo para este trabajo ("Guardar como tamaño" lo
+              agrega a tu lista). Luego "Generar diseño" (tarda unos segundos).
               "Exportar PDF" saca el PDF (PDF/X-1a) al tamaño del papel para
               montarlo en tu plantilla de CTP.
   4 Corregir  Escribe o toca una sugerencia ("título más grande"...). Claude
@@ -47,6 +50,15 @@ CAPAS DEL DISEÑO
   TEXTOS   encabezado y el programa en un cuadro de columnas con estilos
   ADORNOS  líneas, rombos, recuadro del mensaje, adornos (se pueden mover)
   FONDO    marco con esquinas (bloqueado)
+
+PUENTE DE INTERNET
+  En esta PC el firewall no deja que InDesign salga a internet (regla
+  "Adobe-Block"). El puente es un programita que corre en tu PC, escucha
+  solo dentro de la computadora (127.0.0.1) y lleva las consultas del panel
+  a Claude y a Google Fonts, nada más. Tu bloqueo de Adobe queda igual.
+  Arranca solo con Windows; si el panel no lo encuentra, lo enciende él.
+  Si dice que no hay internet: menú Inicio > Programas IA > Puente.
+  Bitácora: %LOCALAPPDATA%\Programas IA\puente.log (no guarda claves).
 
 SI ALGO FALLA
   En InDesign: panel Scripts > Programas IA > PRUEBA_MOTOR > prueba_motor.jsx
