@@ -195,3 +195,24 @@ textarea.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12
 .seg [role=button] { text-align: center; }
 .arch [role=button], .formato [role=button] { text-align: center; line-height: 24px; }
 [role=button]:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
+
+/* estilos y adornos */
+.ranura { display: flex; align-items: baseline; flex-wrap: wrap; margin: 6px 0; }
+.ranura-n { width: 40%; color: var(--texto2); font-size: 12px; }
+.ranura-v { flex: 1; font-weight: 600; }
+.ranura .lnk { width: 100%; text-align: right; }
+.seg-chico [role=button] { padding: 2px 6px; min-height: 22px; font-size: 11px; }
+.desc { background: var(--sup); border-radius: 4px; padding: 6px 8px; margin-top: 6px; }
+.desc .sw { margin: 0 0 4px 0; font-size: 12px; overflow-wrap: anywhere; }
+.desc-fila { display: flex; }
+.desc-fila select { width: 34%; margin-right: 6px; }
+.desc-fila input { flex: 1; }
+.galeria { display: flex; flex-wrap: wrap; margin-top: 8px; }
+.thumb { width: 48%; margin: 0 4% 8px 0; background: #fff; border-radius: 4px; overflow: hidden; }
+.thumb:nth-child(2n) { margin-right: 0; }
+.thumb img { display: block; width: 100%; height: 90px; object-fit: contain; background: #fff; }
+.thumb-n { background: var(--sup); color: var(--texto); font-size: 11px; padding: 3px 6px; }
+.thumb-av { background: #5a4220; color: #ffd99a; font-size: 10px; padding: 2px 6px; }
+.thumb-b { display: flex; background: var(--sup); }
+.thumb-b [role=button] { flex: 1; text-align: center; font-size: 11px; padding: 4px 0; color: var(--acento-h); }
+.thumb-b [role=button]:hover { background: var(--sup2); }

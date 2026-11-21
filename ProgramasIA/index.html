@@ -15,6 +15,7 @@
       <div role="button" tabindex="0" class="paso" data-t="t2"><span class="num">2</span><span class="txt">Revisar</span></div>
       <div role="button" tabindex="0" class="paso" data-t="t3"><span class="num">3</span><span class="txt">Diseñar</span></div>
       <div role="button" tabindex="0" class="paso" data-t="t4"><span class="num">4</span><span class="txt">Corregir</span></div>
+      <div role="button" tabindex="0" class="paso" data-t="t6"><span class="num">&#10022;</span><span class="txt">Adornos</span></div>
       <div role="button" tabindex="0" class="paso paso-aj" data-t="t5"><span class="num">&#9881;</span><span class="txt">Ajustes</span></div>
     </nav>
   </header>
@@ -54,6 +55,9 @@
     <!-- 3 DISENAR -->
     <section id="t3" class="tab">
       <h2>Diseño</h2>
+      <label for="estilo">Estilo</label>
+      <select id="estilo"></select>
+      <p class="ayuda" id="notaEstilo"></p>
       <label for="formato">Tamaño de papel</label>
       <select id="formato"></select>
       <div class="seg seg-or" id="pOrientacion" role="radiogroup">
@@ -140,9 +144,26 @@
         <div role="button" tabindex="0" class="btn sec" id="bAgregarFormato">Agregar tamaño</div>
         <p class="ayuda">En milímetros, ya en vertical. El sangrado normalmente es 0.</p>
       </div>
+    </section>
+
+    <!-- ADORNOS Y ESTILOS -->
+    <section id="t6" class="tab">
+      <h2>Estilos y adornos</h2>
+      <label for="eEstilo">Estilo que quieres ajustar</label>
+      <select id="eEstilo"></select>
+      <p class="ayuda" id="eNota"></p>
 
       <div class="tarjeta">
-        <h3>Fuentes</h3>
+        <h3>Adornos de este estilo</h3>
+        <div class="ranura"><span class="ranura-n">Esquinas</span><span class="ranura-v" id="rEsquina">De fábrica</span>
+          <div role="button" tabindex="0" class="lnk" data-quitar="esquina">Volver a la de fábrica</div></div>
+        <div class="ranura"><span class="ranura-n">Divisor de «PROGRAMA»</span><span class="ranura-v" id="rDivisor">De fábrica</span>
+          <div role="button" tabindex="0" class="lnk" data-quitar="divisor">Volver al de fábrica</div></div>
+        <p class="ayuda">Para cambiarlos, toca un adorno de tu biblioteca (abajo).</p>
+      </div>
+
+      <div class="tarjeta">
+        <h3>Fuentes de este estilo</h3>
         <label for="fTit">Título (manuscrita)</label><input id="fTit" list="sugFuentes">
         <label for="fDis">Encabezados</label><input id="fDis" list="sugFuentes">
         <label for="fTxt">Texto del programa</label><input id="fTxt" list="sugFuentes">
@@ -154,6 +175,28 @@
         <div role="button" tabindex="0" class="btn sec" id="bFuentes">Revisar y bajar las que falten</div>
         <p class="ayuda">Las baja gratis de Google Fonts y las instala. Las de Adobe Fonts actívalas en Creative Cloud.</p>
       </div>
+
+      <div class="tarjeta">
+        <h3>Buscar en Magnific</h3>
+        <p class="ayuda">Se abren en tu navegador, con tu sesión. Ahí le das «Download» a los que te gusten (vectores). No gasta créditos.</p>
+        <div class="sugerencias" id="busquedas"></div>
+        <div role="button" tabindex="0" class="btn sec" id="bIdeas">Pedirle a Claude ideas para esta fiesta</div>
+      </div>
+
+      <div class="tarjeta">
+        <div class="fila-tit"><h3>Lo que bajaste</h3><div role="button" tabindex="0" class="lnk" id="bCarpetaDesc">Cambiar carpeta</div></div>
+        <p class="ayuda" id="dCarpeta"></p>
+        <div role="button" tabindex="0" class="btn sec" id="bRevisarDesc">Revisar mis Descargas</div>
+        <div id="descargas"></div>
+        <div role="button" tabindex="0" class="btn prim" id="bAgregarBib" hidden>Pasar a una tinta y guardar en la biblioteca</div>
+      </div>
+
+      <div class="tarjeta">
+        <div class="fila-tit"><h3>Mi biblioteca</h3>
+          <div class="seg seg-chico" id="bFiltro"><div role="button" tabindex="0" data-v="" class="on">Todo</div><div role="button" tabindex="0" data-v="esquina">Esquinas</div><div role="button" tabindex="0" data-v="divisor">Divisores</div><div role="button" tabindex="0" data-v="otro">Otros</div></div>
+        </div>
+        <div class="galeria" id="galeria"><div class="vacio">Todavía no hay adornos. Baja algunos de Magnific y dale «Revisar mis Descargas».</div></div>
+      </div>
     </section>
   </main>
 
@@ -164,8 +207,11 @@
 
   <script src="lib/jszip.min.js"></script>
   <script src="marcado.js"></script>
+  <script src="estilos.js"></script>
   <script src="prompts.js"></script>
   <script src="main.js"></script>
   <script src="fuentes.js"></script>
+  <script src="biblioteca.js"></script>
+  <script src="adornos_ui.js"></script>
 </body>
 </html>

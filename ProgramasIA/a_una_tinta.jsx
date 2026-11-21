@@ -40,6 +40,15 @@ var RES = "ERROR|sin resultado";
         var op = new PDFSaveOptions();
         op.compatibility = PDFCompatibility.ACROBAT7; op.preserveEditability = false;
         doc.saveAs(File(SALIDA), op);
+        // miniatura para el panel (unos 240 px de ancho)
+        if (typeof MINIATURA != "undefined" && MINIATURA) {
+            try {
+                var vb = doc.visibleBounds, ancho = Math.max(1, vb[2] - vb[0]);
+                var png = new ExportOptionsPNG24(); png.artBoardClipping = true; png.transparency = false;
+                png.horizontalScale = png.verticalScale = Math.max(5, Math.min(400, 24000 / ancho));
+                doc.exportFile(File(MINIATURA), ExportType.PNG24, png);
+            } catch (e) {}
+        }
         RES = "OK|trazos=" + doc.pathItems.length + "|con_color=" + conColor + "|raster=" + raster + "|fondo_quitado=" + quitados;
     } catch (e) { RES = "ERROR|" + e.message + " (linea " + e.line + ")"; }
     try { if (doc) doc.close(SaveOptions.DONOTSAVECHANGES); } catch (e) {}

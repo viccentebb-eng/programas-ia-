@@ -39,7 +39,15 @@ foreach ($x in "ProgramasIA", "scripts", "fuentes") {
   if (Test-Path (Join-Path $destino $x)) { Remove-Item (Join-Path $destino $x) -Recurse -Force }
 }
 Copy-Item (Join-Path $paquete "*") $destino -Recurse -Force
-Bien "archivos copiados"
+# carpeta de descargas real (Windows la deja mover; Chrome puede tener otra) para "Revisar mis Descargas"
+$desc = (Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" -ErrorAction SilentlyContinue)."{374DE290-123F-4565-9164-39C4925E467B}"
+try {
+  $pref = Join-Path $env:LOCALAPPDATA "Google\Chrome\User Data\Default\Preferences"
+  if (Test-Path $pref) { $c = (Get-Content $pref -Raw | ConvertFrom-Json).download.default_directory; if ($c -and (Test-Path $c)) { $desc = $c } }
+} catch {}
+if (-not $desc) { $desc = Join-Path $env:USERPROFILE "Downloads" }
+[IO.File]::WriteAllText((Join-Path $destino "config.json"), (@{ descargas = $desc } | ConvertTo-Json), (New-Object System.Text.UTF8Encoding($false)))
+Bien "archivos copiados (descargas: $desc)"
 
 # ---------------------------------------------------------------- 2
 Paso 2 "Instalando fuentes"

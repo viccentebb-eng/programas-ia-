@@ -534,15 +534,16 @@ async function generar() {
   if (!marcado.trim()) { estado("No hay programa. Léelo en el paso 1 o pégalo en el 2.", "error"); return false; }
   const datos = parseMarcado(marcado);
   if (!datos.prog.length && !datos.enc.nombre) { estado("El marcado no tiene claves reconocibles (NOMBRE:, DIA:, EVENTO:...). Ve «¿Cómo se escribe?» en el paso 2.", "error"); return false; }
-  try { await revisarFuentes(true); } catch (e) { estado("No pude revisar las fuentes (" + e.message + "). Genero de todos modos...", "trabajando"); }
-  estado("Generando el diseño en InDesign...", "trabajando");
+  // estilo: el elegido, o el que toca segun el nombre de la fiesta
+  const idEstilo = $("estilo").value === "auto" || !$("estilo").value ? estiloAutomatico(datos.enc).id : $("estilo").value;
+  const est = await resolverEstilo(idEstilo);
+  try { await revisarFuentes(true, [est.fuentes.titulo, est.fuentes.display, est.fuentes.texto]); } catch (e) { estado("No pude revisar las fuentes (" + e.message + "). Genero de todos modos...", "trabajando"); }
+  estado("Generando el diseño en InDesign (" + est.estilo.nombre + ")...", "trabajando");
   const engine = await (await rutaPlugin(null, "engine.jsx")).read();
-  const A = {};
-  for (const [k, n] of [["esquina", "esquina.pdf"], ["banda_h", "banda_h.pdf"], ["banda_v", "banda_v.pdf"], ["div_izq", "divisor_izq.pdf"], ["div_der", "divisor_der.pdf"]])
-    A[k] = (await rutaPlugin("assets", n)).nativePath;
   const DATA = {
-    formato, enc: datos.enc, prog: datos.prog, params: paramsUI(), assets: A, cerrarId: S.docId,
-    fuentes: { titulo: cfg("fTit", "Pinyon Script"), display: cfg("fDis", "Playfair Display"), texto: cfg("fTxt", "Lora") }
+    // los ajustes del estilo van primero; los de la pantalla y el chat mandan sobre ellos
+    formato, enc: datos.enc, prog: datos.prog, params: Object.assign({}, est.params, paramsUI()), assets: est.adornos, cerrarId: S.docId,
+    fuentes: est.fuentes
   };
   // con funcion para que un "$" del programa no se tome como patron de reemplazo
   const code = engine.replace("/*__DATA__*/", () => "var DATA = " + es3(DATA) + ";");
@@ -637,9 +638,6 @@ async function exportarPDF() {
 // ------------------------------------------------------------------ arranque y eventos
 function cargarAjustes() {
   $("apiKey").value = cfg("apiKey", "");
-  $("fTit").value = cfg("fTit", "Pinyon Script");
-  $("fDis").value = cfg("fDis", "Playfair Display");
-  $("fTxt").value = cfg("fTxt", "Lora");
   $("marcado").value = cfg("marcado", "");
   try { S.params = JSON.parse(cfg("params", "{}")); } catch (e) { S.params = {}; }
   S.docId = cfg("docId", "") || null;
@@ -689,8 +687,6 @@ $("bConsola").addEventListener("click", () => abrirWeb("https://console.anthropi
 document.querySelectorAll("[data-url]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); abrirWeb(a.getAttribute("data-url")); }));
 $("bMedidas").addEventListener("click", accion(importarMedidas, "Elige MEDIDAS_PLANTILLAS.txt..."));
 $("bAgregarFormato").addEventListener("click", () => { const l = listaFormatos(); l.push({ nombre: "Nuevo tamaño", ancho: 215.9, alto: 279.4, sangrado: 0 }); guardarFormatos(l); pintarEditorFormatos(); });
-["fTit", "fDis", "fTxt"].forEach(id => $(id).addEventListener("change", () => { setCfg(id, $(id).value.trim()); estado("Fuente guardada.", "ok"); }));
-$("bFuentes").addEventListener("click", accion(() => revisarFuentes(false), "Revisando fuentes..."));
 ["txtPegado", "marcado", "txtCorr"].forEach(id => $(id).addEventListener("input", () => crecer($(id))));
 $("marcado").addEventListener("change", () => { setCfg("marcado", $("marcado").value); marcarPasos(); });
 

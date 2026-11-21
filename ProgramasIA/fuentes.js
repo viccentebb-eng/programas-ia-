@@ -53,7 +53,7 @@ async function instalarCarpetaFuentes(carpeta) {
   const pf = await fsys.getPluginFolder();
   const ps1 = (await pf.getEntry("instalar_fuentes.ps1")).nativePath;
   const listo = await carpeta.createFile("listo.txt", { overwrite: true });
-  await listo.write("", { format: fmts.utf8 });
+  await listo.write(" ", { format: fmts.utf8 }); // UXP no escribe archivos vacios
   const cmd = await carpeta.createFile("instalar_fuentes.cmd", { overwrite: true });
   await cmd.write("@echo off\r\nchcp 65001 >nul\r\npowershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File \"" + ps1 +
     "\" -Carpeta \"" + carpeta.nativePath + "\" -Listo \"" + listo.nativePath + "\"\r\n", { format: fmts.utf8 });
@@ -69,8 +69,8 @@ async function instalarCarpetaFuentes(carpeta) {
 }
 
 // Boton de Ajustes y aviso al generar: revisa las tres fuentes y baja las que falten.
-async function revisarFuentes(silencioso) {
-  const pedidas = [cfg("fTit", "Pinyon Script"), cfg("fDis", "Playfair Display"), cfg("fTxt", "Lora")].filter(Boolean);
+async function revisarFuentes(silencioso, lista) {
+  const pedidas = (lista || ["Pinyon Script", "Playfair Display", "Lora"]).filter(Boolean);
   const faltan = fuentesFaltantes(pedidas);
   if (!faltan.length) { if (!silencioso) estado("Todas las fuentes están instaladas: " + pedidas.join(", ") + "."); return true; }
   estado("Faltan fuentes: " + faltan.join(", ") + ". Bajándolas de Google Fonts...");
