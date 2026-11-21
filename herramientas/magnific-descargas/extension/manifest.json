@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Descargas de Magnific",
+  "version": "2.0.0",
+  "description": "Descarga una lista de enlaces de Magnific con tu propia sesión, uno por uno, y deja cada archivo con el nombre que elegiste.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "magnific-descargas@descargas.local",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  },
+  "permissions": ["downloads", "tabs", "storage", "*://*.magnific.com/*", "*://*.freepik.com/*"],
+  "background": { "scripts": ["background.js"], "persistent": true },
+  "content_scripts": [
+    { "matches": ["*://*.magnific.com/*", "*://*.freepik.com/*"], "js": ["content.js"], "run_at": "document_idle" }
+  ],
+  "browser_action": { "default_title": "Descargas de Magnific" }
+}
