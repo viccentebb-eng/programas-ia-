@@ -85,8 +85,18 @@
       </div>
       <div role="button" tabindex="0" class="btn prim" id="bGenerar">Generar diseño</div>
       <div id="resultado" class="resultado" hidden></div>
+      <div class="tarjeta placa" id="cajaPlaca">
+        <h3>Listo para CTP</h3>
+        <p class="ayuda" id="notaPlaca">Se monta en la placa de tu plantilla, centrado dentro de los márgenes. Placa de línea: sin barras de color ni marcas, solo negro.</p>
+        <label>La parte de arriba del reverso va hacia</label>
+        <div class="seg" id="pGiro" role="radiogroup">
+          <div role="button" tabindex="0" data-v="90" class="on">La izquierda</div><div role="button" tabindex="0" data-v="-90">La derecha</div>
+        </div>
+        <label class="sw"><input type="checkbox" id="cAbrirPlaca"><span></span>Dejar abierta la placa en InDesign para revisarla</label>
+        <div role="button" tabindex="0" class="btn prim" id="bPlaca">Exportar montado en la placa</div>
+      </div>
       <div class="fila">
-        <div role="button" tabindex="0" class="btn sec" id="bPDF">Exportar PDF</div>
+        <div role="button" tabindex="0" class="btn sec" id="bPDF">Solo el reverso (PDF)</div>
         <div role="button" tabindex="0" class="btn sec" id="bReiniciar" title="Quita los cambios de tamaño y espacios que pidió el chat">Diseño normal</div>
       </div>
       <p class="ayuda">Cada vez que generas o corriges se arma el documento de nuevo. Los retoques a mano, al final.</p>

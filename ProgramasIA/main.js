@@ -27,13 +27,14 @@ const MODELO_DEF = "claude-sonnet-5-5";
 // ------------------------------------------------------------------ ajustes guardados
 // Area dentro de los margenes de sus plantillas de CTP (placa horizontal), puesta en vertical. Medido el 21-nov-2026.
 const DEF_FORMATOS = [
-  "Doble oficio | 330 | 465 | 0",
-  "Una carpeta carta | 330 | 470 | 0",
-  "Una carpeta oficio | 340 | 510 | 0",
-  "Carpeta oficio rebasada | 340 | 510 | 0",
-  "Cuatro cartas | 430 | 600 | 0",
-  "Cuatro oficios | 455 | 690 | 0",
-  "Dos carpetas carta | 480 | 690 | 0"
+  // nombre | papel ancho | papel alto | sangrado | placa ancho | placa alto | margen sup | inf | izq | der
+  "Doble oficio | 330 | 465 | 0 | 475 | 350 | 15 | 5 | 5 | 5",
+  "Una carpeta carta | 330 | 470 | 0 | 480 | 350 | 15 | 5 | 5 | 5",
+  "Una carpeta oficio | 340 | 510 | 0 | 520 | 360 | 15 | 5 | 5 | 5",
+  "Carpeta oficio rebasada | 340 | 510 | 0 | 520 | 360 | 15 | 5 | 5 | 5",
+  "Cuatro cartas | 430 | 600 | 0 | 610 | 450 | 15 | 5 | 5 | 5",
+  "Cuatro oficios | 455 | 690 | 0 | 700 | 475 | 15 | 5 | 5 | 5",
+  "Dos carpetas carta | 480 | 690 | 0 | 700 | 500 | 15 | 5 | 5 | 5"
 ].join(String.fromCharCode(10));
 function cfg(k, d) { try { const v = localStorage.getItem("pia_" + k); return v === null ? d : v; } catch (e) { return d; } }
 function setCfg(k, v) { try { localStorage.setItem("pia_" + k, v); } catch (e) {} }
@@ -398,12 +399,23 @@ async function reducirImagen(ruta) {
 }
 
 // ------------------------------------------------------------------ tamaños de papel
+// Renglon guardado: Nombre | ancho | alto | sangrado [| placaAncho | placaAlto | sup | inf | izq | der]
+// La placa es la plantilla de CTP (horizontal); el papel es lo que queda dentro de sus margenes.
+function placaDeFabrica(nombre) {
+  const r = DEF_FORMATOS.split(String.fromCharCode(10)).map(l => l.split("|").map(s => s.trim())).find(p => p[0].toLowerCase() === String(nombre).toLowerCase());
+  return r && r.length >= 10 ? r : null;
+}
 function listaFormatos() {
   return cfg("formatos", DEF_FORMATOS).split(/\r?\n/).map(l => l.split("|").map(s => s.trim())).filter(p => p.length >= 3 && parseFloat(p[1]) > 0)
-    .map(p => ({ nombre: p[0], ancho: parseFloat(p[1]), alto: parseFloat(p[2]), sangrado: parseFloat(p[3] || "0") || 0 }));
+    .map(p => {
+      if (p.length < 10) { const d = placaDeFabrica(p[0]); if (d) p = p.slice(0, 4).concat(d.slice(4)); }
+      const f = { nombre: p[0], ancho: parseFloat(p[1]), alto: parseFloat(p[2]), sangrado: parseFloat(p[3] || "0") || 0 };
+      if (p.length >= 10 && parseFloat(p[4]) > 0) f.placa = { ancho: parseFloat(p[4]), alto: parseFloat(p[5]), sup: parseFloat(p[6]) || 0, inf: parseFloat(p[7]) || 0, izq: parseFloat(p[8]) || 0, der: parseFloat(p[9]) || 0 };
+      return f;
+    });
 }
 function guardarFormatos(lista) {
-  setCfg("formatos", lista.map(f => [f.nombre, f.ancho, f.alto, f.sangrado || 0].join(" | ")).join("\n"));
+  setCfg("formatos", lista.map(f => [f.nombre, f.ancho, f.alto, f.sangrado || 0].concat(f.placa ? [f.placa.ancho, f.placa.alto, f.placa.sup, f.placa.inf, f.placa.izq, f.placa.der] : []).join(" | ")).join("\n"));
   llenarFormatos();
 }
 function pintarEditorFormatos() {
@@ -421,7 +433,7 @@ function pintarEditorFormatos() {
       const l = listaFormatos(), f = leerFila(), i = Number(row.getAttribute("data-i"));
       if (!(f.ancho > 0) || !(f.alto > 0)) { estado("Ancho y alto van en milímetros, por ejemplo 330.3", "error"); return; }
       if (f.ancho > f.alto) { const t = f.ancho; f.ancho = f.alto; f.alto = t; estado("Lo puse en vertical (" + f.ancho + " x " + f.alto + ")."); }
-      l[i] = f; guardarFormatos(l); pintarEditorFormatos();
+      l[i] = Object.assign(l[i] || {}, f); guardarFormatos(l); pintarEditorFormatos();
     }));
     row.querySelector("[role=button]").addEventListener("click", () => {
       const l = listaFormatos();
@@ -452,7 +464,7 @@ function cargarMedidas() {
   let m = null; try { m = JSON.parse(cfg("medida", "null")); } catch (e) {}
   if (!m || m.formato !== $("formato").value) m = { formato: $("formato").value, ancho: f.ancho, alto: f.alto, sangrado: f.sangrado || 0, or: "v" };
   $("mAncho").value = m.ancho; $("mAlto").value = m.alto; $("mSangrado").value = m.sangrado; ponerOrientacion(m.or);
-  notaMedidas();
+  notaMedidas(); notaPlaca();
 }
 function medidasUI() {
   return { formato: $("formato").value, ancho: parseFloat($("mAncho").value), alto: parseFloat($("mAlto").value), sangrado: parseFloat($("mSangrado").value) || 0, or: orientacionUI() };
@@ -491,13 +503,18 @@ async function importarMedidas() {
   if (!f) return;
   const txt = await f.read({ format: fmts.utf8 });
   const lista = [];
-  let nombre = null;
+  let nombre = null, placa = null;
   txt.split(/\r?\n/).forEach(l => {
-    if (/\.indd\s*$/i.test(l.trim())) { nombre = l.trim().replace(/\.indd$/i, "").replace(/PLANTILLA ENV[IÍ]OS/i, "").trim(); return; }
+    if (/\.indd\s*$/i.test(l.trim())) { nombre = l.trim().replace(/\.indd$/i, "").replace(/PLANTILLA ENV[IÍ]OS/i, "").trim(); placa = null; return; }
+    const pc = /Documento \(CTP\):\s*([\d.]+)\s*x\s*([\d.]+)/i.exec(l);
+    if (pc) placa = { ancho: parseFloat(pc[1]), alto: parseFloat(pc[2]) };
     const m = /area de papel:\s*([\d.]+)\s*x\s*([\d.]+)/i.exec(l);
     if (m && nombre) {
       const a = parseFloat(m[1]), b = parseFloat(m[2]), pag = /Pagina\s+(\d+)/i.exec(l);
-      lista.push({ nombre: nombre + (pag && pag[1] !== "1" ? " p" + pag[1] : ""), ancho: Math.min(a, b), alto: Math.max(a, b), sangrado: 0 });
+      const mg = /sup\s*([\d.]+)\s*\/\s*inf\s*([\d.]+)\s*\/\s*izq\s*([\d.]+)\s*\/\s*der\s*([\d.]+)/i.exec(l);
+      const f = { nombre: nombre + (pag && pag[1] !== "1" ? " p" + pag[1] : ""), ancho: Math.min(a, b), alto: Math.max(a, b), sangrado: 0 };
+      if (placa && mg) f.placa = { ancho: placa.ancho, alto: placa.alto, sup: parseFloat(mg[1]), inf: parseFloat(mg[2]), izq: parseFloat(mg[3]), der: parseFloat(mg[4]) };
+      lista.push(f);
     }
   });
   if (!lista.length) { estado("No encontré medidas en ese archivo. Córrelo de nuevo con MedidasPlantillas.jsx.", "error"); return; }
@@ -635,6 +652,36 @@ async function exportarPDF() {
   if (r === "ok") estado("PDF guardado: " + f.nativePath, "ok"); else estado("Error al exportar: " + r, "error");
 }
 
+
+// ------------------------------------------------------------------ exportar montado en la placa de CTP
+function giroUI() { const b = document.querySelector("#pGiro [role=button].on"); return b ? Number(b.getAttribute("data-v")) : 90; }
+function notaPlaca() {
+  const f = formatoElegido(), caja = $("cajaPlaca");
+  if (!f || !f.placa) { $("notaPlaca").textContent = "Este tamaño no tiene placa registrada (es medida tuya). Usa «Solo el reverso (PDF)», o trae las medidas de tus plantillas en Ajustes."; $("bPlaca").classList.add("apagado"); return; }
+  $("bPlaca").classList.remove("apagado");
+  const p = f.placa, aw = p.ancho - p.izq - p.der, ah = p.alto - p.sup - p.inf;
+  $("notaPlaca").textContent = "Placa " + p.ancho + " × " + p.alto + " mm; papel dentro de márgenes " + aw + " × " + ah + " mm. Sin barras de color ni marcas, solo negro.";
+}
+async function exportarPlaca() {
+  if (!docVivo()) { estado("Primero genera el diseño.", "error"); return; }
+  const f = formatoElegido();
+  if (!f || !f.placa) { estado("Este tamaño no tiene placa registrada. Usa «Solo el reverso (PDF)».", "error"); return; }
+  const m = medidasUI(), p = f.placa;
+  const areaHoriz = (p.ancho - p.izq - p.der) > (p.alto - p.sup - p.inf), disenoHoriz = m.ancho > m.alto;
+  const giro = areaHoriz === disenoHoriz ? 0 : giroUI();
+  const sugerido = sinAcentos(f.nombre).replace(/[^a-z0-9]+/g, "-") + "-placa.pdf";
+  const sal = await fsys.getFileForSaving(sugerido, { types: ["pdf"] });
+  if (!sal) return;
+  estado("Montando en la placa y exportando...", "trabajando");
+  const tmp = await (await fsys.getTemporaryFolder()).createFile("reverso_para_placa.pdf", { overwrite: true });
+  const plantilla = await (await rutaPlugin(null, "placa.jsx")).read();
+  const DATA = { docId: S.docId, tmp: tmp.nativePath, salida: sal.nativePath, placa: p, sangrado: m.sangrado || 0, giro, dejarAbierta: $("cAbrirPlaca").checked };
+  const r = extend(plantilla.replace("/*__DATA__*/", () => "var DATA = " + es3(DATA) + ";"));
+  if (r.indexOf("OK") !== 0) { estado("No se pudo montar: " + r.replace(/^ERROR\|/, ""), "error"); return; }
+  const aviso = (r.split("aviso=")[1] || "").trim();
+  estado("Placa lista: " + sal.nativePath + (aviso ? "\n" + aviso : ""), aviso ? "" : "ok");
+}
+
 // ------------------------------------------------------------------ arranque y eventos
 function cargarAjustes() {
   $("apiKey").value = cfg("apiKey", "");
@@ -643,6 +690,7 @@ function cargarAjustes() {
   S.docId = cfg("docId", "") || null;
   if (S.params.columnas) ponerColumnas(S.params.columnas);
   llenarFormatos(); pintarEditorFormatos(); pintarUso(); marcarPasos();
+  const g = cfg("giroPlaca", "90"); document.querySelectorAll("#pGiro [role=button]").forEach(x => x.classList.toggle("on", x.getAttribute("data-v") === g));
   const o = document.createElement("option"); o.value = cfg("modelo", MODELO_DEF); o.textContent = o.value; $("modelo").appendChild(o);
   infoModelo();
   if (revisarClave()) {
@@ -671,6 +719,8 @@ $("bAyuda").addEventListener("click", () => { const a = $("ayuda"); a.hidden = !
 document.querySelectorAll("#pColumnas [role=button]").forEach(b => b.addEventListener("click", () => ponerColumnas(b.getAttribute("data-v"))));
 $("bGenerar").addEventListener("click", accion(generar, "Generando el diseño..."));
 $("bPDF").addEventListener("click", accion(exportarPDF, "Exportando..."));
+$("bPlaca").addEventListener("click", accion(exportarPlaca, "Montando en la placa..."));
+document.querySelectorAll("#pGiro [role=button]").forEach(b => b.addEventListener("click", () => { document.querySelectorAll("#pGiro [role=button]").forEach(x => x.classList.toggle("on", x === b)); setCfg("giroPlaca", b.getAttribute("data-v")); }));
 $("bReiniciar").addEventListener("click", reiniciarParams);
 $("formato").addEventListener("change", () => { setCfg("formatoSel", $("formato").value); cargarMedidas(); });
 document.querySelectorAll("#pOrientacion [role=button]").forEach(b => b.addEventListener("click", () => girar(b.getAttribute("data-v"))));

@@ -216,3 +216,5 @@ textarea.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12
 .thumb-b { display: flex; background: var(--sup); }
 .thumb-b [role=button] { flex: 1; text-align: center; font-size: 11px; padding: 4px 0; color: var(--acento-h); }
 .thumb-b [role=button]:hover { background: var(--sup2); }
+.tarjeta.placa { margin-top: 12px; border-color: var(--ok); }
+.tarjeta.placa .btn.apagado { pointer-events: none; }
