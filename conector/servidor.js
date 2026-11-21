@@ -19,7 +19,7 @@ const VERSION = (() => { try { return JSON.parse(fs.readFileSync(path.join(PANEL
 // ------------------------------------------------------------------ cargar piezas del panel
 const leer = (n) => fs.readFileSync(path.join(PANEL, n), "utf8");
 const { parseMarcado, revisarFechas } = require(path.join(PANEL, "marcado.js"));
-const P = vm.runInNewContext(leer("prompts.js") + "\n;({ FORMATO_MARCADO, SYS_LEER, SYS_CORREGIR })", {});
+const P = vm.runInNewContext(leer("prompts.js") + "\n;({ CASA, FORMATO_MARCADO, SYS_LEER, SYS_CORREGIR })", {});
 const E = vm.runInNewContext(leer("estilos.js") + "\n;({ ESTILOS, estiloAutomatico, estiloPorId, REGLAS_ADORNOS, ADORNOS_FABRICA })",
   { cfg: (k, d) => d, setCfg: () => {} });
 const DEF_FORMATOS = (() => {
@@ -66,7 +66,9 @@ function vistaJPG(docId, dpi) {
 }
 
 // ------------------------------------------------------------------ guia para el modelo
-const GUIA = `Eres el diseñador asistente de un taller en Jalisco que hace REVERSOS de carteles de fiestas patronales católicas (programa de la fiesta) en InDesign, impresos en CTP a UNA tinta (solo K).
+const GUIA = `Eres el diseñador asistente del taller; manejas su motor de InDesign con estas herramientas.
+${P.CASA}
+
 Flujo de trabajo con estas herramientas:
 1. Si te dan fotos, Word, PDF o texto del programa: transcríbelo al MARCADO (formato abajo) siguiendo las reglas de lectura. Muestra al usuario los avisos (fechas, ortografía, dudas). No inventes datos; todo cambio de texto se avisa.
 2. Llama revisar_fechas con el marcado y comenta lo que salga.
@@ -192,7 +194,7 @@ async function atender(m) {
       protocolVersion: (params && params.protocolVersion) || "2025-06-18",
       capabilities: { tools: {}, prompts: {} },
       serverInfo: { name: "programas-ia", version: VERSION },
-      instructions: "Conector de Programas IA (reversos de carteles religiosos en InDesign). Llama la herramienta instrucciones antes de empezar." } });
+      instructions: GUIA } });
     if (method === "notifications/initialized" || (method && method.indexOf("notifications/") === 0)) return;
     if (method === "ping") return enviar({ jsonrpc: "2.0", id, result: {} });
     if (method === "tools/list") return enviar({ jsonrpc: "2.0", id, result: { tools: HERRAMIENTAS } });

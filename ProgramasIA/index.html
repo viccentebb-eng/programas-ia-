@@ -112,7 +112,13 @@
         <div role="button" tabindex="0">Título más grande</div><div role="button" tabindex="0">Letra del programa más grande</div><div role="button" tabindex="0">Más aire entre días</div>
         <div role="button" tabindex="0">Quita el objetivo</div><div role="button" tabindex="0">Cintillas más oscuras</div><div role="button" tabindex="0">Cambia 12:00 a.m. por 12:00 p.m.</div>
       </div>
-      <textarea id="txtCorr" class="crece" rows="3" placeholder="Escribe qué quieres cambiar…"></textarea>
+      <div class="capturas" id="capturas" hidden></div>
+      <textarea id="txtCorr" class="crece" rows="3" placeholder="Escribe qué quieres cambiar… (puedes pegar capturas con Ctrl+V)"></textarea>
+      <div class="fila">
+        <div role="button" tabindex="0" class="btn sec" id="bPegarCaptura" title="Toma la captura con Win+Shift+S y luego pega">Pegar captura</div>
+        <div role="button" tabindex="0" class="btn sec" id="bAdjuntarCaptura">Agregar imagen…</div>
+      </div>
+      <p class="ayuda">Recorta lo que está mal con Win+Shift+S, pégalo aquí y dile qué corregir: «esto encimado», «esta hora va en otra línea».</p>
       <label class="sw"><input type="checkbox" id="cVista" checked><span></span>Mandar foto de la página a Claude</label>
       <div role="button" tabindex="0" class="btn prim" id="bCorregir">Aplicar cambio</div>
     </section>
@@ -227,5 +233,6 @@
   <script src="fuentes.js"></script>
   <script src="biblioteca.js"></script>
   <script src="adornos_ui.js"></script>
+  <script src="capturas.js"></script>
 </body>
 </html>

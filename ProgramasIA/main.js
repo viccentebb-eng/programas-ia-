@@ -592,18 +592,29 @@ async function vistaJPG() {
   return b64(await f.read({ format: fmts.binary }));
 }
 function pintarChat() {
-  $("chat").innerHTML = S.chat.map(c => '<div class="msg ' + c.quien + '">' + esc(c.texto) + "</div>").join("");
+  $("chat").innerHTML = S.chat.map(c => '<div class="msg ' + c.quien + '">' +
+    (c.imgs && c.imgs.length ? '<div class="msg-imgs">' + c.imgs.map(u => '<img src="' + u + '" alt="">').join("") + "</div>" : "") +
+    esc(c.texto) + "</div>").join("");
 }
 async function corregir() {
   const instr = $("txtCorr").value.trim();
-  if (!instr) { estado("Escribe qué quieres cambiar, o toca una sugerencia.", "error"); return; }
+  if (!instr) { estado("Escribe qué quieres cambiar" + (CAPTURAS.length ? " en la captura." : ", o toca una sugerencia."), "error"); return; }
   if (!revisarClave()) return;
-  S.chat.push({ quien: "yo", texto: instr }); pintarChat(); $("txtCorr").value = ""; crecer($("txtCorr"));
+  const caps = CAPTURAS.splice(0); pintarCapturas();
+  S.chat.push({ quien: "yo", texto: instr, imgs: caps.map(c => "data:" + c.tipo + ";base64," + c.data) }); pintarChat(); $("txtCorr").value = ""; crecer($("txtCorr"));
   estado("Pidiendo el cambio a Claude...", "trabajando");
   const content = [];
   if ($("cVista").checked && docVivo()) {
-    try { content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: await vistaJPG() } }); } catch (e) {}
+    try {
+      const v = await vistaJPG();
+      content.push({ type: "text", text: "VISTA ACTUAL de la página completa:" });
+      content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: v } });
+    } catch (e) {}
   }
+  caps.forEach((c, i) => {
+    content.push({ type: "text", text: "CAPTURA " + (i + 1) + " que pegó el diseñador (lo que quiere corregir):" });
+    content.push({ type: "image", source: { type: "base64", media_type: c.tipo, data: c.data } });
+  });
   const previas = S.chat.slice(0, -1).slice(-8).map(c => (c.quien === "yo" ? "Diseñador: " : "Tú: ") + c.texto).join("\n");
   content.push({ type: "text", text: (previas ? "CORRECCIONES ANTERIORES (ya aplicadas):\n" + previas + "\n\n" : "") +
     "INSTRUCCION DEL DISENADOR:\n" + instr + "\n\nPARAMETROS ACTUALES:\n" + JSON.stringify(paramsUI()) + "\n\nMARCADO ACTUAL:\n" + $("marcado").value });
