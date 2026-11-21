@@ -173,7 +173,16 @@ $vivo = $false
 for ($i = 0; $i -lt 20 -and -not $vivo; $i++) { Start-Sleep -Milliseconds 500; try { $vivo = ((Invoke-WebRequest -UseBasicParsing "http://127.0.0.1:47811/ping" -TimeoutSec 2).Content -match "puente") } catch {} }
 if ($vivo) { Bien "puente de internet encendido (arranca solo con Windows)" } else { Ojo "El puente de internet no arranco. Abrelo desde menu Inicio > Programas IA > Puente de Programas IA." }
 
-$reg ="HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\ProgramasIA"
+# conector MCP: usar Claude Desktop o Codex con la suscripcion, sin clave de API
+$node = (Get-Command node -ErrorAction SilentlyContinue).Source
+if ($node) {
+  $r = & $node (Join-Path $destino "conector\registrar.js") 2>&1 | Out-String
+  Bien ("conector para Claude sin clave: " + $r.Trim())
+} else {
+  Ojo "Para usar Claude Desktop o Codex sin clave de API instala Node.js (nodejs.org) y vuelve a correr este instalador."
+}
+
+$reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\ProgramasIA"
 New-Item $reg -Force | Out-Null
 Set-ItemProperty $reg DisplayName "Programas IA (panel para InDesign)"
 Set-ItemProperty $reg DisplayVersion "$version"

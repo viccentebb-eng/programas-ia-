@@ -88,6 +88,7 @@ async function ccx(destino) {
   copiarCarpeta(path.join(RAIZ, "fuentes"), path.join(P, "fuentes"));
   copiar(path.join(RAIZ, "EJEMPLO_MARCADO_ATEMAJAC.txt"), path.join(P, "EJEMPLO_MARCADO_ATEMAJAC.txt"));
   copiar(path.join(RAIZ, "LEEME.txt"), path.join(P, "LEEME.txt"));
+  copiarCarpeta(path.join(RAIZ, "conector"), path.join(P, "conector"));
   ps1(path.join(RAIZ, "instalador", "desinstalar.ps1"), path.join(P, "desinstalar.ps1"));
   ps1(path.join(PANEL, "instalar_fuentes.ps1"), path.join(P, "ProgramasIA", "instalar_fuentes.ps1"));
   fs.writeFileSync(path.join(P, "VERSION.txt"), version + "\r\n");

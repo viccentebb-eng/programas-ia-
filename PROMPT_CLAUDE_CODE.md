@@ -52,7 +52,10 @@ MAYORDOMOS:
 Ciudad: Nombre 1; Nombre 2
 ```
 
-## Estado (21-nov-2026, versión 1.2.0)
+## Estado (21-nov-2026, versión 1.7.0)
+- 1.7.0: conector MCP sin dependencias (`conector/servidor.js`, JSON-RPC por stdio) que maneja InDesign por COM con el mismo motor; herramientas instrucciones, listar_formatos, listar_estilos, revisar_fechas, generar_reverso (regresa JPG), ver_reverso, exportar (en placa). `conector/registrar.js` lo agrega/quita en Claude Desktop y Codex con .bak. El panel trae `ultimo_marcado.txt`.
+- 1.6.0: exportar montado en la placa (`placa.jsx`): placa y márgenes por formato en DEF_FORMATOS; girar el MARCO con transform y mover por diferencia. Medido: solo K, dentro de márgenes.
+- 1.4-1.5: estilos por advocación (`estilos.js`), biblioteca (`biblioteca.js`, `adornos_ui.js`), Illustrator a una tinta (`a_una_tinta.jsx`, `convertir_adornos.ps1`). Reglas: solo vectores, solo K, puntos de curva mínimos (esquina 400; la de referencia 3345), revisión visual de Claude contra `assets/ref_*.png`. UXP no escribe archivos vacíos; botones como div (UXP estiliza <button>); manifiesto `network.domains: "all"`.
 - 1.2.0: InDesign.exe tiene salida bloqueada por la regla de firewall "Adobe-Block" (no tocarla). `puente.ps1` (TCP en 127.0.0.1:47811, solo api.anthropic.com y Google Fonts) + `red()` en main.js: intenta directo y si falla usa el puente; lo arranca con `iniciar_puente.vbs` vía `File.execute()`. Probado desde el UXP real.
 - Medidas por trabajo en Diseñar (ancho/alto/sangrado + Vertical/Horizontal). Motor: `k = min(W/330.298, H/464.989)`, 4-5 columnas en horizontal, tope de letra `14*k`. Tamaños de fábrica = área dentro de márgenes de sus plantillas.
 - UPIA SÍ instala cuando se corre el .exe (desde la terminal de Claude da -198). El instalador confirma leyendo `%CommonProgramFiles%/Adobe/UXP/PluginsInfo/v1/ID.json` y borra la copia del plan B para que no haya dos.

@@ -60,6 +60,27 @@ PUENTE DE INTERNET
   Si dice que no hay internet: menú Inicio > Programas IA > Puente.
   Bitácora: %LOCALAPPDATA%\Programas IA\puente.log (no guarda claves).
 
+SIN CLAVE DE API: CLAUDE DESKTOP O CODEX
+  El instalador registra el conector "programas-ia" en Claude Desktop y en
+  Codex (deja copia .bak de su configuración). Usa tu plan de Claude, no
+  gasta saldo de API. Reinicia Claude Desktop una vez después de instalar.
+  En Claude Desktop: adjunta las fotos o el Word del programa y escribe, por
+  ejemplo, "arma el reverso en doble oficio". Claude lee, te avisa de fechas
+  y ortografía, genera en InDesign, ve la página, corrige y al final:
+  "expórtalo en la placa". En el panel, paso 2, "Traer el programa que armó
+  Claude" pasa ese texto al panel.
+
+EXPORTAR PARA CTP
+  Paso 3 > "Exportar montado en la placa": el reverso queda girado y centrado
+  dentro de los márgenes de la placa de tu plantilla. Placa de línea: sin
+  barras de color ni marcas y solo negro (K).
+
+ADORNOS (pestaña Adornos)
+  Cada estilo (Guadalupana, Sagrado Corazón, etc.) trae sus letras y adornos.
+  "Buscar en Magnific" abre búsquedas en tu navegador; bajas los vectores que
+  te gusten y "Revisar mis Descargas" los pasa a una tinta con Illustrator.
+  Solo entran vectores, solo K y barrocos con trabajo de ornamento.
+
 SI ALGO FALLA
   En InDesign: panel Scripts > Programas IA > PRUEBA_MOTOR > prueba_motor.jsx
   arma el reverso de Atemajac sin internet. Si eso sale bien, el problema es

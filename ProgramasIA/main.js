@@ -714,6 +714,17 @@ $("bFechas").addEventListener("click", () => {
   const n = S.avisos.filter(a => a.origen === "Fechas").length;
   estado(n ? "Encontré " + n + " cosa(s) en las fechas." : "Las fechas cuadran con los días.", n ? "" : "ok");
 });
+// lo que armo Claude Desktop o Codex con el conector queda en ultimo_marcado.txt
+$("bTraerClaude").addEventListener("click", async () => {
+  try {
+    const os = require("os"), ruta = os.homedir() + "/AppData/Local/Programas IA/ultimo_marcado.txt";
+    const t = String(require("fs").readFileSync(ruta, { encoding: "utf-8" }) || "").trim();
+    if (!t) { estado("Claude todavía no ha armado ningún programa con el conector.", "error"); return; }
+    $("marcado").value = t; setCfg("marcado", t); crecer($("marcado"));
+    S.avisos = S.avisos.filter(x => x.origen !== "Fechas").concat(revisarFechas(t)); pintarAvisos(); marcarPasos();
+    estado("Traje el programa que armó Claude. Revísalo y diseña aquí si quieres.", "ok");
+  } catch (e) { estado("Claude todavía no ha armado ningún programa con el conector.", "error"); }
+});
 $("bIrDiseno").addEventListener("click", () => { setCfg("marcado", $("marcado").value); tab("t3"); marcarPasos(); });
 $("bAyuda").addEventListener("click", () => { const a = $("ayuda"); a.hidden = !a.hidden; a.textContent = FORMATO_MARCADO; });
 document.querySelectorAll("#pColumnas [role=button]").forEach(b => b.addEventListener("click", () => ponerColumnas(b.getAttribute("data-v"))));

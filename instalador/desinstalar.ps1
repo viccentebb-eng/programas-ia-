@@ -9,6 +9,10 @@ if (-not $env:PROGRAMASIA_SILENCIO) {
 # apagar el puente de internet y quitarlo del inicio de Windows
 Get-NetTCPConnection -LocalPort 47811 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
 Remove-Item (Join-Path ([Environment]::GetFolderPath("Startup")) "Puente de Programas IA.lnk") -Force -ErrorAction SilentlyContinue
+# quitar el conector de Claude Desktop y Codex
+$node = (Get-Command node -ErrorAction SilentlyContinue).Source
+$registrar = Join-Path $env:LOCALAPPDATA "Programas IA\conector\registrar.js"
+if ($node -and (Test-Path $registrar)) { & $node $registrar --quitar | Out-Null }
 $upia = Join-Path ${env:CommonProgramFiles} "Adobe\Adobe Desktop Common\RemoteComponents\UPI\UnifiedPluginInstallerAgent\UnifiedPluginInstallerAgent.exe"
 if (Test-Path $upia) { & $upia /remove "Programas IA" | Out-Null }
 # por si se instalo con el plan B (copia directa)
