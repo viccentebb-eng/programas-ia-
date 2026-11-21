@@ -52,8 +52,14 @@ MAYORDOMOS:
 Ciudad: Nombre 1; Nombre 2
 ```
 
-## Estado
-- No se ha probado dentro de InDesign real. Lo verificado fuera de InDesign: sintaxis de todos los archivos, el parser (los 87 párrafos de Atemajac) y el revisor de fechas.
+## Estado (21-nov-2026, versión 1.1.0)
+- Motor probado en InDesign 2026 real por COM (`tools/correr_jsx.ps1 tools/salida/prueba_com.jsx`): arma Atemajac completo en ~6 s (antes 2.5 min) con `UndoModes.ENTIRE_SCRIPT` + `enableRedraw=false`. OJO: `FAST_ENTIRE_SCRIPT` rompe la creación del documento.
+- Corregido en InDesign: fecha encimada bajo el título manuscrito (se mide desde la línea base), horas de dos cifras rebasando el tabulador y ciudades largas en mayordomos (tabuladores medidos con el texto real en `escala()`), capitular con cola (ahora en la letra de encabezados).
+- Confirmado desde UXP (script .idjs por COM): `app.doScript(code, ScriptLanguage.JAVASCRIPT)` regresa el texto; `app.insertLabel/extractLabel("programasia_result")` como respaldo. Un U+2028 literal en el código rompe ExtendScript: todo JSON va por `es3()`.
+- Panel rediseñado (estilos.css): pasos con palomita, un botón principal por paso, barra de estado, conexión de clave con lista real de modelos (`/v1/models`), uso y costo (sesión/mes/total), editor de tamaños, sugerencias en Corregir, arrastrar archivos (no confirmado en UXP; el clic sí).
+- Fuentes: `fuentes.js` revisa en InDesign, baja de Google Fonts (TTF) e instala por usuario con `instalar_fuentes.ps1` lanzado por `File.execute()`; InDesign las ve sin reiniciar (probado).
+- Instalador: `node tools/build.js` genera `dist/Instalar Programas IA <ver>.exe` (IExpress). Probado aquí: copia, fuentes, scripts, accesos y entrada de desinstalar. UPIA da `-198` en esta máquina (desde el entorno de Claude): el instalador cae a plan B (copia a `%APPDATA%\Adobe\UXP\Plugins\External` + `PluginsInfo\v1\ID.json`). Falta confirmar que InDesign carga el panel tras reiniciar.
+- Antes de esto, no se había probado dentro de InDesign real. Lo verificado fuera de InDesign: sintaxis de todos los archivos, el parser (los 87 párrafos de Atemajac) y el revisor de fechas.
 - Un script anterior equivalente (no paramétrico) ya corrió bien en la máquina del usuario: el texto quedó a ~10 pt, y se corrigieron el desalineado de horas, la cenefa pixeleada (ahora todo es vector) y los adornos encimados en "PROGRAMA".
 - Pendiente de confirmar en InDesign: `doScript` desde UXP y su valor de retorno, `U+2028` como salto de línea forzado en ORACION, sombreado y bordes de párrafo, `flipItem` de esquinas, exportación JPG/PDF por `itemByID`, instalación del `.ccx` sin firmar (alternativa: UXP Developer Tools).
 

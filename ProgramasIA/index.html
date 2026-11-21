@@ -2,122 +2,159 @@
 <html>
 <head>
 <meta charset="utf-8">
-<style>
-  body { font-family: sans-serif; font-size: 12px; color: #ddd; background: #323232; margin: 0; padding: 8px; }
-  h1 { font-size: 14px; margin: 0 0 6px 0; color: #fff; }
-  .tabs { display: flex; flex-wrap: wrap; margin-bottom: 8px; }
-  .tabs button { flex: 1; margin: 1px; padding: 5px 2px; font-size: 11px; background: #444; color: #ddd; border: 1px solid #555; border-radius: 3px; }
-  .tabs button.on { background: #1473e6; color: #fff; border-color: #1473e6; }
-  .tab { display: none; }
-  .tab.on { display: block; }
-  label { display: block; margin: 8px 0 3px 0; color: #bbb; }
-  textarea, input, select { width: 100%; box-sizing: border-box; background: #222; color: #eee; border: 1px solid #555; border-radius: 3px; padding: 4px; font-size: 12px; }
-  textarea { font-family: Consolas, monospace; }
-  .btn { display: block; width: 100%; margin-top: 8px; padding: 7px; background: #1473e6; color: #fff; border: none; border-radius: 4px; font-size: 12px; }
-  .btn2 { background: #555; }
-  .row { display: flex; }
-  .row > * { flex: 1; margin-right: 4px; }
-  .row > *:last-child { margin-right: 0; }
-  .chk { display: flex; align-items: center; margin: 4px 0; }
-  .chk input { width: auto; margin-right: 6px; }
-  #estado { margin-top: 8px; padding: 6px; background: #262626; border-radius: 3px; min-height: 18px; color: #9cf; white-space: pre-wrap; }
-  .aviso { padding: 5px; margin: 3px 0; border-left: 3px solid #e8a33d; background: #2a2a2a; }
-  .aviso.fecha { border-color: #e34850; }
-  .aviso small { color: #999; }
-  .msg { padding: 5px; margin: 4px 0; border-radius: 3px; }
-  .msg.yo { background: #2d4a6b; }
-  .msg.ia { background: #2a2a2a; }
-  .nota { color: #999; font-size: 11px; margin-top: 4px; }
-  #archivos div { padding: 2px 0; color: #ccc; }
-</style>
+<link rel="stylesheet" href="estilos.css">
 </head>
 <body>
-  <h1>Programas IA</h1>
-  <div class="tabs">
-    <button data-t="t1" class="on">1 Programa</button>
-    <button data-t="t2">2 Revisar</button>
-    <button data-t="t3">3 Dise&#241;ar</button>
-    <button data-t="t4">4 Corregir</button>
-    <button data-t="t5">Ajustes</button>
-  </div>
-
-  <!-- 1 PROGRAMA -->
-  <div id="t1" class="tab on">
-    <label>Fotos, Word, PDF o texto que mandaron</label>
-    <button class="btn btn2" id="bArchivos">Agregar archivos...</button>
-    <div id="archivos"></div>
-    <button class="btn btn2" id="bLimpiar">Quitar archivos</button>
-    <label>O pega aqu&#237; el texto (y notas para Claude)</label>
-    <textarea id="txtPegado" rows="8" placeholder="Ej.: la fiesta es en diciembre aunque diga septiembre..."></textarea>
-    <button class="btn" id="bLeer">Leer con Claude</button>
-  </div>
-
-  <!-- 2 REVISAR -->
-  <div id="t2" class="tab">
-    <label>Avisos (fechas, ortograf&#237;a, dudas)</label>
-    <div id="avisos"><div class="nota">Todav&#237;a no hay avisos.</div></div>
-    <label>Programa en marcado (lo puedes corregir aqu&#237;)</label>
-    <textarea id="marcado" rows="22"></textarea>
-    <div class="row">
-      <button class="btn btn2" id="bFechas">Revisar fechas</button>
-      <button class="btn btn2" id="bAyuda">Ver formato</button>
+  <header class="cab">
+    <div class="cab-fila">
+      <div class="marca">Programas IA</div>
+      <button class="chip-uso" id="chipUso" title="Cuánto llevas gastado en Claude este mes">$0.00 este mes</button>
     </div>
-    <div id="ayuda" class="nota" style="display:none"></div>
-  </div>
+    <nav class="pasos" id="pasos">
+      <button class="paso on" data-t="t1"><span class="num">1</span><span class="txt">Programa</span></button>
+      <button class="paso" data-t="t2"><span class="num">2</span><span class="txt">Revisar</span></button>
+      <button class="paso" data-t="t3"><span class="num">3</span><span class="txt">Diseñar</span></button>
+      <button class="paso" data-t="t4"><span class="num">4</span><span class="txt">Corregir</span></button>
+      <button class="paso paso-aj" data-t="t5"><span class="num">&#9881;</span><span class="txt">Ajustes</span></button>
+    </nav>
+  </header>
 
-  <!-- 3 DISENAR -->
-  <div id="t3" class="tab">
-    <label>Formato (tama&#241;o de papel)</label>
-    <select id="formato"></select>
-    <div class="row">
-      <div><label>Columnas</label>
-        <select id="pColumnas"><option value="">Autom&#225;tico</option><option>2</option><option>3</option><option>4</option></select></div>
-      <div><label>Estilo</label>
-        <select id="pEstilo"><option value="barroco">Barroco grabado</option></select></div>
-    </div>
-    <div class="chk"><input type="checkbox" id="pObjetivo" checked> Mostrar objetivo</div>
-    <div class="chk"><input type="checkbox" id="pMensaje" checked> Mostrar mensaje</div>
-    <div class="chk"><input type="checkbox" id="pLema" checked> Mostrar lema</div>
-    <div class="chk"><input type="checkbox" id="pLineas" checked> L&#237;neas entre columnas</div>
-    <button class="btn" id="bGenerar">Generar dise&#241;o</button>
-    <button class="btn btn2" id="bReiniciar">Volver al dise&#241;o normal (quitar ajustes de correcciones)</button>
-    <button class="btn btn2" id="bPDF">Exportar PDF para montar en plantilla</button>
-    <div class="nota">Cada vez que generas o corriges se crea el documento de nuevo; haz los retoques a mano al final.</div>
-  </div>
+  <main>
+    <!-- 1 PROGRAMA -->
+    <section id="t1" class="tab on">
+      <h2>¿Qué te mandaron?</h2>
+      <p class="ayuda">Fotos (aunque tengan letra a mano), Word, PDF o texto. Claude lo pasa a limpio y te avisa de fechas raras.</p>
+      <div class="soltar" id="soltar" tabindex="0" role="button">
+        <div class="soltar-tit">Arrastra aquí los archivos</div>
+        <div class="soltar-sub">o da clic para buscarlos · JPG, PNG, PDF, Word, TXT</div>
+      </div>
+      <div class="lista-arch" id="archivos"></div>
+      <label for="txtPegado">Texto o notas para Claude <span class="opc">(opcional)</span></label>
+      <textarea id="txtPegado" class="crece" rows="4" placeholder="Pega aquí el programa, o escribe notas: «la fiesta es en diciembre aunque diga septiembre»"></textarea>
+      <button class="btn prim" id="bLeer">Leer con Claude</button>
+      <p class="ayuda centro">¿Ya tienes el programa en marcado? <a href="#" id="lnkSaltar">Pásate a Revisar</a>.</p>
+    </section>
 
-  <!-- 4 CORREGIR -->
-  <div id="t4" class="tab">
-    <div id="chat"><div class="nota">Escribe qu&#233; quieres cambiar: "el t&#237;tulo m&#225;s grande", "quita el objetivo", "los temas en otra l&#237;nea", "cambia el 12:00 a.m. por 12:00 p.m."...</div></div>
-    <textarea id="txtCorr" rows="4"></textarea>
-    <div class="chk"><input type="checkbox" id="cVista" checked> Mandar vista de la p&#225;gina a Claude</div>
-    <button class="btn" id="bCorregir">Aplicar correcci&#243;n</button>
-  </div>
+    <!-- 2 REVISAR -->
+    <section id="t2" class="tab">
+      <h2>Revisa antes de diseñar</h2>
+      <div id="avisos"><div class="vacio">Todavía no hay avisos. Aparecen después de leer con Claude.</div></div>
+      <div class="fila-tit">
+        <label for="marcado">Programa en marcado</label>
+        <button class="lnk" id="bAyuda">¿Cómo se escribe?</button>
+      </div>
+      <div id="ayuda" class="caja-ayuda" hidden></div>
+      <textarea id="marcado" class="crece mono" rows="14" spellcheck="false" placeholder="NOMBRE: Virgen de la Defensa&#10;FECHAS: Del 5 al 9 de diciembre del 2027&#10;CINTILLA: DÍAS DE FIESTA&#10;DIA: DOMINGO 5&#10;EVENTO: 7:00 p.m. | Celebración Eucarística"></textarea>
+      <div class="fila">
+        <button class="btn sec" id="bFechas">Revisar fechas</button>
+        <button class="btn prim" id="bIrDiseno">Se ve bien, a diseñar</button>
+      </div>
+    </section>
 
-  <!-- AJUSTES -->
-  <div id="t5" class="tab">
-    <label>Clave de API de Claude (console.anthropic.com)</label>
-    <input id="apiKey" type="password" placeholder="sk-ant-...">
-    <label>Modelo</label>
-    <input id="modelo">
-    <label>Formatos (Nombre | ancho mm | alto mm | sangrado mm)</label>
-    <textarea id="formatos" rows="7"></textarea>
-    <button class="btn btn2" id="bMedidas">Importar MEDIDAS_PLANTILLAS.txt</button>
-    <label>Fuentes (deben estar instaladas)</label>
-    <div class="row">
-      <input id="fTit" placeholder="T&#237;tulo">
-      <input id="fDis" placeholder="Encabezados">
-      <input id="fTxt" placeholder="Texto">
-    </div>
-    <button class="btn btn2" id="bFuentes">Revisar y bajar fuentes que falten</button>
-    <div class="nota">Las baja gratis de Google Fonts y las instala en Windows. Las de Adobe Fonts act&#237;valas desde Creative Cloud.</div>
-    <button class="btn" id="bGuardar">Guardar ajustes</button>
-  </div>
+    <!-- 3 DISENAR -->
+    <section id="t3" class="tab">
+      <h2>Diseño</h2>
+      <label for="formato">Tamaño de papel</label>
+      <select id="formato"></select>
+      <p class="ayuda">Siempre vertical, al tamaño del papel. El PDF lo montas en tu plantilla de CTP.</p>
+      <label for="pColumnas">Columnas del programa</label>
+      <div class="seg" id="pColumnas" role="radiogroup">
+        <button data-v="" class="on">Auto</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button>
+      </div>
+      <label>Qué mostrar</label>
+      <div class="interruptores">
+        <label class="sw"><input type="checkbox" id="pObjetivo" checked><span></span>Objetivo</label>
+        <label class="sw"><input type="checkbox" id="pMensaje" checked><span></span>Mensaje</label>
+        <label class="sw"><input type="checkbox" id="pLema" checked><span></span>Lema</label>
+        <label class="sw"><input type="checkbox" id="pLineas" checked><span></span>Líneas entre columnas</label>
+      </div>
+      <button class="btn prim" id="bGenerar">Generar diseño</button>
+      <div id="resultado" class="resultado" hidden></div>
+      <div class="fila">
+        <button class="btn sec" id="bPDF">Exportar PDF</button>
+        <button class="btn sec" id="bReiniciar" title="Quita los cambios de tamaño y espacios que pidió el chat">Diseño normal</button>
+      </div>
+      <p class="ayuda">Cada vez que generas o corriges se arma el documento de nuevo. Los retoques a mano, al final.</p>
+    </section>
 
-  <div id="estado">Listo.</div>
+    <!-- 4 CORREGIR -->
+    <section id="t4" class="tab">
+      <h2>Pide cambios</h2>
+      <p class="ayuda">Claude ve la página y ajusta el texto o el diseño. Si cambia texto, te lo avisa.</p>
+      <div id="chat" class="chat"></div>
+      <div class="sugerencias" id="sugerencias">
+        <button>Título más grande</button><button>Letra del programa más grande</button><button>Más aire entre días</button>
+        <button>Quita el objetivo</button><button>Cintillas más oscuras</button><button>Cambia 12:00 a.m. por 12:00 p.m.</button>
+      </div>
+      <textarea id="txtCorr" class="crece" rows="3" placeholder="Escribe qué quieres cambiar…"></textarea>
+      <label class="sw"><input type="checkbox" id="cVista" checked><span></span>Mandar foto de la página a Claude</label>
+      <button class="btn prim" id="bCorregir">Aplicar cambio</button>
+    </section>
+
+    <!-- AJUSTES -->
+    <section id="t5" class="tab">
+      <div class="tarjeta" id="bienvenida" hidden>
+        <h3>Hola, para empezar</h3>
+        <p>1. Entra a <a href="#" data-url="https://console.anthropic.com/settings/keys">console.anthropic.com</a>, crea una clave y cárgale saldo.<br>2. Pégala abajo y da «Conectar».</p>
+      </div>
+
+      <div class="tarjeta">
+        <h3>Cuenta de Claude</h3>
+        <label for="apiKey">Clave de API</label>
+        <div class="fila-campo">
+          <input id="apiKey" type="password" placeholder="sk-ant-…" autocomplete="off">
+          <button class="btn sec chico" id="bVerClave" title="Mostrar u ocultar la clave">Ver</button>
+        </div>
+        <button class="btn prim" id="bConectar">Conectar</button>
+        <div id="estadoClave" class="nota"></div>
+        <label for="modelo">Modelo</label>
+        <select id="modelo"></select>
+        <div id="infoModelo" class="nota"></div>
+      </div>
+
+      <div class="tarjeta">
+        <div class="fila-tit"><h3>Uso y costo</h3><button class="lnk" id="bConsola">Ver en la consola</button></div>
+        <div class="uso">
+          <div><span class="uso-n" id="usoSesion">$0.00</span><span class="uso-l">Esta sesión</span></div>
+          <div><span class="uso-n" id="usoMes">$0.00</span><span class="uso-l">Este mes</span></div>
+          <div><span class="uso-n" id="usoTotal">$0.00</span><span class="uso-l">Desde que instalaste</span></div>
+        </div>
+        <div class="nota" id="usoDetalle"></div>
+        <p class="ayuda">Montos en dólares, calculados con los precios públicos de cada modelo. El cobro real está en la consola de Anthropic.</p>
+      </div>
+
+      <div class="tarjeta">
+        <div class="fila-tit"><h3>Tamaños de papel</h3><button class="lnk" id="bMedidas">Traer de mis plantillas</button></div>
+        <div id="formatos"></div>
+        <button class="btn sec" id="bAgregarFormato">Agregar tamaño</button>
+        <p class="ayuda">En milímetros, ya en vertical. El sangrado normalmente es 0.</p>
+      </div>
+
+      <div class="tarjeta">
+        <h3>Fuentes</h3>
+        <label for="fTit">Título (manuscrita)</label><input id="fTit" list="sugFuentes">
+        <label for="fDis">Encabezados</label><input id="fDis" list="sugFuentes">
+        <label for="fTxt">Texto del programa</label><input id="fTxt" list="sugFuentes">
+        <datalist id="sugFuentes">
+          <option>Pinyon Script</option><option>Great Vibes</option><option>Allura</option><option>Parisienne</option><option>Alex Brush</option>
+          <option>Playfair Display</option><option>Cormorant Garamond</option><option>Cinzel</option><option>EB Garamond</option>
+          <option>Lora</option><option>Crimson Pro</option><option>Libre Baskerville</option><option>Merriweather</option>
+        </datalist>
+        <button class="btn sec" id="bFuentes">Revisar y bajar las que falten</button>
+        <p class="ayuda">Las baja gratis de Google Fonts y las instala. Las de Adobe Fonts actívalas en Creative Cloud.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="barra" id="barra" aria-live="polite">
+    <span class="girando" id="girando" hidden></span>
+    <span id="estado">Listo.</span>
+  </footer>
 
   <script src="lib/jszip.min.js"></script>
   <script src="marcado.js"></script>
-  <script src="fuentes.js"></script>
+  <script src="prompts.js"></script>
   <script src="main.js"></script>
+  <script src="fuentes.js"></script>
 </body>
 </html>

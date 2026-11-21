@@ -75,6 +75,12 @@
         "https://fonts.gstatic.com"
       ]
     },
-    "localFileSystem": "fullAccess"
+    "localFileSystem": "fullAccess",
+    "launchProcess": {
+      "schemes": [
+        "https"
+      ],
+      "extensions": []
+    }
   }
 }

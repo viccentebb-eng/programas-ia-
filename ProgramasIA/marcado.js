@@ -34,6 +34,7 @@ function revisarFechas(txt) {
 // ------------------------------------------------------------------ marcado -> datos del motor
 const CLAVES = ["PRE", "NOMBRE", "FECHAS", "ANIOS", "AÑOS", "LEMA", "LEMA_ETIQUETA", "OBJETIVO", "MENSAJE", "PIE", "PROGRAMA_TITULO",
   "CINTILLA", "DIA", "DÍA", "EVENTO", "TEMA", "TEXTO", "PREVIO", "SUBTITULO", "SUB2", "LISTA", "NUM", "ORACION", "ORACIÓN", "MAYORDOMOS"];
+const SALTO = String.fromCharCode(0x2028); // salto de linea forzado de InDesign
 function limpia(t) { return String(t || "").replace(/[\r\n]+/g, " ").trim(); }
 function parseMarcado(txt) {
   const enc = {}, prog = [];
@@ -93,7 +94,7 @@ function parseMarcado(txt) {
       case "NUM": num++; ultimo = ["nov_num", "**" + num + ".**\t" + v]; prog.push(ultimo); break;
       case "ORACION": case "ORACIÓN": {
         const p = v.split("|");
-        ultimo = ["oracion", p.length > 1 ? "**" + p[0].trim() + "** " + p.slice(1).join("|").trim() : v];
+        ultimo = ["oracion", p.length > 1 ? "**" + p[0].trim() + "**" + SALTO + p.slice(1).join("|").trim() : v];
         prog.push(ultimo); break;
       }
       case "MAYORDOMOS": enMay = true; ultimo = null; break;

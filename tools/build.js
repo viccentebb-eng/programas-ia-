@@ -87,7 +87,47 @@ async function ccx(destino) {
   copiarCarpeta(path.join(RAIZ, "fuentes"), path.join(P, "fuentes"));
   copiar(path.join(RAIZ, "EJEMPLO_MARCADO_ATEMAJAC.txt"), path.join(P, "EJEMPLO_MARCADO_ATEMAJAC.txt"));
   copiar(path.join(RAIZ, "LEEME.txt"), path.join(P, "LEEME.txt"));
-  for (const n of ["instalar.ps1", "desinstalar.ps1"]) copiar(path.join(RAIZ, "instalador", n), path.join(P, n));
+  ps1(path.join(RAIZ, "instalador", "desinstalar.ps1"), path.join(P, "desinstalar.ps1"));
+  ps1(path.join(PANEL, "instalar_fuentes.ps1"), path.join(P, "ProgramasIA", "instalar_fuentes.ps1"));
   fs.writeFileSync(path.join(P, "VERSION.txt"), version + "\r\n");
+
+  // 4) instalador .exe (IExpress viene con Windows): instalar.ps1 + paquete.zip
+  const SRC = path.join(DIST, "exe");
+  fs.mkdirSync(SRC, { recursive: true });
+  ps1(path.join(RAIZ, "instalador", "instalar.ps1"), path.join(SRC, "instalar.ps1"));
+  const zip = new JSZip();
+  (function agrega(dir, pre) {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) agrega(p, pre + e.name + "/"); else zip.file(pre + e.name, fs.readFileSync(p));
+    }
+  })(P, "");
+  fs.writeFileSync(path.join(SRC, "paquete.zip"), await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
+  const exe = path.join(DIST, "Instalar Programas IA " + version + ".exe");
+  if (process.platform === "win32" && !process.argv.includes("--sin-exe")) {
+    const sed = [
+      "[Version]", "Class=IEXPRESS", "SEDVersion=3",
+      "[Options]", "PackagePurpose=InstallApp", "ShowInstallProgramWindow=0", "HideExtractAnimation=1", "UseLongFileName=1",
+      "InsideCompressed=0", "CAB_FixedSize=0", "CAB_ResvCodeSigning=0", "RebootMode=N",
+      "InstallPrompt=%InstallPrompt%", "DisplayLicense=%DisplayLicense%", "FinishMessage=%FinishMessage%", "TargetName=%TargetName%",
+      "FriendlyName=%FriendlyName%", "AppLaunched=%AppLaunched%", "PostInstallCmd=%PostInstallCmd%",
+      "AdminQuietInstCmd=%AdminQuietInstCmd%", "UserQuietInstCmd=%UserQuietInstCmd%", "SourceFiles=SourceFiles",
+      "[Strings]", "InstallPrompt=", "DisplayLicense=", "FinishMessage=", "TargetName=" + exe, "FriendlyName=Programas IA",
+      "AppLaunched=cmd /c powershell.exe -NoProfile -ExecutionPolicy Bypass -File instalar.ps1", "PostInstallCmd=<None>",
+      "AdminQuietInstCmd=", "UserQuietInstCmd=", 'FILE0="instalar.ps1"', 'FILE1="paquete.zip"',
+      "[SourceFiles]", "SourceFiles0=" + SRC + "\\", "[SourceFiles0]", "%FILE0%=", "%FILE1%="
+    ].join("\r\n") + "\r\n";
+    const sedPath = path.join(SRC, "instalador.sed");
+    fs.writeFileSync(sedPath, sed);
+    require("child_process").execFileSync("iexpress.exe", ["/N", "/Q", sedPath], { stdio: "inherit" });
+    if (!fs.existsSync(exe)) throw new Error("IExpress no generó el .exe");
+  }
   console.log("Listo: versión " + version + " en " + DIST);
 })().catch(e => { console.error(e); process.exit(1); });
+
+// PowerShell 5.1 lee los .ps1 sin BOM como ANSI y rompe los acentos: se guardan en UTF-8 con BOM y CRLF
+function ps1(de, a) {
+  let t = fs.readFileSync(de, "utf8").replace(/^﻿/, "").replace(/\r?\n/g, "\r\n");
+  fs.mkdirSync(path.dirname(a), { recursive: true });
+  fs.writeFileSync(a, "﻿" + t, "utf8");
+}

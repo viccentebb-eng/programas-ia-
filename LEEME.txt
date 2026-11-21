@@ -1,58 +1,54 @@
-﻿PROGRAMAS IA - panel para InDesign 2023 o más nuevo (probado para la versión 21)
-==============================================================================
+﻿PROGRAMAS IA - panel para InDesign 2023 o más nuevo (probado en la versión 21 / 2026)
+====================================================================================
 
-QUÉ HAY EN ESTA CARPETA
-  ProgramasIA.ccx              el panel, listo para instalar
-  ProgramasIA\                 el mismo panel en carpeta (por si el .ccx no instala)
-  PRUEBA_MOTOR\                prueba del motor de diseño, sin panel ni API
-  fuentes\                     Lora, Playfair Display, Pinyon Script (gratuitas)
-  MedidasPlantillas.jsx        saca las medidas de papel de sus plantillas
-  EJEMPLO_MARCADO_ATEMAJAC.txt el programa de Atemajac ya en marcado
+INSTALAR
+  Dale doble clic a "Instalar Programas IA.exe". No pide permisos de administrador.
+  Si Windows dice "Windows protegió su PC": Más información > Ejecutar de todas formas.
+  El instalador:
+    - instala las fuentes Lora, Playfair Display y Pinyon Script (si falta
+      alguna, la baja de Google Fonts)
+    - pone la prueba del motor y MedidasPlantillas en el panel Scripts de
+      InDesign (carpeta "Programas IA")
+    - instala el panel en InDesign
+    - deja accesos en el menú Inicio > Programas IA (y para desinstalar)
+  Luego cierra y abre InDesign: menú Complementos (Plug-ins) > Programas IA.
+  Si el panel no aparece, dale doble clic a ProgramasIA.ccx (menú Inicio >
+  Programas IA > Carpeta de Programas IA).
 
-------------------------------------------------------------------------------
-PASO 0. FUENTES
-  Abre "fuentes", selecciona todas > clic derecho > Instalar. Reinicia InDesign.
-
-PASO 1. PRUEBA DEL MOTOR (2 minutos, sin internet)
-  En InDesign: Ventana > Utilidades > Scripts > clic derecho en "Usuario" >
-  "Mostrar en el Explorador". Copia ahí la carpeta PRUEBA_MOTOR completa.
-  En el panel Scripts abre PRUEBA_MOTOR y da doble clic en prueba_motor.jsx.
-  Debe salir el reverso de Atemajac completo. Si sale un error, mándame captura.
-
-PASO 2. INSTALAR EL PANEL
-  Opción A: doble clic en ProgramasIA.ccx (lo instala Creative Cloud).
-            En InDesign: menú Complementos (Plug-ins) > Programas IA.
-  Opción B (si la A no deja): en la app de Creative Cloud instala
-            "UXP Developer Tools". Ábrela > Add Plugin > elige
-            ProgramasIA\manifest.json > Load. El panel aparece en InDesign.
-
-PASO 3. AJUSTES DEL PANEL (pestaña Ajustes)
-  - Clave de API: entra a console.anthropic.com > API Keys > Create Key,
-    cárgale saldo y pega la clave (empieza con sk-ant-). Cada lectura o
-    corrección gasta un poco de saldo.
-  - Modelo: déjalo como viene (claude-sonnet-5-5). Para más calidad en
-    letra a mano difícil puedes poner claude-opus-5-5 (cuesta más).
-  - Formatos: corre MedidasPlantillas.jsx en sus plantillas (como en el
-    paso 1), y en Ajustes da "Importar MEDIDAS_PLANTILLAS.txt".
-    Revisa los nombres; la última columna es el sangrado en mm.
-  - Fuentes: puedes poner cualquier fuente instalada (también Adobe Fonts).
-  - Da "Guardar ajustes".
+PRIMERA VEZ (pestaña Ajustes)
+  1. Entra a console.anthropic.com > API Keys > Create Key, cárgale saldo.
+  2. Pega la clave y da "Conectar". El panel trae los modelos de tu cuenta:
+     deja el recomendado (Sonnet 5.5). Opus lee mejor letra muy difícil pero
+     cuesta el doble.
+  3. "Uso y costo" te dice cuánto llevas gastado (sesión, mes y total).
+     El chip de arriba a la derecha muestra el mes.
+  4. Tamaños de papel: "Traer de mis plantillas" lee MEDIDAS_PLANTILLAS.txt
+     (córrelo antes con el script MedidasPlantillas del panel Scripts).
+  5. Fuentes: puedes poner cualquiera. "Revisar y bajar las que falten" las
+     baja gratis de Google Fonts y las instala solas. Las de Adobe Fonts
+     actívalas en Creative Cloud.
 
 CÓMO SE USA
-  1 Programa  Agrega las fotos/Word/PDF que mandaron o pega el texto.
-              Puedes escribir notas ("la fiesta es en diciembre").
+  1 Programa  Arrastra o elige las fotos/Word/PDF que mandaron, o pega el
+              texto. Puedes escribir notas ("la fiesta es en diciembre").
               Da "Leer con Claude".
-  2 Revisar   Lee los avisos (fechas, ortografía, dudas) y corrige el
-              marcado ahí mismo. "Revisar fechas" vuelve a checar días
-              contra fechas sin gastar API.
-  3 Diseñar   Elige formato y opciones > "Generar diseño".
-              "Exportar PDF" saca el PDF al tamaño del papel para montarlo
-              en su plantilla de CTP.
-  4 Corregir  Escribe lo que quieres cambiar; Claude ve la página, ajusta
-              texto o parámetros y el diseño se vuelve a generar.
+  2 Revisar   Lee los avisos (fechas, ortografía, dudas) y corrige el texto
+              ahí mismo. "Revisar fechas" vuelve a checar días contra fechas
+              sin gastar saldo.
+  3 Diseñar   Elige tamaño y opciones > "Generar diseño" (tarda unos segundos).
+              "Exportar PDF" saca el PDF (PDF/X-1a) al tamaño del papel para
+              montarlo en tu plantilla de CTP.
+  4 Corregir  Escribe o toca una sugerencia ("título más grande"...). Claude
+              ve la página, ajusta y el diseño se vuelve a generar. Si cambia
+              texto te avisa cuántas líneas. "Diseño normal" quita esos ajustes.
               Los retoques a mano hazlos al final (al regenerar se pierden).
 
 CAPAS DEL DISEÑO
   TEXTOS   encabezado y el programa en un cuadro de columnas con estilos
   ADORNOS  líneas, rombos, recuadro del mensaje, adornos (se pueden mover)
   FONDO    marco con esquinas (bloqueado)
+
+SI ALGO FALLA
+  En InDesign: panel Scripts > Programas IA > PRUEBA_MOTOR > prueba_motor.jsx
+  arma el reverso de Atemajac sin internet. Si eso sale bien, el problema es
+  de la clave o del internet; si no, mándame captura del mensaje.
