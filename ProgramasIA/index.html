@@ -80,6 +80,7 @@
     <div class="chk"><input type="checkbox" id="pLema" checked> Mostrar lema</div>
     <div class="chk"><input type="checkbox" id="pLineas" checked> L&#237;neas entre columnas</div>
     <button class="btn" id="bGenerar">Generar dise&#241;o</button>
+    <button class="btn btn2" id="bReiniciar">Volver al dise&#241;o normal (quitar ajustes de correcciones)</button>
     <button class="btn btn2" id="bPDF">Exportar PDF para montar en plantilla</button>
     <div class="nota">Cada vez que generas o corriges se crea el documento de nuevo; haz los retoques a mano al final.</div>
   </div>
@@ -107,12 +108,16 @@
       <input id="fDis" placeholder="Encabezados">
       <input id="fTxt" placeholder="Texto">
     </div>
+    <button class="btn btn2" id="bFuentes">Revisar y bajar fuentes que falten</button>
+    <div class="nota">Las baja gratis de Google Fonts y las instala en Windows. Las de Adobe Fonts act&#237;valas desde Creative Cloud.</div>
     <button class="btn" id="bGuardar">Guardar ajustes</button>
   </div>
 
   <div id="estado">Listo.</div>
 
   <script src="lib/jszip.min.js"></script>
+  <script src="marcado.js"></script>
+  <script src="fuentes.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

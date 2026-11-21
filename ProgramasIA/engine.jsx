@@ -5,7 +5,18 @@
 // =====================================================================
 /*__DATA__*/
 var RESULT = "ERROR|sin resultado";
-(function () {
+var _SP = app.scriptPreferences, _UI = _SP.userInteractionLevel, _MU = _SP.measurementUnit, _RD = _SP.enableRedraw;
+try {
+    _SP.userInteractionLevel = UserInteractionLevels.NEVER_INTERACT;
+    _SP.measurementUnit = AutoEnum.AUTO_VALUE;
+    _SP.enableRedraw = false;
+    // un solo paso de deshacer y mucho mas rapido
+    app.doScript(motor, ScriptLanguage.JAVASCRIPT, undefined, UndoModes.ENTIRE_SCRIPT, "Programas IA");
+} catch (e) { RESULT = "ERROR|" + e.message + " (linea " + e.line + ")"; }
+try { _SP.userInteractionLevel = _UI; _SP.measurementUnit = _MU; _SP.enableRedraw = _RD; } catch (e) {}
+try { app.insertLabel("programasia_result", RESULT); } catch (e) {}
+
+function motor() {
 try {
     var D = DATA, P = D.params || {}, FN = D.fuentes || {};
     var F_TIT = FN.titulo || "Pinyon Script", F_DIS = FN.display || "Playfair Display", F_TXT = FN.texto || "Lora";
@@ -22,7 +33,11 @@ try {
     }
 
     // ---------- documento ----------
-    var doc = app.documents.add({ documentPreferences: { pageWidth: W + "mm", pageHeight: H + "mm", facingPages: false, pagesPerDocument: 1 } });
+    var doc = app.documents.add(true);
+    doc.documentPreferences.facingPages = false;
+    doc.documentPreferences.pagesPerDocument = 1;
+    doc.documentPreferences.pageWidth = W + "mm";
+    doc.documentPreferences.pageHeight = H + "mm";
     doc.viewPreferences.horizontalMeasurementUnits = MeasurementUnits.MILLIMETERS;
     doc.viewPreferences.verticalMeasurementUnits = MeasurementUnits.MILLIMETERS;
     doc.viewPreferences.rulerOrigin = RulerOrigin.PAGE_ORIGIN;
@@ -138,7 +153,8 @@ try {
     var csB = CS("negrita", { appliedFont: F_TXT, fontStyle: "Bold" });
     var csBI = CS("negrita cursiva", { appliedFont: F_TXT, fontStyle: "Bold Italic" });
     var csCity = CS("ciudad", { appliedFont: F_DIS, fontStyle: "Bold Italic" });
-    var csCap = CS("capitular", { appliedFont: F_TIT, fontStyle: "Regular" });
+    // capitular en la letra de encabezados: la manuscrita tiene colas que se meten en el texto
+    var csCap = CS("capitular", { appliedFont: F_DIS, fontStyle: "Regular" });
     var CMAP = { "**": csB, "__": csBI, "~~": csCity };
 
     var Cc = Justification.CENTER_ALIGN, LJ = Justification.LEFT_JUSTIFIED, LA = Justification.LEFT_ALIGN;
@@ -190,7 +206,13 @@ try {
     var E = D.enc || {}, gS = num(P.separacion_encabezado, 1);
     var y = 24.4 * k;
     if (E.pre) { var tPre = caja(E.pre, S.pre, y, L - 8 * k, R + 8 * k, "pre"); maxLineas(tPre, 1, 8); y = fondo(tPre) + 2.5 * k * gS; }
-    if (E.nombre) { var tNom = caja(E.nombre, S.nombre, y - 2 * k, L - 8 * k, R + 8 * k, "nombre"); maxLineas(tNom, 1, 24 * k); y = fondo(tNom) + 1 * k * gS; }
+    if (E.nombre) {
+        var tNom = caja(E.nombre, S.nombre, y - 2 * k, L - 8 * k, R + 8 * k, "nombre"); maxLineas(tNom, 1, 24 * k);
+        // la letra manuscrita baja mucho de la linea base: medir desde la base, no desde el marco
+        var yN = fondo(tNom);
+        try { yN = Math.max(yN, tNom.lines.lastItem().baseline + tNom.parentStory.pointSize * 0.36 / MMPT); } catch (e) {}
+        y = yN + 1 * k * gS;
+    }
     if (E.fechas) { var tFec = caja(E.fechas, S.fechas, y, L - 8 * k, R + 8 * k, "fechas"); maxLineas(tFec, 1, 8); y = fondo(tFec) + 1.5 * k * gS; }
     if (E.anios) {
         var tAn = caja(E.anios, S.anios, y, L + CW * 0.3, R - CW * 0.3, "aniversario"); maxLineas(tAn, 1, 14);
@@ -267,9 +289,9 @@ try {
         paragraphBorderTopLineWeight: 0, paragraphBorderRightLineWeight: 0, paragraphBorderBottomLineWeight: 0,
         paragraphBorderTopOffset: 0.6, paragraphBorderBottomOffset: 0.5
     });
-    PP("evento", 1, { basedOn: sBase, leftIndent: 17.7, firstLineIndent: -17.7, keepAllLinesTogether: true,
-        tabStops: [{ alignment: TabStopAlignment.RIGHT_ALIGN, position: 16.5 }, { alignment: TabStopAlignment.LEFT_ALIGN, position: 17.7 }] });
-    PP("tema", 1, { basedOn: sBase, leftIndent: 17.7, keepAllLinesTogether: true });
+    // la sangria de horas y la columna de ciudad se calculan en escala() segun el texto real
+    var sEv = PP("evento", 1, { basedOn: sBase, keepAllLinesTogether: true });
+    var sTema = PP("tema", 1, { basedOn: sBase, keepAllLinesTogether: true });
     PP("previo", 1, { basedOn: sBase, leftIndent: 4, firstLineIndent: -4, bulletsAndNumberingListType: ListType.BULLET_LIST, spaceAfter: 1 });
     PP("nov_tit", 0.98, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Bold", tracking: 50, justification: Cc, hyphenation: false, keepWithNext: 2, capitalization: Capitalization.ALL_CAPS });
     PP("nov_sub", 0.88, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Regular", tracking: 110, justification: Cc, hyphenation: false, spaceAfter: 2, keepWithNext: 2, capitalization: Capitalization.ALL_CAPS });
@@ -281,24 +303,55 @@ try {
         paragraphBorderRightLineWeight: "0.8pt", paragraphBorderBottomLineWeight: "0.8pt",
         paragraphBorderTopOffset: 2, paragraphBorderBottomOffset: 2, paragraphBorderLeftOffset: 1, paragraphBorderRightOffset: 1,
         paragraphShadingOn: true, paragraphShadingColor: K, paragraphShadingTint: 6, paragraphShadingTopOffset: 2, paragraphShadingBottomOffset: 2 });
-    var tabMay = num(P.ancho_ciudad, 29);
-    PP("may_enc", 0.85, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Bold", tracking: 200, justification: LA, hyphenation: false, keepWithNext: 2,
-        tabStops: [{ alignment: TabStopAlignment.LEFT_ALIGN, position: tabMay }],
+    var sMayEnc = PP("may_enc", 0.85, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Bold", tracking: 200, justification: LA, hyphenation: false, keepWithNext: 2,
         ruleBelow: true, ruleBelowLineWeight: "1pt", ruleBelowColor: K, ruleBelowOffset: 1.4, ruleBelowWidth: RuleWidth.COLUMN_WIDTH, spaceAfter: 1.8 });
-    var sMay = PP("may", 1, { basedOn: sBase, justification: LA, hyphenation: false, leftIndent: tabMay, firstLineIndent: -tabMay, spaceAfter: 0, keepWithNext: 1,
-        tabStops: [{ alignment: TabStopAlignment.LEFT_ALIGN, position: tabMay }] });
+    var sMay = PP("may", 1, { basedOn: sBase, justification: LA, hyphenation: false, spaceAfter: 0, keepWithNext: 1 });
     PP("may_fin", 1, { basedOn: sMay, keepWithNext: 0, spaceAfter: 1.3,
         ruleBelow: true, ruleBelowLineWeight: "0.5pt", ruleBelowColor: K, ruleBelowTint: 45, ruleBelowOffset: 1.4, ruleBelowWidth: RuleWidth.COLUMN_WIDTH });
 
+    // ancho real (mm, a 10 pt) de las horas y de las ciudades, para que nada rebase su tabulador
+    var list = D.prog || [], horas = [], ciudades = [];
+    for (var i = 0; i < list.length; i++) {
+        var mh = /^\t\*\*(.*?)\*\*\t/.exec(list[i][1]); if (list[i][0] == "evento" && mh) horas.push(mh[1]);
+        var mc = /^~~(.*?)~~/.exec(list[i][1]); if (mc) ciudades.push(mc[1]);
+    }
+    function anchoMax(lineas, cs) {
+        if (!lineas.length) return 0;
+        var tf = pg.textFrames.add(lyT, undefined, undefined, { geometricBounds: [0, 0, 300, W] }), mx = 0;
+        try {
+            tf.contents = lineas.join("\r");
+            var st = tf.parentStory;
+            st.texts[0].appliedParagraphStyle = sBase; st.texts[0].appliedCharacterStyle = cs; st.texts[0].pointSize = 10;
+            tf.recompose();
+            for (var i = 0; i < st.paragraphs.length; i++) {
+                var ch = st.paragraphs[i].characters;
+                mx = Math.max(mx, ch.lastItem().endHorizontalOffset - ch.firstItem().horizontalOffset);
+            }
+        } catch (e) {}
+        tf.remove();
+        return mx;
+    }
+    var wHora = anchoMax(horas, csB), wCiudad = anchoMax(ciudades, csCity);
+    var colW = (CW - gut * (ncol - 1)) / ncol;
+    var RT = TabStopAlignment.RIGHT_ALIGN, LT = TabStopAlignment.LEFT_ALIGN;
+    var sangria = 0, tabMay = 0;
     function escala(sz) {
         for (var n in prog) { var s = prog[n][0], v = sz * prog[n][1]; try { s.pointSize = v; s.leading = v * LS; } catch (e) {} }
+        var tabR = Math.max(wHora * sz / 10 + 0.4, 8);
+        sangria = tabR + 0.13 * sz;
+        setP(sEv, { leftIndent: sangria, firstLineIndent: -sangria, tabStops: [{ alignment: RT, position: tabR }, { alignment: LT, position: sangria }] });
+        try { sTema.leftIndent = sangria; } catch (e) {}
+        tabMay = wCiudad ? wCiudad * sz / 10 + 0.3 * sz : 29;
+        tabMay = Math.min(Math.max(tabMay, num(P.ancho_ciudad, 0)), colW * 0.5);
+        setP(sMay, { leftIndent: tabMay, firstLineIndent: -tabMay, tabStops: [{ alignment: LT, position: tabMay }] });
+        setP(sMayEnc, { tabStops: [{ alignment: LT, position: tabMay }] });
     }
     var ptf = pg.textFrames.add(lyT, undefined, undefined, { geometricBounds: [cTop, L, cBot, R], name: "programa" });
     ptf.textFramePreferences.textColumnCount = ncol;
     ptf.textFramePreferences.textColumnGutter = gut;
     try { ptf.textFramePreferences.insetSpacing = [0, 0, 0, 0]; } catch (e) {}
     try { ptf.textFramePreferences.verticalBalanceColumns = (P.balancear_columnas !== false); } catch (e) {}
-    var paras = [], rg = [], pos = 0, list = D.prog || [];
+    var paras = [], rg = [], pos = 0;
     for (var i = 0; i < list.length; i++) {
         var pp = parse(list[i][1]); paras.push(pp.s);
         for (var j = 0; j < pp.r.length; j++) rg.push([pos + pp.r[j][0], pos + pp.r[j][1], pp.r[j][2]]);
@@ -340,5 +393,5 @@ try {
 
     RESULT = "OK|id=" + doc.id + "|cuerpo=" + best.toFixed(1) + "|desborde=" + (ptf.overflows ? 1 : 0) + "|aviso=" + avisos.join(" // ");
 } catch (err) { RESULT = "ERROR|" + err.message + " (linea " + err.line + ")"; }
-})();
+}
 RESULT;

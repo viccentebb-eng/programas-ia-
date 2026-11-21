@@ -1,8 +1,9 @@
 // PRUEBA DEL MOTOR (sin panel ni API): arma el reverso de Atemajac 2027
+// Archivo generado por tools/build.js a partir de ProgramasIA/engine.jsx
 #target indesign
 var _here = File($.fileName).parent.fsName;
-var DATA = {"formato": {"nombre": "Oficio", "ancho": 330.298, "alto": 464.989, "sangrado": 0}, "enc": {"pre": "Solemnes Fiestas en Honor a la", "nombre": "Virgen de la Defensa", "fechas": "Del 5 al 9 de diciembre del 2027", "anios": "385 a\u00f1os", "lema": "\u201cUna tradici\u00f3n que nos ense\u00f1a a caminar\u201d", "objetivo": "Queremos vivir nuestra fiesta a la Virgen de la Defensa desde cinco momentos: **Caminar, Encontrarnos, Recibir, Dejar nacer algo nuevo y Ponernos al servicio**, de tal manera que se conviertan en un camino que nos conduzca a Dios y a su proyecto de salvaci\u00f3n.", "mensaje": "No queremos separar la tradici\u00f3n de la fe, sino descubrir que la tradici\u00f3n puede ser un camino para llegar al Evangelio. Que aquello que nuestros mayores nos ense\u00f1aron con sus pasos pueda ayudarnos hoy a ense\u00f1ar a caminar a las nuevas generaciones con nuestra vida. Porque quiz\u00e1 el mejor modo de honrar lo que hemos recibido no sea solamente conservarlo tal como lo encontramos, sino hacer que siga dando fruto. Y si Mar\u00eda de la Defensa ha acompa\u00f1ado durante 385 a\u00f1os el caminar de este pueblo, que tambi\u00e9n nos ayude a descubrir hacia d\u00f3nde quiere llevarnos Dios hoy.", "pie": "Atemajac de Brizuela, Jal. \u00b7 Diciembre 2027"}, "prog": [["cintilla", "D\u00cdAS PREVIOS A LA FIESTA"], ["previo", "**Domingo 1.\u00ba de agosto:** Apertura de la fiesta patronal."], ["previo", "**Lunes 2 de agosto:** Llegada de la Imagen peregrina a la Cd. de Guadalajara. Visita a las familias hasta el 5 de septiembre."], ["previo", "**Del lunes 2 al s\u00e1bado 7 de agosto:** Semana B\u00edblica como preparaci\u00f3n a la fiesta."], ["dia", "S\u00c1BADO 4 DE DICIEMBRE"], ["texto", "Anuncio de la fiesta de parte de la Mayordom\u00eda, Moros y Chirim\u00eda."], ["cintilla", "D\u00cdAS DE FIESTA"], ["dia", "DOMINGO 5"], ["evento", "\t**2:00 p.m.**\tLlegada de la Virgen al Barrio San Jos\u00e9."], ["evento", "\t**4:00 p.m.**\tDe cada domicilio se recogen las coronas que acompa\u00f1ar\u00e1n a la Sant\u00edsima Virgen."], ["evento", "\t**5:00 p.m.**\tRecepci\u00f3n de la Imagen peregrina, Enroso y Bendici\u00f3n de la fiesta."], ["evento", "\t**7:00 p.m.**\tCelebraci\u00f3n Eucar\u00edstica en el atrio. Terminando, se traslada la imagen al Barrio Ocotito."], ["tema", "Tema de reflexi\u00f3n: __\u201cAtemajac, un pueblo de fe, siempre en camino\u201d.__"], ["evento", "\t**9:30 p.m.**\tSerenata y quema de castillo en el jard\u00edn principal."], ["dia", "LUNES 6"], ["evento", "\t**6:00 a.m.**\tMa\u00f1anitas y Eucarist\u00eda en el Barrio."], ["evento", "\t**12:00 p.m.**\tRecepci\u00f3n en Agua Prieta de la Imagen Original de Nuestra Se\u00f1ora de la Defensa. Traslado a la Capilla de Santo Santiago."], ["evento", "\t**6:00 p.m.**\tTraslado de la imagen peregrina a la Capilla de Santo Santiago."], ["evento", "\t**7:00 p.m.**\tCelebraci\u00f3n Eucar\u00edstica en la Capilla de Santo Santiago."], ["tema", "Tema de reflexi\u00f3n: __\u201cEncontrarnos hace que la fe se vuelva fraternidad\u201d.__"], ["evento", "\t**9:30 p.m.**\tSerenata y quema de castillo en el barrio Santo Santiago."], ["dia", "MARTES 7"], ["evento", "\t**6:00 a.m.**\tMa\u00f1anitas y celebraci\u00f3n de la Eucarist\u00eda, Capilla Santo Santiago."], ["evento", "\t**12:00 p.m.**\tCelebraci\u00f3n Eucar\u00edstica y Bautismos."], ["evento", "\t**4:00 p.m.**\tSolemne entrada de Nuestra Se\u00f1ora de la Defensa en sus 385 a\u00f1os de su llegada. Llegando, Solemne Eucarist\u00eda."], ["tema", "Tema de reflexi\u00f3n: __\u201cRecibir a Mar\u00eda, para entrar con ella a la vida del Reino\u201d.__"], ["evento", "\t**9:30 p.m.**\tSerenata y quema de castillo."], ["dia", "MI\u00c9RCOLES 8"], ["evento", "\t**6:00 a.m.**\tMa\u00f1anitas y celebraci\u00f3n de la Eucarist\u00eda en el templo parroquial."], ["evento", "\t**12:00 p.m.**\tPeregrinaci\u00f3n de los Hijos Ausentes (parten de la Capilla del Ocotito)."], ["evento", "\t**1:00 p.m.**\tCelebraci\u00f3n de la Eucarist\u00eda y cambio de Mayordom\u00eda."], ["tema", "Tema de reflexi\u00f3n: __\u201cLa Natividad de la Virgen Mar\u00eda, historia que se vuelve vida nueva\u201d.__"], ["evento", "\t**5:00 p.m.**\tPeregrinaci\u00f3n y homenaje de los ni\u00f1os y ni\u00f1as de la catequesis (parten del Ocotito). Llegando, celebraci\u00f3n de la Eucarist\u00eda y convivencia para los ni\u00f1os."], ["evento", "\t**9:30 p.m.**\tSerenata y quema de castillo."], ["dia", "JUEVES 9"], ["evento", "\t**6:00 a.m.**\tMa\u00f1anitas y celebraci\u00f3n de la Eucarist\u00eda en favor de los Difuntos."], ["evento", "\t**5:00 p.m.**\tRecorrido con la imagen peregrina para bendecir a los enfermos."], ["evento", "\t**6:00 p.m.**\tPeregrinaci\u00f3n de todas las comisiones. Parten de la Capilla del Ocotito."], ["evento", "\t**7:00 p.m.**\tEucarist\u00eda de acci\u00f3n de gracias por la fiesta."], ["tema", "Tema de reflexi\u00f3n: __\u201cAcci\u00f3n de gracias: lo recibido se vuelve misi\u00f3n\u201d.__"], ["evento", "\t**8:00 p.m.**\tConvivencia en el jard\u00edn principal."], ["evento", "\t**9:30 p.m.**\tSerenata y quema de castillo."], ["cintilla", "NOVENARIO DE VISITAS"], ["nov_tit", "Virgen de la Defensa y Sr. del Ocotito"], ["nov_sub", "Peregrinos (juntos) a las comunidades 2027"], ["nov_dia", "**Viernes 10 de septiembre:** La Granja. 7:00 p.m. 1.\u00aa Tanda de Reconciliaciones."], ["nov_dia", "**S\u00e1bado 11:** Con Rito De la Torre."], ["nov_dia", "**Domingo 12:** Con Juan."], ["nov_dia", "**Lunes 13:** Regreso al templo parroquial, llegar a misa de 7:00 p.m."], ["nov_dia", "**Martes 14:** 6:00 p.m. Hora Santa de los Agentes de Pastoral."], ["nov_dia", "**Mi\u00e9rcoles 15:** Celebraci\u00f3n de la Eucarist\u00eda."], ["nov_dia", "**Jueves 16:** Celebraci\u00f3n de la Eucarist\u00eda."], ["nov_dia", "**Viernes 17:** 7:00 p.m. 2.\u00aa Tanda de Reconciliaciones."], ["nov_num", "**1.**\tDel s\u00e1bado 18 de septiembre (7:00 a.m.) al domingo 26 (1:00 p.m.): **Llanitos, Tacuaches, Agua Caliente y Tierra Blanca.** Parten y regresan las im\u00e1genes al templo parroquial."], ["nov_num", "**2.**\tDel domingo 26 (2:00 p.m.) al domingo 3 de octubre (12:00 p.m.): **San Miguel y Lagunillas.** Parten del templo y regresan las im\u00e1genes a la Loma."], ["nov_num", "**3.**\tDel domingo 3 de octubre (2:00 p.m.) al domingo 10 (12:00 p.m.): **Yolosta.** Recogen las im\u00e1genes en el templo parroquial y entregan a Telcome y Frontera."], ["nov_num", "**4.**\tDel domingo 10 (12:00 p.m.) al jueves 14 (4:00 p.m.): **Telcome y Frontera.**"], ["nov_num", "**5.**\tDel jueves 14 (4:00 p.m.) al s\u00e1bado 23 (12:00 p.m.): **Sayulapa.** Recogen las im\u00e1genes de La Frontera. S\u00e1bado 23 y domingo 24: **Zamoranas.**"], ["nov_num", "**6.**\tDel domingo 24 (12:00 p.m.) al domingo 31 (10:00 a.m.): **Varillas.** Recogen las im\u00e1genes de Zamoranas."], ["nov_num", "**7.**\tDel domingo 31 (10:00 a.m.) al domingo 7 de noviembre (9:00 a.m.): **Pueblo Nuevo.** Recogen las im\u00e1genes de Varillas."], ["nov_num", "**8.**\tDomingo 7 (9:00 a.m.): Traslado de las im\u00e1genes a la Capilla del Ocotito. 12:30 p.m. **Peregrinaci\u00f3n de Hijos Ausentes de Guadalajara. Misa a la 1:00 p.m.**"], ["previo", "**Del jueves 11 al s\u00e1bado 13 de noviembre:** Virgen en Zacoalco."], ["previo", "**Del s\u00e1bado 6 al domingo 14 de noviembre:** Ferrer\u00eda y anexos."], ["cintilla", "MAYORDOMOS ENTRANTES"], ["may_enc", "CIUDAD\tENTRANTES"], ["may", "~~Atemajac~~\tMar\u00eda Tereza Gonz\u00e1lez Rubio"], ["may", "\tIrasema De Jes\u00fas Blanco Mart\u00ednez"], ["may", "\tDiego Isaac Espinoza Mart\u00ednez"], ["may_fin", "\tRam\u00f3n Mares Mares"], ["may", "~~Guadalajara~~\tVer\u00f3nica Rosales Gollaz"], ["may", "\tYolanda Rivera Hern\u00e1ndez"], ["may", "\tOfelia Monroy Trinidad"], ["may", "\tLizeth Anah\u00ed Ram\u00edrez S\u00e1nchez"], ["may", "\tErnesto Mauricio Benito Guti\u00e9rrez"], ["may_fin", "\tMar\u00eda Santos Ram\u00edrez Salvador"], ["may_fin", "~~Toluca~~\tCinthia Carrasco Mondrag\u00f3n"], ["may_fin", "~~Cd. de M\u00e9xico~~\tJes\u00fas Echeverr\u00eda"], ["may", "~~Oakland~~\tRoc\u00edo Mart\u00ednez"], ["may_fin", "\tGeorgina Senci\u00f3n de Ram\u00edrez"], ["may", "~~Nicasio~~\tAlejandra Vidrio"], ["may_fin", "\tVer\u00f3nica Vidrio"], ["may_fin", "~~Reno~~\tIsidra Mart\u00ednez"], ["may_fin", "~~Los \u00c1ngeles~~\tIgnacio Candelario"], ["may_fin", "~~Chicago~~\tArturo Senci\u00f3n"], ["may_fin", "~~San Bernardino~~\tRub\u00e9n Le\u00f3n Madrigal"], ["may_fin", "~~Washington~~\tSulma Sol\u00f3rzano"], ["may_fin", "~~Condado Orange~~\tJos\u00e9 Manuel De La Cruz Gonz\u00e1lez"]], "params": {}, "fuentes": {"titulo": "Pinyon Script", "display": "Playfair Display", "texto": "Lora"}};
-DATA.assets = {esquina:_here+"/assets/esquina.pdf", banda_h:_here+"/assets/banda_h.pdf", banda_v:_here+"/assets/banda_v.pdf", div_izq:_here+"/assets/divisor_izq.pdf", div_der:_here+"/assets/divisor_der.pdf"};
+var DATA = {"formato":{"nombre":"Oficio","ancho":330.298,"alto":464.989,"sangrado":0},"enc":{"pre":"Solemnes Fiestas en Honor a la","nombre":"Virgen de la Defensa","fechas":"Del 5 al 9 de diciembre del 2027","anios":"385 años","lema":"“Una tradición que nos enseña a caminar”","objetivo":"Queremos vivir nuestra fiesta a la Virgen de la Defensa desde cinco momentos: **Caminar, Encontrarnos, Recibir, Dejar nacer algo nuevo y Ponernos al servicio**, de tal manera que se conviertan en un camino que nos conduzca a Dios y a su proyecto de salvación.","mensaje":"No queremos separar la tradición de la fe, sino descubrir que la tradición puede ser un camino para llegar al Evangelio. Que aquello que nuestros mayores nos enseñaron con sus pasos pueda ayudarnos hoy a enseñar a caminar a las nuevas generaciones con nuestra vida. Porque quizá el mejor modo de honrar lo que hemos recibido no sea solamente conservarlo tal como lo encontramos, sino hacer que siga dando fruto. Y si María de la Defensa ha acompañado durante 385 años el caminar de este pueblo, que también nos ayude a descubrir hacia dónde quiere llevarnos Dios hoy.","pie":"Atemajac de Brizuela, Jal. · Diciembre 2027"},"prog":[["cintilla","DÍAS PREVIOS A LA FIESTA"],["previo","**Domingo 1.º de agosto:** Apertura de la fiesta patronal."],["previo","**Lunes 2 de agosto:** Llegada de la Imagen peregrina a la Cd. de Guadalajara. Visita a las familias hasta el 5 de septiembre."],["previo","**Del lunes 2 al sábado 7 de agosto:** Semana Bíblica como preparación a la fiesta."],["dia","SÁBADO 4 DE DICIEMBRE"],["texto","Anuncio de la fiesta de parte de la Mayordomía, Moros y Chirimía."],["cintilla","DÍAS DE FIESTA"],["dia","DOMINGO 5"],["evento","\t**2:00 p.m.**\tLlegada de la Virgen al Barrio San José."],["evento","\t**4:00 p.m.**\tDe cada domicilio se recogen las coronas que acompañarán a la Santísima Virgen."],["evento","\t**5:00 p.m.**\tRecepción de la Imagen peregrina, Enroso y Bendición de la fiesta."],["evento","\t**7:00 p.m.**\tCelebración Eucarística en el atrio. Terminando, se traslada la imagen al Barrio Ocotito."],["tema","Tema de reflexión: __“Atemajac, un pueblo de fe, siempre en camino”.__"],["evento","\t**9:30 p.m.**\tSerenata y quema de castillo en el jardín principal."],["dia","LUNES 6"],["evento","\t**6:00 a.m.**\tMañanitas y Eucaristía en el Barrio."],["evento","\t**12:00 p.m.**\tRecepción en Agua Prieta de la Imagen Original de Nuestra Señora de la Defensa. Traslado a la Capilla de Santo Santiago."],["evento","\t**6:00 p.m.**\tTraslado de la imagen peregrina a la Capilla de Santo Santiago."],["evento","\t**7:00 p.m.**\tCelebración Eucarística en la Capilla de Santo Santiago."],["tema","Tema de reflexión: __“Encontrarnos hace que la fe se vuelva fraternidad”.__"],["evento","\t**9:30 p.m.**\tSerenata y quema de castillo en el barrio Santo Santiago."],["dia","MARTES 7"],["evento","\t**6:00 a.m.**\tMañanitas y celebración de la Eucaristía, Capilla Santo Santiago."],["evento","\t**12:00 p.m.**\tCelebración Eucarística y Bautismos."],["evento","\t**4:00 p.m.**\tSolemne entrada de Nuestra Señora de la Defensa en sus 385 años de su llegada. Llegando, Solemne Eucaristía."],["tema","Tema de reflexión: __“Recibir a María, para entrar con ella a la vida del Reino”.__"],["evento","\t**9:30 p.m.**\tSerenata y quema de castillo."],["dia","MIÉRCOLES 8"],["evento","\t**6:00 a.m.**\tMañanitas y celebración de la Eucaristía en el templo parroquial."],["evento","\t**12:00 p.m.**\tPeregrinación de los Hijos Ausentes (parten de la Capilla del Ocotito)."],["evento","\t**1:00 p.m.**\tCelebración de la Eucaristía y cambio de Mayordomía."],["tema","Tema de reflexión: __“La Natividad de la Virgen María, historia que se vuelve vida nueva”.__"],["evento","\t**5:00 p.m.**\tPeregrinación y homenaje de los niños y niñas de la catequesis (parten del Ocotito). Llegando, celebración de la Eucaristía y convivencia para los niños."],["evento","\t**9:30 p.m.**\tSerenata y quema de castillo."],["dia","JUEVES 9"],["evento","\t**6:00 a.m.**\tMañanitas y celebración de la Eucaristía en favor de los Difuntos."],["evento","\t**5:00 p.m.**\tRecorrido con la imagen peregrina para bendecir a los enfermos."],["evento","\t**6:00 p.m.**\tPeregrinación de todas las comisiones. Parten de la Capilla del Ocotito."],["evento","\t**7:00 p.m.**\tEucaristía de acción de gracias por la fiesta."],["tema","Tema de reflexión: __“Acción de gracias: lo recibido se vuelve misión”.__"],["evento","\t**8:00 p.m.**\tConvivencia en el jardín principal."],["evento","\t**9:30 p.m.**\tSerenata y quema de castillo."],["cintilla","NOVENARIO DE VISITAS"],["nov_tit","Virgen de la Defensa y Sr. del Ocotito"],["nov_sub","Peregrinos (juntos) a las comunidades 2027"],["nov_dia","**Viernes 10 de septiembre:** La Granja. 7:00 p.m. 1.ª Tanda de Reconciliaciones."],["nov_dia","**Sábado 11:** Con Rito De la Torre."],["nov_dia","**Domingo 12:** Con Juan."],["nov_dia","**Lunes 13:** Regreso al templo parroquial, llegar a misa de 7:00 p.m."],["nov_dia","**Martes 14:** 6:00 p.m. Hora Santa de los Agentes de Pastoral."],["nov_dia","**Miércoles 15:** Celebración de la Eucaristía."],["nov_dia","**Jueves 16:** Celebración de la Eucaristía."],["nov_dia","**Viernes 17:** 7:00 p.m. 2.ª Tanda de Reconciliaciones."],["nov_num","**1.**\tDel sábado 18 de septiembre (7:00 a.m.) al domingo 26 (1:00 p.m.): **Llanitos, Tacuaches, Agua Caliente y Tierra Blanca.** Parten y regresan las imágenes al templo parroquial."],["nov_num","**2.**\tDel domingo 26 (2:00 p.m.) al domingo 3 de octubre (12:00 p.m.): **San Miguel y Lagunillas.** Parten del templo y regresan las imágenes a la Loma."],["nov_num","**3.**\tDel domingo 3 de octubre (2:00 p.m.) al domingo 10 (12:00 p.m.): **Yolosta.** Recogen las imágenes en el templo parroquial y entregan a Telcome y Frontera."],["nov_num","**4.**\tDel domingo 10 (12:00 p.m.) al jueves 14 (4:00 p.m.): **Telcome y Frontera.**"],["nov_num","**5.**\tDel jueves 14 (4:00 p.m.) al sábado 23 (12:00 p.m.): **Sayulapa.** Recogen las imágenes de La Frontera. Sábado 23 y domingo 24: **Zamoranas.**"],["nov_num","**6.**\tDel domingo 24 (12:00 p.m.) al domingo 31 (10:00 a.m.): **Varillas.** Recogen las imágenes de Zamoranas."],["nov_num","**7.**\tDel domingo 31 (10:00 a.m.) al domingo 7 de noviembre (9:00 a.m.): **Pueblo Nuevo.** Recogen las imágenes de Varillas."],["nov_num","**8.**\tDomingo 7 (9:00 a.m.): Traslado de las imágenes a la Capilla del Ocotito. 12:30 p.m. **Peregrinación de Hijos Ausentes de Guadalajara. Misa a la 1:00 p.m.**"],["previo","**Del jueves 11 al sábado 13 de noviembre:** Virgen en Zacoalco."],["previo","**Del sábado 6 al domingo 14 de noviembre:** Ferrería y anexos."],["cintilla","MAYORDOMOS ENTRANTES"],["may_enc","CIUDAD\tENTRANTES"],["may","~~Atemajac~~\tMaría Tereza González Rubio"],["may","\tIrasema De Jesús Blanco Martínez"],["may","\tDiego Isaac Espinoza Martínez"],["may_fin","\tRamón Mares Mares"],["may","~~Guadalajara~~\tVerónica Rosales Gollaz"],["may","\tYolanda Rivera Hernández"],["may","\tOfelia Monroy Trinidad"],["may","\tLizeth Anahí Ramírez Sánchez"],["may","\tErnesto Mauricio Benito Gutiérrez"],["may_fin","\tMaría Santos Ramírez Salvador"],["may_fin","~~Toluca~~\tCinthia Carrasco Mondragón"],["may_fin","~~Cd. de México~~\tJesús Echeverría"],["may","~~Oakland~~\tRocío Martínez"],["may_fin","\tGeorgina Sención de Ramírez"],["may","~~Nicasio~~\tAlejandra Vidrio"],["may_fin","\tVerónica Vidrio"],["may_fin","~~Reno~~\tIsidra Martínez"],["may_fin","~~Los Ángeles~~\tIgnacio Candelario"],["may_fin","~~Chicago~~\tArturo Sención"],["may_fin","~~San Bernardino~~\tRubén León Madrigal"],["may_fin","~~Washington~~\tSulma Solórzano"],["may_fin","~~Condado Orange~~\tJosé Manuel De La Cruz González"]],"params":{},"fuentes":{"titulo":"Pinyon Script","display":"Playfair Display","texto":"Lora"}};
+DATA.assets = {esquina: _here + "/assets/esquina.pdf", banda_h: _here + "/assets/banda_h.pdf", banda_v: _here + "/assets/banda_v.pdf", div_izq: _here + "/assets/divisor_izq.pdf", div_der: _here + "/assets/divisor_der.pdf"};
 // =====================================================================
 //  PROGRAMAS IA - motor de diseno (ExtendScript para InDesign)
 //  Lo ejecuta el panel con app.doScript; recibe DATA ya armado.
@@ -10,7 +11,18 @@ DATA.assets = {esquina:_here+"/assets/esquina.pdf", banda_h:_here+"/assets/banda
 // =====================================================================
 
 var RESULT = "ERROR|sin resultado";
-(function () {
+var _SP = app.scriptPreferences, _UI = _SP.userInteractionLevel, _MU = _SP.measurementUnit, _RD = _SP.enableRedraw;
+try {
+    _SP.userInteractionLevel = UserInteractionLevels.NEVER_INTERACT;
+    _SP.measurementUnit = AutoEnum.AUTO_VALUE;
+    _SP.enableRedraw = false;
+    // un solo paso de deshacer y mucho mas rapido
+    app.doScript(motor, ScriptLanguage.JAVASCRIPT, undefined, UndoModes.ENTIRE_SCRIPT, "Programas IA");
+} catch (e) { RESULT = "ERROR|" + e.message + " (linea " + e.line + ")"; }
+try { _SP.userInteractionLevel = _UI; _SP.measurementUnit = _MU; _SP.enableRedraw = _RD; } catch (e) {}
+try { app.insertLabel("programasia_result", RESULT); } catch (e) {}
+
+function motor() {
 try {
     var D = DATA, P = D.params || {}, FN = D.fuentes || {};
     var F_TIT = FN.titulo || "Pinyon Script", F_DIS = FN.display || "Playfair Display", F_TXT = FN.texto || "Lora";
@@ -27,7 +39,11 @@ try {
     }
 
     // ---------- documento ----------
-    var doc = app.documents.add({ documentPreferences: { pageWidth: W + "mm", pageHeight: H + "mm", facingPages: false, pagesPerDocument: 1 } });
+    var doc = app.documents.add(true);
+    doc.documentPreferences.facingPages = false;
+    doc.documentPreferences.pagesPerDocument = 1;
+    doc.documentPreferences.pageWidth = W + "mm";
+    doc.documentPreferences.pageHeight = H + "mm";
     doc.viewPreferences.horizontalMeasurementUnits = MeasurementUnits.MILLIMETERS;
     doc.viewPreferences.verticalMeasurementUnits = MeasurementUnits.MILLIMETERS;
     doc.viewPreferences.rulerOrigin = RulerOrigin.PAGE_ORIGIN;
@@ -127,7 +143,7 @@ try {
     function PS(name, p) { var s = doc.paragraphStyles.itemByName(name); if (!s.isValid) s = doc.paragraphStyles.add({ name: name }); setP(s, p); return s; }
     function CS(name, p) { var s = doc.characterStyles.itemByName(name); if (!s.isValid) s = doc.characterStyles.add({ name: name }); setP(s, p); return s; }
     function lang(s) {
-        var names = ["Spanish", "Espa\u00f1ol: Espa\u00f1a", "Espa\u00f1ol", "Spanish: Castilian", "Espa\u00f1ol: Castellano"];
+        var names = ["Spanish", "Español: España", "Español", "Spanish: Castilian", "Español: Castellano"];
         for (var i = 0; i < names.length; i++) { try { var l = app.languagesWithVendors.itemByName(names[i]); if (l.isValid) { s.appliedLanguage = l; return; } } catch (e) {} }
     }
     function parse(t) {
@@ -143,7 +159,8 @@ try {
     var csB = CS("negrita", { appliedFont: F_TXT, fontStyle: "Bold" });
     var csBI = CS("negrita cursiva", { appliedFont: F_TXT, fontStyle: "Bold Italic" });
     var csCity = CS("ciudad", { appliedFont: F_DIS, fontStyle: "Bold Italic" });
-    var csCap = CS("capitular", { appliedFont: F_TIT, fontStyle: "Regular" });
+    // capitular en la letra de encabezados: la manuscrita tiene colas que se meten en el texto
+    var csCap = CS("capitular", { appliedFont: F_DIS, fontStyle: "Regular" });
     var CMAP = { "**": csB, "__": csBI, "~~": csCity };
 
     var Cc = Justification.CENTER_ALIGN, LJ = Justification.LEFT_JUSTIFIED, LA = Justification.LEFT_ALIGN;
@@ -195,7 +212,13 @@ try {
     var E = D.enc || {}, gS = num(P.separacion_encabezado, 1);
     var y = 24.4 * k;
     if (E.pre) { var tPre = caja(E.pre, S.pre, y, L - 8 * k, R + 8 * k, "pre"); maxLineas(tPre, 1, 8); y = fondo(tPre) + 2.5 * k * gS; }
-    if (E.nombre) { var tNom = caja(E.nombre, S.nombre, y - 2 * k, L - 8 * k, R + 8 * k, "nombre"); maxLineas(tNom, 1, 24 * k); y = fondo(tNom) + 1 * k * gS; }
+    if (E.nombre) {
+        var tNom = caja(E.nombre, S.nombre, y - 2 * k, L - 8 * k, R + 8 * k, "nombre"); maxLineas(tNom, 1, 24 * k);
+        // la letra manuscrita baja mucho de la linea base: medir desde la base, no desde el marco
+        var yN = fondo(tNom);
+        try { yN = Math.max(yN, tNom.lines.lastItem().baseline + tNom.parentStory.pointSize * 0.36 / MMPT); } catch (e) {}
+        y = yN + 1 * k * gS;
+    }
     if (E.fechas) { var tFec = caja(E.fechas, S.fechas, y, L - 8 * k, R + 8 * k, "fechas"); maxLineas(tFec, 1, 8); y = fondo(tFec) + 1.5 * k * gS; }
     if (E.anios) {
         var tAn = caja(E.anios, S.anios, y, L + CW * 0.3, R - CW * 0.3, "aniversario"); maxLineas(tAn, 1, 14);
@@ -272,9 +295,9 @@ try {
         paragraphBorderTopLineWeight: 0, paragraphBorderRightLineWeight: 0, paragraphBorderBottomLineWeight: 0,
         paragraphBorderTopOffset: 0.6, paragraphBorderBottomOffset: 0.5
     });
-    PP("evento", 1, { basedOn: sBase, leftIndent: 17.7, firstLineIndent: -17.7, keepAllLinesTogether: true,
-        tabStops: [{ alignment: TabStopAlignment.RIGHT_ALIGN, position: 16.5 }, { alignment: TabStopAlignment.LEFT_ALIGN, position: 17.7 }] });
-    PP("tema", 1, { basedOn: sBase, leftIndent: 17.7, keepAllLinesTogether: true });
+    // la sangria de horas y la columna de ciudad se calculan en escala() segun el texto real
+    var sEv = PP("evento", 1, { basedOn: sBase, keepAllLinesTogether: true });
+    var sTema = PP("tema", 1, { basedOn: sBase, keepAllLinesTogether: true });
     PP("previo", 1, { basedOn: sBase, leftIndent: 4, firstLineIndent: -4, bulletsAndNumberingListType: ListType.BULLET_LIST, spaceAfter: 1 });
     PP("nov_tit", 0.98, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Bold", tracking: 50, justification: Cc, hyphenation: false, keepWithNext: 2, capitalization: Capitalization.ALL_CAPS });
     PP("nov_sub", 0.88, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Regular", tracking: 110, justification: Cc, hyphenation: false, spaceAfter: 2, keepWithNext: 2, capitalization: Capitalization.ALL_CAPS });
@@ -286,24 +309,55 @@ try {
         paragraphBorderRightLineWeight: "0.8pt", paragraphBorderBottomLineWeight: "0.8pt",
         paragraphBorderTopOffset: 2, paragraphBorderBottomOffset: 2, paragraphBorderLeftOffset: 1, paragraphBorderRightOffset: 1,
         paragraphShadingOn: true, paragraphShadingColor: K, paragraphShadingTint: 6, paragraphShadingTopOffset: 2, paragraphShadingBottomOffset: 2 });
-    var tabMay = num(P.ancho_ciudad, 29);
-    PP("may_enc", 0.85, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Bold", tracking: 200, justification: LA, hyphenation: false, keepWithNext: 2,
-        tabStops: [{ alignment: TabStopAlignment.LEFT_ALIGN, position: tabMay }],
+    var sMayEnc = PP("may_enc", 0.85, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Bold", tracking: 200, justification: LA, hyphenation: false, keepWithNext: 2,
         ruleBelow: true, ruleBelowLineWeight: "1pt", ruleBelowColor: K, ruleBelowOffset: 1.4, ruleBelowWidth: RuleWidth.COLUMN_WIDTH, spaceAfter: 1.8 });
-    var sMay = PP("may", 1, { basedOn: sBase, justification: LA, hyphenation: false, leftIndent: tabMay, firstLineIndent: -tabMay, spaceAfter: 0, keepWithNext: 1,
-        tabStops: [{ alignment: TabStopAlignment.LEFT_ALIGN, position: tabMay }] });
+    var sMay = PP("may", 1, { basedOn: sBase, justification: LA, hyphenation: false, spaceAfter: 0, keepWithNext: 1 });
     PP("may_fin", 1, { basedOn: sMay, keepWithNext: 0, spaceAfter: 1.3,
         ruleBelow: true, ruleBelowLineWeight: "0.5pt", ruleBelowColor: K, ruleBelowTint: 45, ruleBelowOffset: 1.4, ruleBelowWidth: RuleWidth.COLUMN_WIDTH });
 
+    // ancho real (mm, a 10 pt) de las horas y de las ciudades, para que nada rebase su tabulador
+    var list = D.prog || [], horas = [], ciudades = [];
+    for (var i = 0; i < list.length; i++) {
+        var mh = /^\t\*\*(.*?)\*\*\t/.exec(list[i][1]); if (list[i][0] == "evento" && mh) horas.push(mh[1]);
+        var mc = /^~~(.*?)~~/.exec(list[i][1]); if (mc) ciudades.push(mc[1]);
+    }
+    function anchoMax(lineas, cs) {
+        if (!lineas.length) return 0;
+        var tf = pg.textFrames.add(lyT, undefined, undefined, { geometricBounds: [0, 0, 300, W] }), mx = 0;
+        try {
+            tf.contents = lineas.join("\r");
+            var st = tf.parentStory;
+            st.texts[0].appliedParagraphStyle = sBase; st.texts[0].appliedCharacterStyle = cs; st.texts[0].pointSize = 10;
+            tf.recompose();
+            for (var i = 0; i < st.paragraphs.length; i++) {
+                var ch = st.paragraphs[i].characters;
+                mx = Math.max(mx, ch.lastItem().endHorizontalOffset - ch.firstItem().horizontalOffset);
+            }
+        } catch (e) {}
+        tf.remove();
+        return mx;
+    }
+    var wHora = anchoMax(horas, csB), wCiudad = anchoMax(ciudades, csCity);
+    var colW = (CW - gut * (ncol - 1)) / ncol;
+    var RT = TabStopAlignment.RIGHT_ALIGN, LT = TabStopAlignment.LEFT_ALIGN;
+    var sangria = 0, tabMay = 0;
     function escala(sz) {
         for (var n in prog) { var s = prog[n][0], v = sz * prog[n][1]; try { s.pointSize = v; s.leading = v * LS; } catch (e) {} }
+        var tabR = Math.max(wHora * sz / 10 + 0.4, 8);
+        sangria = tabR + 0.13 * sz;
+        setP(sEv, { leftIndent: sangria, firstLineIndent: -sangria, tabStops: [{ alignment: RT, position: tabR }, { alignment: LT, position: sangria }] });
+        try { sTema.leftIndent = sangria; } catch (e) {}
+        tabMay = wCiudad ? wCiudad * sz / 10 + 0.3 * sz : 29;
+        tabMay = Math.min(Math.max(tabMay, num(P.ancho_ciudad, 0)), colW * 0.5);
+        setP(sMay, { leftIndent: tabMay, firstLineIndent: -tabMay, tabStops: [{ alignment: LT, position: tabMay }] });
+        setP(sMayEnc, { tabStops: [{ alignment: LT, position: tabMay }] });
     }
     var ptf = pg.textFrames.add(lyT, undefined, undefined, { geometricBounds: [cTop, L, cBot, R], name: "programa" });
     ptf.textFramePreferences.textColumnCount = ncol;
     ptf.textFramePreferences.textColumnGutter = gut;
     try { ptf.textFramePreferences.insetSpacing = [0, 0, 0, 0]; } catch (e) {}
     try { ptf.textFramePreferences.verticalBalanceColumns = (P.balancear_columnas !== false); } catch (e) {}
-    var paras = [], rg = [], pos = 0, list = D.prog || [];
+    var paras = [], rg = [], pos = 0;
     for (var i = 0; i < list.length; i++) {
         var pp = parse(list[i][1]); paras.push(pp.s);
         for (var j = 0; j < pp.r.length; j++) rg.push([pos + pp.r[j][0], pos + pp.r[j][1], pp.r[j][2]]);
@@ -345,7 +399,7 @@ try {
 
     RESULT = "OK|id=" + doc.id + "|cuerpo=" + best.toFixed(1) + "|desborde=" + (ptf.overflows ? 1 : 0) + "|aviso=" + avisos.join(" // ");
 } catch (err) { RESULT = "ERROR|" + err.message + " (linea " + err.line + ")"; }
-})();
+}
 RESULT;
 
 alert(RESULT.split("|").join("\r"));
