@@ -8,14 +8,14 @@
   <header class="cab">
     <div class="cab-fila">
       <div class="marca">Programas IA</div>
-      <button class="chip-uso" id="chipUso" title="Cuánto llevas gastado en Claude este mes">$0.00 este mes</button>
+      <div role="button" tabindex="0" class="chip-uso" id="chipUso" title="Cuánto llevas gastado en Claude este mes">$0.00 este mes</div>
     </div>
     <nav class="pasos" id="pasos">
-      <button class="paso on" data-t="t1"><span class="num">1</span><span class="txt">Programa</span></button>
-      <button class="paso" data-t="t2"><span class="num">2</span><span class="txt">Revisar</span></button>
-      <button class="paso" data-t="t3"><span class="num">3</span><span class="txt">Diseñar</span></button>
-      <button class="paso" data-t="t4"><span class="num">4</span><span class="txt">Corregir</span></button>
-      <button class="paso paso-aj" data-t="t5"><span class="num">&#9881;</span><span class="txt">Ajustes</span></button>
+      <div role="button" tabindex="0" class="paso on" data-t="t1"><span class="num">1</span><span class="txt">Programa</span></div>
+      <div role="button" tabindex="0" class="paso" data-t="t2"><span class="num">2</span><span class="txt">Revisar</span></div>
+      <div role="button" tabindex="0" class="paso" data-t="t3"><span class="num">3</span><span class="txt">Diseñar</span></div>
+      <div role="button" tabindex="0" class="paso" data-t="t4"><span class="num">4</span><span class="txt">Corregir</span></div>
+      <div role="button" tabindex="0" class="paso paso-aj" data-t="t5"><span class="num">&#9881;</span><span class="txt">Ajustes</span></div>
     </nav>
   </header>
 
@@ -31,7 +31,7 @@
       <div class="lista-arch" id="archivos"></div>
       <label for="txtPegado">Texto o notas para Claude <span class="opc">(opcional)</span></label>
       <textarea id="txtPegado" class="crece" rows="4" placeholder="Pega aquí el programa, o escribe notas: «la fiesta es en diciembre aunque diga septiembre»"></textarea>
-      <button class="btn prim" id="bLeer">Leer con Claude</button>
+      <div role="button" tabindex="0" class="btn prim" id="bLeer">Leer con Claude</div>
       <p class="ayuda centro">¿Ya tienes el programa en marcado? <a href="#" id="lnkSaltar">Pásate a Revisar</a>.</p>
     </section>
 
@@ -41,13 +41,13 @@
       <div id="avisos"><div class="vacio">Todavía no hay avisos. Aparecen después de leer con Claude.</div></div>
       <div class="fila-tit">
         <label for="marcado">Programa en marcado</label>
-        <button class="lnk" id="bAyuda">¿Cómo se escribe?</button>
+        <div role="button" tabindex="0" class="lnk" id="bAyuda">¿Cómo se escribe?</div>
       </div>
       <div id="ayuda" class="caja-ayuda" hidden></div>
       <textarea id="marcado" class="crece mono" rows="14" spellcheck="false" placeholder="NOMBRE: Virgen de la Defensa&#10;FECHAS: Del 5 al 9 de diciembre del 2027&#10;CINTILLA: DÍAS DE FIESTA&#10;DIA: DOMINGO 5&#10;EVENTO: 7:00 p.m. | Celebración Eucarística"></textarea>
       <div class="fila">
-        <button class="btn sec" id="bFechas">Revisar fechas</button>
-        <button class="btn prim" id="bIrDiseno">Se ve bien, a diseñar</button>
+        <div role="button" tabindex="0" class="btn sec" id="bFechas">Revisar fechas</div>
+        <div role="button" tabindex="0" class="btn prim" id="bIrDiseno">Se ve bien, a diseñar</div>
       </div>
     </section>
 
@@ -57,7 +57,7 @@
       <label for="formato">Tamaño de papel</label>
       <select id="formato"></select>
       <div class="seg seg-or" id="pOrientacion" role="radiogroup">
-        <button data-v="v" class="on">Vertical</button><button data-v="h">Horizontal</button>
+        <div role="button" tabindex="0" data-v="v" class="on">Vertical</div><div role="button" tabindex="0" data-v="h">Horizontal</div>
       </div>
       <div class="medidas">
         <div><label for="mAncho">Ancho (mm)</label><input id="mAncho" type="number" step="0.1" min="50"></div>
@@ -66,11 +66,11 @@
       </div>
       <div class="fila-tit">
         <span class="ayuda" id="notaMedidas">Medidas del papel. El PDF lo montas en tu plantilla de CTP.</span>
-        <button class="lnk" id="bGuardarMedida" hidden>Guardar como tamaño</button>
+        <div role="button" tabindex="0" class="lnk" id="bGuardarMedida" hidden>Guardar como tamaño</div>
       </div>
       <label for="pColumnas">Columnas del programa</label>
       <div class="seg" id="pColumnas" role="radiogroup">
-        <button data-v="" class="on">Auto</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button>
+        <div role="button" tabindex="0" data-v="" class="on">Auto</div><div role="button" tabindex="0" data-v="2">2</div><div role="button" tabindex="0" data-v="3">3</div><div role="button" tabindex="0" data-v="4">4</div>
       </div>
       <label>Qué mostrar</label>
       <div class="interruptores">
@@ -79,11 +79,11 @@
         <label class="sw"><input type="checkbox" id="pLema" checked><span></span>Lema</label>
         <label class="sw"><input type="checkbox" id="pLineas" checked><span></span>Líneas entre columnas</label>
       </div>
-      <button class="btn prim" id="bGenerar">Generar diseño</button>
+      <div role="button" tabindex="0" class="btn prim" id="bGenerar">Generar diseño</div>
       <div id="resultado" class="resultado" hidden></div>
       <div class="fila">
-        <button class="btn sec" id="bPDF">Exportar PDF</button>
-        <button class="btn sec" id="bReiniciar" title="Quita los cambios de tamaño y espacios que pidió el chat">Diseño normal</button>
+        <div role="button" tabindex="0" class="btn sec" id="bPDF">Exportar PDF</div>
+        <div role="button" tabindex="0" class="btn sec" id="bReiniciar" title="Quita los cambios de tamaño y espacios que pidió el chat">Diseño normal</div>
       </div>
       <p class="ayuda">Cada vez que generas o corriges se arma el documento de nuevo. Los retoques a mano, al final.</p>
     </section>
@@ -94,12 +94,12 @@
       <p class="ayuda">Claude ve la página y ajusta el texto o el diseño. Si cambia texto, te lo avisa.</p>
       <div id="chat" class="chat"></div>
       <div class="sugerencias" id="sugerencias">
-        <button>Título más grande</button><button>Letra del programa más grande</button><button>Más aire entre días</button>
-        <button>Quita el objetivo</button><button>Cintillas más oscuras</button><button>Cambia 12:00 a.m. por 12:00 p.m.</button>
+        <div role="button" tabindex="0">Título más grande</div><div role="button" tabindex="0">Letra del programa más grande</div><div role="button" tabindex="0">Más aire entre días</div>
+        <div role="button" tabindex="0">Quita el objetivo</div><div role="button" tabindex="0">Cintillas más oscuras</div><div role="button" tabindex="0">Cambia 12:00 a.m. por 12:00 p.m.</div>
       </div>
       <textarea id="txtCorr" class="crece" rows="3" placeholder="Escribe qué quieres cambiar…"></textarea>
       <label class="sw"><input type="checkbox" id="cVista" checked><span></span>Mandar foto de la página a Claude</label>
-      <button class="btn prim" id="bCorregir">Aplicar cambio</button>
+      <div role="button" tabindex="0" class="btn prim" id="bCorregir">Aplicar cambio</div>
     </section>
 
     <!-- AJUSTES -->
@@ -114,9 +114,9 @@
         <label for="apiKey">Clave de API</label>
         <div class="fila-campo">
           <input id="apiKey" type="password" placeholder="sk-ant-…" autocomplete="off">
-          <button class="btn sec chico" id="bVerClave" title="Mostrar u ocultar la clave">Ver</button>
+          <div role="button" tabindex="0" class="btn sec chico" id="bVerClave" title="Mostrar u ocultar la clave">Ver</div>
         </div>
-        <button class="btn prim" id="bConectar">Conectar</button>
+        <div role="button" tabindex="0" class="btn prim" id="bConectar">Conectar</div>
         <div id="estadoClave" class="nota"></div>
         <label for="modelo">Modelo</label>
         <select id="modelo"></select>
@@ -124,7 +124,7 @@
       </div>
 
       <div class="tarjeta">
-        <div class="fila-tit"><h3>Uso y costo</h3><button class="lnk" id="bConsola">Ver en la consola</button></div>
+        <div class="fila-tit"><h3>Uso y costo</h3><div role="button" tabindex="0" class="lnk" id="bConsola">Ver en la consola</div></div>
         <div class="uso">
           <div><span class="uso-n" id="usoSesion">$0.00</span><span class="uso-l">Esta sesión</span></div>
           <div><span class="uso-n" id="usoMes">$0.00</span><span class="uso-l">Este mes</span></div>
@@ -135,9 +135,9 @@
       </div>
 
       <div class="tarjeta">
-        <div class="fila-tit"><h3>Tamaños de papel</h3><button class="lnk" id="bMedidas">Traer de mis plantillas</button></div>
+        <div class="fila-tit"><h3>Tamaños de papel</h3><div role="button" tabindex="0" class="lnk" id="bMedidas">Traer de mis plantillas</div></div>
         <div id="formatos"></div>
-        <button class="btn sec" id="bAgregarFormato">Agregar tamaño</button>
+        <div role="button" tabindex="0" class="btn sec" id="bAgregarFormato">Agregar tamaño</div>
         <p class="ayuda">En milímetros, ya en vertical. El sangrado normalmente es 0.</p>
       </div>
 
@@ -151,7 +151,7 @@
           <option>Playfair Display</option><option>Cormorant Garamond</option><option>Cinzel</option><option>EB Garamond</option>
           <option>Lora</option><option>Crimson Pro</option><option>Libre Baskerville</option><option>Merriweather</option>
         </datalist>
-        <button class="btn sec" id="bFuentes">Revisar y bajar las que falten</button>
+        <div role="button" tabindex="0" class="btn sec" id="bFuentes">Revisar y bajar las que falten</div>
         <p class="ayuda">Las baja gratis de Google Fonts y las instala. Las de Adobe Fonts actívalas en Creative Cloud.</p>
       </div>
     </section>

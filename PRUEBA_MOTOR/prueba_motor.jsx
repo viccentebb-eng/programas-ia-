@@ -94,18 +94,23 @@ try {
     function marcoRect(ins, wmm) {
         rect(lyF, [ins, ins, H - ins, W - ins], { fillColor: NONE, strokeColor: K, strokeWeight: wmm * MMPT, strokeAlignment: StrokeAlignment.CENTER_ALIGNMENT });
     }
+    // Cada estilo trae sus adornos; los que falten se omiten (sin cenefa queda un marco de filetes).
+    var hayCenefa = !!(A.banda_h && A.banda_v);
     marcoRect(9.7 * k, 1.4 * k); marcoRect(11.625 * k, 0.25 * k); marcoRect(17.975 * k, 0.35 * k);
+    if (!hayCenefa) marcoRect(14.8 * k, 0.6 * k);
     var b0 = 12.6 * k, b1 = 16.8 * k;
-    coloca(lyF, A.banda_h, [b0, b0, b1, W - b0], k * 100);
-    coloca(lyF, A.banda_h, [H - b1, b0, H - b0, W - b0], k * 100);
-    coloca(lyF, A.banda_v, [b0, b0, H - b0, b1], k * 100);
-    coloca(lyF, A.banda_v, [b0, W - b1, H - b0, W - b0], k * 100);
-    var C = 41 * k, o = 6 * k;
+    if (hayCenefa) {
+        coloca(lyF, A.banda_h, [b0, b0, b1, W - b0], k * 100);
+        coloca(lyF, A.banda_h, [H - b1, b0, H - b0, W - b0], k * 100);
+        coloca(lyF, A.banda_v, [b0, b0, H - b0, b1], k * 100);
+        coloca(lyF, A.banda_v, [b0, W - b1, H - b0, W - b0], k * 100);
+    }
+    var C = num(A.esquina_mm, 41) * k, o = 6 * k;
     var mask = [[0, 0], [43, 0], [43, 12.9], [23.65, 17.2], [17.2, 23.65], [12.9, 43], [0, 43]];
     function esquina(fx, fy) {
-        var pts = [];
+        var pts = [], s = C / (41 * k);
         for (var i = 0; i < mask.length; i++) {
-            var x = o - k + mask[i][0] * k, y = o - k + mask[i][1] * k;
+            var x = o - k + mask[i][0] * k * s, y = o - k + mask[i][1] * k * s;
             pts.push([fx ? W - x : x, fy ? H - y : y]);
         }
         poli(lyF, pts, PAPER);
@@ -114,7 +119,7 @@ try {
         try { if (fx) r.flipItem(Flip.HORIZONTAL, AnchorPoint.CENTER_ANCHOR); if (fy) r.flipItem(Flip.VERTICAL, AnchorPoint.CENTER_ANCHOR); } catch (e) {}
         r.name = "esquina";
     }
-    esquina(false, false); esquina(true, false); esquina(false, true); esquina(true, true);
+    if (A.esquina) { esquina(false, false); esquina(true, false); esquina(false, true); esquina(true, true); }
 
     // =================== ESTILOS ===================
     var cambios = [];
@@ -258,10 +263,16 @@ try {
     }
     var tPr = caja(E.programa_titulo || "PROGRAMA", S.programa, y, L + CW * 0.25, R - CW * 0.25, "programa titulo");
     var exP = extremos(tPr), bP = tPr.geometricBounds, ymP = (bP[0] + bP[2]) / 2;
-    if (exP) {
-        var dw = 46.7 * k, dh = 7 * k;
+    if (exP && A.div_izq) {
+        var dw = 46.7 * k, dh = num(A.divisor_alto_mm, 7) * k;
         var d1 = coloca(lyA, A.div_izq, [ymP - dh / 2, exP[0] - 4 * k - dw, ymP + dh / 2, exP[0] - 4 * k]); d1.name = "adorno programa izq";
-        var d2 = coloca(lyA, A.div_der, [ymP - dh / 2, exP[1] + 4 * k, ymP + dh / 2, exP[1] + 4 * k + dw]); d2.name = "adorno programa der";
+        // si el estilo trae un solo divisor, el derecho es el mismo reflejado
+        var d2 = coloca(lyA, A.div_der || A.div_izq, [ymP - dh / 2, exP[1] + 4 * k, ymP + dh / 2, exP[1] + 4 * k + dw]); d2.name = "adorno programa der";
+        if (!A.div_der) { try { d2.flipItem(Flip.HORIZONTAL, AnchorPoint.CENTER_ANCHOR); } catch (e) {} }
+    } else if (exP) {
+        var lw = 46.7 * k;
+        grupo([linea(lyA, exP[0] - 4 * k - lw, ymP, exP[0] - 6 * k, ymP, 0.3 * k), rombo(exP[0] - 4 * k, ymP, 1.41 * k)], "adorno programa izq");
+        grupo([linea(lyA, exP[1] + 6 * k, ymP, exP[1] + 4 * k + lw, ymP, 0.3 * k), rombo(exP[1] + 4 * k, ymP, 1.41 * k)], "adorno programa der");
     }
     y = fondo(tPr) + 3.5 * k;
 

@@ -82,7 +82,7 @@ textarea.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12
 .btn.sec { background: transparent; color: var(--texto); border-color: var(--borde-f); }
 .btn.sec:hover { background: var(--sup); }
 .btn.chico { width: auto; margin: 0 0 0 6px; padding: 4px 12px; min-height: 30px; }
-.btn:disabled { opacity: 0.45; cursor: default; }
+.btn.apagado { opacity: 0.45; cursor: default; }
 .fila { display: flex; }
 .fila > .btn { flex: 1; }
 .fila > .btn + .btn { margin-left: 8px; }
@@ -105,8 +105,8 @@ textarea.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12
   border-radius: 4px; padding: 5px 8px; margin-top: 4px; font-size: 12px;
 }
 .arch .tipo { color: var(--texto2); margin-left: 6px; }
-.arch button { background: none; border: none; color: var(--texto2); cursor: pointer; font-size: 14px; padding: 0 4px; min-width: 24px; min-height: 24px; }
-.arch button:hover { color: var(--error); }
+.arch [role=button] { background: none; border: none; color: var(--texto2); cursor: pointer; font-size: 14px; padding: 0 4px; min-width: 24px; min-height: 24px; }
+.arch [role=button]:hover { color: var(--error); }
 
 /* avisos */
 .vacio { color: var(--texto2); font-size: 12px; padding: 8px; border: 1px dashed var(--borde); border-radius: var(--r); }
@@ -118,9 +118,9 @@ textarea.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12
 
 /* segmentado e interruptores */
 .seg { display: flex; border: 1px solid var(--borde-f); border-radius: 4px; overflow: hidden; }
-.seg button { flex: 1; background: var(--sup2); color: var(--texto2); border: none; padding: 6px 0; cursor: pointer; min-height: 30px; }
-.seg button + button { border-left: 1px solid var(--borde-f); }
-.seg button.on { background: var(--acento); color: #fff; }
+.seg [role=button] { flex: 1; background: var(--sup2); color: var(--texto2); border: none; padding: 6px 0; cursor: pointer; min-height: 30px; }
+.seg [role=button] + [role=button] { border-left: 1px solid var(--borde-f); }
+.seg [role=button].on { background: var(--acento); color: #fff; }
 .seg-or { margin-top: 8px; }
 .medidas { display: flex; }
 .medidas > div { flex: 1; }
@@ -146,11 +146,11 @@ textarea.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12
 .msg.yo { background: #2c4a6e; margin-left: 24px; }
 .msg.ia { background: var(--sup); margin-right: 24px; }
 .sugerencias { display: flex; flex-wrap: wrap; margin: 8px 0 4px 0; }
-.sugerencias button {
+.sugerencias [role=button] {
   background: var(--sup); color: var(--texto); border: 1px solid var(--borde); border-radius: 12px;
   padding: 3px 9px; margin: 0 4px 4px 0; font-size: 11px; cursor: pointer;
 }
-.sugerencias button:hover { border-color: var(--acento); }
+.sugerencias [role=button]:hover { border-color: var(--acento); }
 
 /* ajustes */
 .tarjeta { background: var(--sup2); border: 1px solid var(--borde); border-radius: var(--r); padding: 10px; margin-bottom: 10px; }
@@ -164,8 +164,8 @@ textarea.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12
 .formato input { padding: 5px 6px; font-size: 12px; }
 .formato .f-nom { flex: 3; }
 .formato .f-num { flex: 1.1; margin-left: 4px; text-align: right; }
-.formato button { background: none; border: none; color: var(--texto2); cursor: pointer; font-size: 14px; min-width: 24px; min-height: 24px; margin-left: 2px; }
-.formato button:hover { color: var(--error); }
+.formato [role=button] { background: none; border: none; color: var(--texto2); cursor: pointer; font-size: 14px; min-width: 24px; min-height: 24px; margin-left: 2px; }
+.formato [role=button]:hover { color: var(--error); }
 .formato-cab { display: flex; font-size: 11px; color: var(--texto2); }
 .formato-cab span:first-child { flex: 3; }
 .formato-cab span { flex: 1.1; margin-left: 4px; text-align: right; }
@@ -186,3 +186,12 @@ textarea.mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12
 }
 @keyframes gira { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .girando { animation: none; border-color: var(--acento); } }
+
+/* los botones son div: centrar texto y que no se seleccione */
+[role=button] { cursor: pointer; user-select: none; }
+.btn { text-align: center; }
+.lnk { display: inline-block; }
+.paso { text-align: center; }
+.seg [role=button] { text-align: center; }
+.arch [role=button], .formato [role=button] { text-align: center; line-height: 24px; }
+[role=button]:focus { outline: 2px solid var(--acento); outline-offset: 1px; }

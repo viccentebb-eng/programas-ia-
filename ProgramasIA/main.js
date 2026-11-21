@@ -46,7 +46,7 @@ function estado(t, tipo) {
 function ocupado(si, texto) {
   S.ocupado = si;
   $("girando").hidden = !si;
-  document.querySelectorAll(".btn.prim").forEach(b => { b.disabled = si; });
+  document.querySelectorAll(".btn.prim").forEach(b => b.classList.toggle("apagado", si));
   if (texto) estado(texto, si ? "trabajando" : "");
 }
 // Envuelve una accion: no deja picar dos veces y siempre quita el "trabajando"
@@ -310,8 +310,8 @@ async function leerArchivo(f) {
 function pintarArchivos() {
   const c = $("archivos");
   c.innerHTML = S.archivos.map((a, i) => '<div class="arch"><span>' + esc(a.nombre) + '<span class="tipo">' +
-    (a.tipo === "texto" ? "texto" : a.tipo === "application/pdf" ? "PDF" : "foto") + '</span></span><button data-i="' + i + '" title="Quitar">×</button></div>').join("");
-  c.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { S.archivos.splice(Number(b.getAttribute("data-i")), 1); pintarArchivos(); }));
+    (a.tipo === "texto" ? "texto" : a.tipo === "application/pdf" ? "PDF" : "foto") + '</span></span><div role="button" tabindex="0" data-i="' + i + '" title="Quitar">×</div></div>').join("");
+  c.querySelectorAll("[role=button]").forEach(b => b.addEventListener("click", () => { S.archivos.splice(Number(b.getAttribute("data-i")), 1); pintarArchivos(); }));
 }
 // arrastrar desde el Explorador de Windows (si esta version de InDesign lo permite)
 async function soltarArchivos(e) {
@@ -411,7 +411,7 @@ function pintarEditorFormatos() {
   c.innerHTML = '<div class="formato-cab"><span>Nombre</span><span>Ancho</span><span>Alto</span><span>Sangr.</span><span></span></div>' +
     lista.map((f, i) => '<div class="formato" data-i="' + i + '"><input class="f-nom" value="' + esc(f.nombre) + '">' +
       '<input class="f-num" value="' + f.ancho + '"><input class="f-num" value="' + f.alto + '"><input class="f-num" value="' + f.sangrado + '">' +
-      '<button title="Quitar este tamaño">×</button></div>').join("");
+      '<div role="button" tabindex="0" title="Quitar este tamaño">×</div></div>').join("");
   c.querySelectorAll(".formato").forEach(row => {
     const leerFila = () => {
       const v = row.querySelectorAll("input");
@@ -423,7 +423,7 @@ function pintarEditorFormatos() {
       if (f.ancho > f.alto) { const t = f.ancho; f.ancho = f.alto; f.alto = t; estado("Lo puse en vertical (" + f.ancho + " x " + f.alto + ")."); }
       l[i] = f; guardarFormatos(l); pintarEditorFormatos();
     }));
-    row.querySelector("button").addEventListener("click", () => {
+    row.querySelector("[role=button]").addEventListener("click", () => {
       const l = listaFormatos();
       if (l.length <= 1) { estado("Deja al menos un tamaño.", "error"); return; }
       l.splice(Number(row.getAttribute("data-i")), 1); guardarFormatos(l); pintarEditorFormatos();
@@ -444,8 +444,8 @@ function llenarFormatos() {
 
 // ---- medidas de este trabajo: parten del tamaño elegido y se pueden cambiar (y girar)
 // Se guardan por tamaño elegido; la lista de Ajustes no cambia salvo con "Guardar como tamaño".
-function orientacionUI() { const b = document.querySelector("#pOrientacion button.on"); return b ? b.getAttribute("data-v") : "v"; }
-function ponerOrientacion(v) { document.querySelectorAll("#pOrientacion button").forEach(b => b.classList.toggle("on", b.getAttribute("data-v") === v)); }
+function orientacionUI() { const b = document.querySelector("#pOrientacion [role=button].on"); return b ? b.getAttribute("data-v") : "v"; }
+function ponerOrientacion(v) { document.querySelectorAll("#pOrientacion [role=button]").forEach(b => b.classList.toggle("on", b.getAttribute("data-v") === v)); }
 function formatoElegido() { const l = listaFormatos(); return l[parseInt($("formato").value || "0", 10)] || l[0]; }
 function cargarMedidas() {
   const f = formatoElegido(); if (!f) return;
@@ -511,8 +511,8 @@ async function rutaPlugin(sub, nombre) {
   const d = sub ? await pf.getEntry(sub) : pf;
   return nombre ? (await d.getEntry(nombre)) : d;
 }
-function columnasUI() { const b = document.querySelector("#pColumnas button.on"); return b ? b.getAttribute("data-v") : ""; }
-function ponerColumnas(v) { document.querySelectorAll("#pColumnas button").forEach(b => b.classList.toggle("on", b.getAttribute("data-v") === String(v || ""))); }
+function columnasUI() { const b = document.querySelector("#pColumnas [role=button].on"); return b ? b.getAttribute("data-v") : ""; }
+function ponerColumnas(v) { document.querySelectorAll("#pColumnas [role=button]").forEach(b => b.classList.toggle("on", b.getAttribute("data-v") === String(v || ""))); }
 function paramsUI() {
   const p = Object.assign({}, S.params);
   const col = columnasUI(); if (col) p.columnas = parseInt(col, 10); else delete p.columnas;
@@ -670,15 +670,15 @@ $("bFechas").addEventListener("click", () => {
 });
 $("bIrDiseno").addEventListener("click", () => { setCfg("marcado", $("marcado").value); tab("t3"); marcarPasos(); });
 $("bAyuda").addEventListener("click", () => { const a = $("ayuda"); a.hidden = !a.hidden; a.textContent = FORMATO_MARCADO; });
-document.querySelectorAll("#pColumnas button").forEach(b => b.addEventListener("click", () => ponerColumnas(b.getAttribute("data-v"))));
+document.querySelectorAll("#pColumnas [role=button]").forEach(b => b.addEventListener("click", () => ponerColumnas(b.getAttribute("data-v"))));
 $("bGenerar").addEventListener("click", accion(generar, "Generando el diseño..."));
 $("bPDF").addEventListener("click", accion(exportarPDF, "Exportando..."));
 $("bReiniciar").addEventListener("click", reiniciarParams);
 $("formato").addEventListener("change", () => { setCfg("formatoSel", $("formato").value); cargarMedidas(); });
-document.querySelectorAll("#pOrientacion button").forEach(b => b.addEventListener("click", () => girar(b.getAttribute("data-v"))));
+document.querySelectorAll("#pOrientacion [role=button]").forEach(b => b.addEventListener("click", () => girar(b.getAttribute("data-v"))));
 ["mAncho", "mAlto", "mSangrado"].forEach(id => $(id).addEventListener("change", guardarMedidasUI));
 $("bGuardarMedida").addEventListener("click", guardarComoTamano);
-document.querySelectorAll("#sugerencias button").forEach(b => b.addEventListener("click", () => {
+document.querySelectorAll("#sugerencias [role=button]").forEach(b => b.addEventListener("click", () => {
   const t = $("txtCorr"); t.value = (t.value.trim() ? t.value.trim() + ". " : "") + b.textContent; crecer(t); try { t.focus(); } catch (e) {}
 }));
 $("bCorregir").addEventListener("click", accion(corregir, "Pidiendo el cambio..."));
@@ -693,5 +693,8 @@ $("bAgregarFormato").addEventListener("click", () => { const l = listaFormatos()
 $("bFuentes").addEventListener("click", accion(() => revisarFuentes(false), "Revisando fuentes..."));
 ["txtPegado", "marcado", "txtCorr"].forEach(id => $(id).addEventListener("input", () => crecer($(id))));
 $("marcado").addEventListener("change", () => { setCfg("marcado", $("marcado").value); marcarPasos(); });
+
+// los botones son div (UXP pinta los <button> a su manera): Enter y espacio tambien los activan
+document.addEventListener("keydown", e => { const t = e.target; if (t && t.getAttribute && t.getAttribute("role") === "button" && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); t.click(); } });
 
 cargarAjustes();
