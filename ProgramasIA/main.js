@@ -25,7 +25,16 @@ const S = {
 const MODELO_DEF = "claude-sonnet-5-5";
 
 // ------------------------------------------------------------------ ajustes guardados
-const DEF_FORMATOS = "Una carpeta oficio (Atemajac 2027) | 330.298 | 464.989 | 0";
+// Area dentro de los margenes de sus plantillas de CTP (placa horizontal), puesta en vertical. Medido el 21-nov-2026.
+const DEF_FORMATOS = [
+  "Doble oficio | 330 | 465 | 0",
+  "Una carpeta carta | 330 | 470 | 0",
+  "Una carpeta oficio | 340 | 510 | 0",
+  "Carpeta oficio rebasada | 340 | 510 | 0",
+  "Cuatro cartas | 430 | 600 | 0",
+  "Cuatro oficios | 455 | 690 | 0",
+  "Dos carpetas carta | 480 | 690 | 0"
+].join(String.fromCharCode(10));
 function cfg(k, d) { try { const v = localStorage.getItem("pia_" + k); return v === null ? d : v; } catch (e) { return d; } }
 function setCfg(k, v) { try { localStorage.setItem("pia_" + k, v); } catch (e) {} }
 
