@@ -94,10 +94,24 @@ try {
     function marcoRect(ins, wmm) {
         rect(lyF, [ins, ins, H - ins, W - ins], { fillColor: NONE, strokeColor: K, strokeWeight: wmm * MMPT, strokeAlignment: StrokeAlignment.CENTER_ALIGNMENT });
     }
-    // Cada estilo trae sus adornos; los que falten se omiten (sin cenefa queda un marco de filetes).
-    var hayCenefa = !!(A.banda_h && A.banda_v);
-    marcoRect(9.7 * k, 1.4 * k); marcoRect(11.625 * k, 0.25 * k); marcoRect(17.975 * k, 0.35 * k);
-    if (!hayCenefa) marcoRect(14.8 * k, 0.6 * k);
+    // VARIANTE DE MARCO (sacadas de los PDF del taller). Ningun reverso debe parecerse a otro.
+    //  barroco: cenefa grabada + esquinas | filetes: tres filetes | grueso: filete negro grueso + fino
+    //  esquinas: esquinas de la biblioteca + filete | doble_grueso: dos filetes gruesos | abierto: solo arriba y abajo
+    var MARCO = P.marco || "barroco";
+    if (MARCO === "esquinas" && !A.esquina_lib) MARCO = "filetes";       // sin esquina nueva no repetimos la de fabrica
+    if (MARCO === "esquinas") A.esquina = A.esquina_lib;
+    var hayCenefa = MARCO === "barroco" && !!(A.banda_h && A.banda_v);
+    if (MARCO !== "barroco" && MARCO !== "esquinas") A.esquina = null;
+    if (MARCO === "barroco") { marcoRect(9.7 * k, 1.4 * k); marcoRect(11.625 * k, 0.25 * k); marcoRect(17.975 * k, 0.35 * k); if (!hayCenefa) marcoRect(14.8 * k, 0.6 * k); }
+    else if (MARCO === "filetes") { marcoRect(10.5 * k, 0.3 * k); marcoRect(12.6 * k, 1.1 * k); marcoRect(14.7 * k, 0.3 * k); }
+    else if (MARCO === "grueso") { marcoRect(10.5 * k, 2.8 * k); marcoRect(14.6 * k, 0.35 * k); }
+    else if (MARCO === "esquinas") { marcoRect(11 * k, 0.6 * k); marcoRect(13.2 * k, 0.2 * k); }
+    else if (MARCO === "doble_grueso") { marcoRect(10 * k, 1.7 * k); marcoRect(14 * k, 1.7 * k); }
+    else if (MARCO === "abierto") {
+        var xa = 14 * k, xb = W - 14 * k;
+        linea(lyF, xa, 11 * k, xb, 11 * k, 1.6 * k); linea(lyF, xa, 13.4 * k, xb, 13.4 * k, 0.3 * k);
+        linea(lyF, xa, H - 11 * k, xb, H - 11 * k, 1.6 * k); linea(lyF, xa, H - 13.4 * k, xb, H - 13.4 * k, 0.3 * k);
+    }
     var b0 = 12.6 * k, b1 = 16.8 * k;
     if (hayCenefa) {
         coloca(lyF, A.banda_h, [b0, b0, b1, W - b0], k * 100);
@@ -152,14 +166,14 @@ try {
     function PS(name, p) { var s = doc.paragraphStyles.itemByName(name); if (!s.isValid) s = doc.paragraphStyles.add({ name: name }); setP(s, p); return s; }
     function CS(name, p) { var s = doc.characterStyles.itemByName(name); if (!s.isValid) s = doc.characterStyles.add({ name: name }); setP(s, p); return s; }
     function lang(s) {
-        var names = ["Spanish", "Español: España", "Español", "Spanish: Castilian", "Español: Castellano"];
+        var names = ["Spanish", "Espa\u00F1ol: Espa\u00F1a", "Espa\u00F1ol", "Spanish: Castilian", "Espa\u00F1ol: Castellano"];
         for (var i = 0; i < names.length; i++) { try { var l = app.languagesWithVendors.itemByName(names[i]); if (l.isValid) { s.appliedLanguage = l; return; } } catch (e) {} }
     }
     function parse(t) {
-        var out = "", r = [], i = 0, tags = ["**", "__", "~~"];
+        var out = "", r = [], i = 0, tags = ["**", "__", "~~", "%%"];
         while (i < t.length) {
             var m = null;
-            for (var q = 0; q < 3; q++) if (t.substr(i, 2) == tags[q]) { m = tags[q]; break; }
+            for (var q = 0; q < tags.length; q++) if (t.substr(i, 2) == tags[q]) { m = tags[q]; break; }
             if (m) { var j = t.indexOf(m, i + 2); if (j < 0) j = t.length; var seg = t.substring(i + 2, j); r.push([out.length, out.length + seg.length, m]); out += seg; i = j + 2; }
             else { out += t.charAt(i); i++; }
         }
@@ -170,23 +184,38 @@ try {
     var csCity = CS("ciudad", { appliedFont: F_DIS, fontStyle: "Bold Italic" });
     // capitular en la letra de encabezados: la manuscrita tiene colas que se meten en el texto
     var csCap = CS("capitular", { appliedFont: F_DIS, fontStyle: "Regular" });
-    var CMAP = { "**": csB, "__": csBI, "~~": csCity };
+    var csTemaDia = CS("tema del dia", { appliedFont: F_TXT, fontStyle: "Bold Italic", capitalization: Capitalization.NORMAL });
+    var CMAP = { "**": csB, "__": csBI, "~~": csCity, "%%": csTemaDia };
 
     var Cc = Justification.CENTER_ALIGN, LJ = Justification.LEFT_JUSTIFIED, LA = Justification.LEFT_ALIGN;
     var eT = num(P.escala_titulo, 1), eE = num(P.escala_encabezado, 1);
     var S = {
-        pre: PS("enc_pre", { appliedFont: F_DIS, fontStyle: "Regular", pointSize: 15 * k * eE, tracking: 420, justification: Cc }),
-        nombre: PS("enc_titulo", { appliedFont: F_TIT, fontStyle: "Regular", pointSize: 80 * k * eT, justification: Cc }),
-        fechas: PS("enc_fecha", { appliedFont: F_DIS, fontStyle: "Bold Italic", pointSize: 15.5 * k * eE, tracking: 240, justification: Cc }),
-        anios: PS("enc_anios", { appliedFont: F_TIT, fontStyle: "Regular", pointSize: 34 * k * eE, justification: Cc }),
-        lema_lbl: PS("enc_lema_lbl", { appliedFont: F_DIS, fontStyle: "Regular", pointSize: 10.5 * k * eE, tracking: 380, justification: Cc }),
-        lema: PS("enc_lema", { appliedFont: F_DIS, fontStyle: "Bold Italic", pointSize: 21 * k * eE, justification: Cc }),
+        pre: PS("enc_pre", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Regular", pointSize: 15 * k * eE, tracking: 420, justification: Cc }),
+        nombre: PS("enc_titulo", { hyphenation: false, appliedFont: F_TIT, fontStyle: "Regular", pointSize: 80 * k * eT, justification: Cc }),
+        fechas: PS("enc_fecha", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Bold Italic", pointSize: 15.5 * k * eE, tracking: 240, justification: Cc }),
+        anios: PS("enc_anios", { hyphenation: false, appliedFont: F_TIT, fontStyle: "Regular", pointSize: 34 * k * eE, justification: Cc }),
+        lema_lbl: PS("enc_lema_lbl", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Regular", pointSize: 10.5 * k * eE, tracking: 380, justification: Cc }),
+        lema: PS("enc_lema", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Bold Italic", pointSize: 21 * k * eE, justification: Cc }),
         intro_tit: PS("intro_tit", { appliedFont: F_DIS, fontStyle: "Bold", pointSize: 11 * kI * eE, tracking: 300, justification: Cc, spaceAfter: 1.6 * kI }),
         intro_txt: PS("intro_txt", { appliedFont: F_TXT, fontStyle: "Italic", pointSize: 10.6 * kI * eE, leading: 14.2 * kI * eE, justification: LJ, hyphenation: true }),
-        programa: PS("programa_tit", { appliedFont: F_DIS, fontStyle: "Regular", pointSize: 24 * k * eE, tracking: 550, justification: Cc }),
-        pie: PS("pie", { appliedFont: F_DIS, fontStyle: "Regular", pointSize: 15 * k * eE, tracking: 450, justification: Cc })
+        programa: PS("programa_tit", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Regular", pointSize: 24 * k * eE, tracking: 550, justification: Cc }),
+        enc_sub: PS("enc_sub", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Regular", pointSize: 13 * k * eE, tracking: 160, justification: Cc, capitalization: Capitalization.SMALL_CAPS }),
+        cred_tit: PS("credito titulo", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Regular", pointSize: 10.5 * k * eE, tracking: 60, justification: Cc, capitalization: Capitalization.ALL_CAPS, spaceAfter: 0.8 * k }),
+        cred_txt: PS("credito texto", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Regular", pointSize: 9.5 * k * eE, tracking: 30, justification: Cc, capitalization: Capitalization.SMALL_CAPS, leading: 11.5 * k * eE }),
+        agradece: PS("agradecimiento", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Regular", pointSize: 9.5 * k * eE, tracking: 120, justification: Cc, capitalization: Capitalization.SMALL_CAPS }),
+        impreso: PS("pie de imprenta", { appliedFont: F_TXT, fontStyle: "Regular", pointSize: 5.2 * k, justification: Justification.RIGHT_ALIGN, leading: 6.2 * k }),
+        pie: PS("pie", { hyphenation: false, appliedFont: F_DIS, fontStyle: "Regular", pointSize: 15 * k * eE, tracking: 450, justification: Cc })
     };
     S.intro_obj = PS("intro_obj", { basedOn: S.intro_txt, dropCapCharacters: 1, dropCapLines: 3, dropCapStyle: csCap });
+    // VARIANTE DE TITULO: manuscrita | romana (mayusculas) | mixta (mayusculas con capitulares manuscritas, como Tizapan)
+    var TIT = P.titulo_estilo || "manuscrita";
+    if (TIT === "romana") setP(S.nombre, { appliedFont: F_DIS, fontStyle: "Bold", pointSize: 50 * k * eT, tracking: 50, capitalization: Capitalization.ALL_CAPS });
+    if (TIT === "mixta") setP(S.nombre, { appliedFont: F_DIS, fontStyle: "Regular", pointSize: 44 * k * eT, tracking: 40, capitalization: Capitalization.ALL_CAPS });
+    // VARIANTE DE "PROGRAMA": espaciado | manuscrita | banda (barra negra con letra blanca)
+    var PRG = P.programa_estilo || "espaciado";
+    if (PRG === "manuscrita") setP(S.programa, { appliedFont: F_TIT, fontStyle: "Regular", pointSize: 40 * k * eE, tracking: 0 });
+    if (PRG === "banda") setP(S.programa, { fontStyle: "Bold", pointSize: 15 * k * eE, tracking: 600, fillColor: PAPER,
+        paragraphShadingOn: true, paragraphShadingColor: K, paragraphShadingTint: 100, paragraphShadingTopOffset: 2.2 * k, paragraphShadingBottomOffset: 1.6 * k });
     lang(S.intro_txt);
 
     // =================== ENCABEZADO (apilado) ===================
@@ -219,39 +248,82 @@ try {
         try { tf.recompose(); var ch = tf.parentStory.characters; return [ch.firstItem().horizontalOffset, ch.lastItem().endHorizontalOffset]; } catch (e) { return null; }
     }
     var E = D.enc || {}, gS = num(P.separacion_encabezado, 1);
-    var y = 24.4 * k;
-    if (E.pre) { var tPre = caja(E.pre, S.pre, y, L - 8 * k, R + 8 * k, "pre"); maxLineas(tPre, 1, 8); y = fondo(tPre) + 2.5 * k * gS; }
+    // =================== COMPOSICION (acomodo general, sacado de los PDF del taller) ===================
+    //  clasica: encabezado centrado arriba y programa en columnas debajo
+    //  lateral: encabezado en una franja a la izquierda (titulo en varias lineas) y el programa a la derecha
+    //  banda: titulo en una banda negra de lado a lado con letra blanca
+    //  asimetrica: titulo a la izquierda y fechas/lema/aniversario en un bloque a la derecha
+    var COMP = P.composicion || "clasica";
+    var HL = L, HR = R, ENC_ANCHO = true;                       // zona del encabezado
+    if (COMP === "lateral") { HR = L + CW * 0.36; ENC_ANCHO = false; }
+    if (COMP === "asimetrica") { HR = L + CW * 0.6; ENC_ANCHO = false; }
+    var HX0 = ENC_ANCHO ? L - 8 * k : HL, HX1 = ENC_ANCHO ? R + 8 * k : HR, HW = HR - HL;
+    if (COMP === "asimetrica") { setP(S.pre, { justification: LA, tracking: 260 }); setP(S.nombre, { justification: LA }); setP(S.enc_sub, { justification: LA }); }
+    if (COMP === "banda") setP(S.nombre, { fillColor: PAPER });
+    var yTop = 24.4 * k, y = yTop;
+    if (E.pre) { var tPre = caja(E.pre, S.pre, y, HX0, HX1, "pre"); maxLineas(tPre, COMP === "lateral" ? 2 : 1, 8); y = fondo(tPre) + 2.5 * k * gS; }
     if (E.nombre) {
-        var tNom = caja(E.nombre, S.nombre, y - 2 * k, L - 8 * k, R + 8 * k, "nombre"); maxLineas(tNom, 1, 24 * k);
+        var yNom0 = y;
+        if (COMP === "banda") y += 3 * k;
+        var tNom = caja(E.nombre, S.nombre, y - 2 * k, HX0, HX1, "nombre"); maxLineas(tNom, COMP === "lateral" ? 3 : 1, 24 * k);
+        if (TIT === "mixta") {
+            // capitular manuscrita grande en cada palabra larga (VIRGEN de GUADALUPE -> V y G manuscritas)
+            try {
+                var fT = fuente(F_TIT, "Regular"), wsT = tNom.parentStory.words, psT = tNom.parentStory.pointSize;
+                for (var wi = 0; wi < wsT.length; wi++) {
+                    if (wsT[wi].characters.length < 4) continue;
+                    var c0 = wsT[wi].characters[0];
+                    c0.appliedFont = fT[0]; c0.fontStyle = fT[1]; c0.pointSize = psT * 1.85; c0.capitalization = Capitalization.NORMAL; c0.baselineShift = -psT * 0.12;
+                }
+                var maxL = COMP === "lateral" ? 3 : 1;
+                for (var gT = 0; gT < 20 && (tNom.recompose(), tNom.lines.length > maxL || tNom.overflows); gT++) {
+                    var chT = tNom.parentStory.characters; for (var ci = 0; ci < chT.length; ci++) chT[ci].pointSize = chT[ci].pointSize * 0.94;
+                }
+            } catch (e) {}
+        }
         // la letra manuscrita baja mucho de la linea base: medir desde la base, no desde el marco
         var yN = fondo(tNom);
         try { yN = Math.max(yN, tNom.lines.lastItem().baseline + tNom.parentStory.pointSize * 0.36 / MMPT); } catch (e) {}
+        if (COMP === "banda") {
+            // banda negra de lado a lado detras del titulo (letra en blanco papel)
+            var banda = rect(lyA, [yNom0, L - 4 * k, yN + 2.5 * k, R + 4 * k], { fillColor: K, strokeWeight: 0, strokeColor: NONE });
+            banda.name = "banda del titulo"; yN += 2.5 * k;
+        }
         y = yN + 1 * k * gS;
     }
-    if (E.fechas) { var tFec = caja(E.fechas, S.fechas, y, L - 8 * k, R + 8 * k, "fechas"); maxLineas(tFec, 1, 8); y = fondo(tFec) + 1.5 * k * gS; }
+    if (E.subtitulo) { var tSub = caja(E.subtitulo, S.enc_sub, y, HX0, HX1, "subtitulo"); maxLineas(tSub, COMP === "lateral" ? 2 : 1, 7); y = fondo(tSub) + 1.5 * k * gS; }
+    // en la asimetrica, fechas / aniversario / lema van en un bloque a la derecha, arriba
+    var yIzq = y;
+    if (COMP === "asimetrica") {
+        y = yTop + 3 * k; HL = HR + 6 * k; HR = R; HX0 = HL; HX1 = HR; HW = HR - HL;
+        linea(lyA, HL - 3 * k, yTop, HL - 3 * k, yIzq - 2 * k, 0.4 * k);
+    }
+    if (E.fechas) { var tFec = caja(E.fechas, S.fechas, y, HX0, HX1, "fechas"); maxLineas(tFec, ENC_ANCHO ? 1 : 2, 8); y = fondo(tFec) + 1.5 * k * gS; }
     if (E.anios) {
-        var tAn = caja(E.anios, S.anios, y, L + CW * 0.3, R - CW * 0.3, "aniversario"); maxLineas(tAn, 1, 14);
+        var tAn = caja(E.anios, S.anios, y, HL + HW * (ENC_ANCHO ? 0.3 : 0.05), HR - HW * (ENC_ANCHO ? 0.3 : 0.05), "aniversario"); maxLineas(tAn, 1, 14);
         var ex = extremos(tAn), b = tAn.geometricBounds, ym = b[0] + (b[2] - b[0]) * 0.55;
-        if (ex) {
+        if (ex && ENC_ANCHO) {
             grupo([linea(lyA, ex[0] - 53 * k, ym, ex[0] - 5 * k, ym, 0.3 * k), rombo(ex[0] - 5 * k, ym, 1.41 * k)], "linea aniversario izq");
             grupo([linea(lyA, ex[1] + 5 * k, ym, ex[1] + 53 * k, ym, 0.3 * k), rombo(ex[1] + 5 * k, ym, 1.41 * k)], "linea aniversario der");
         }
         y = fondo(tAn) + 2 * k * gS;
     }
     if (E.lema && P.mostrar_lema !== false) {
-        var tLl = caja(E.lema_etiqueta || "LEMA DE LA FIESTA", S.lema_lbl, y, L, R, "lema etiqueta"); y = fondo(tLl) + 0.5 * k;
-        var tLe = caja(E.lema, S.lema, y, L, R, "lema"); maxLineas(tLe, 2, 10); y = fondo(tLe) + 4 * k * gS;
+        var tLl = caja(E.lema_etiqueta || "LEMA DE LA FIESTA", S.lema_lbl, y, HL, HR, "lema etiqueta"); y = fondo(tLl) + 0.5 * k;
+        var tLe = caja(E.lema, S.lema, y, HL, HR, "lema"); maxLineas(tLe, ENC_ANCHO ? 2 : 4, 10); y = fondo(tLe) + 4 * k * gS;
     }
+    if (COMP === "asimetrica") { y = Math.max(y, yIzq) + 2 * k; HL = L; HR = R; HW = CW; }
     var hayObj = E.objetivo && P.mostrar_objetivo !== false, hayMsg = E.mensaje && P.mostrar_mensaje !== false;
     if (hayObj || hayMsg) {
-        var yA = y, yB = y, gap = 7 * k, pad = 5 * k;
-        var xA0 = L, xA1 = hayMsg ? L + (CW - gap) * 0.4 : R, xB0 = hayObj ? xA1 + gap : L, xB1 = R;
+        var yA = y, yB = y, gap = 7 * k, pad = 5 * k, apilado = COMP === "lateral";
+        var xA0 = HL, xA1 = hayMsg && !apilado ? HL + (HW - gap) * 0.4 : HR, xB0 = hayObj && !apilado ? xA1 + gap : HL, xB1 = HR;
         if (hayObj) {
             var t1 = caja("OBJETIVO", S.intro_tit, yA, xA0, xA1, "objetivo titulo");
             var t2 = caja(E.objetivo, S.intro_obj, fondo(t1) + 1.6 * k, xA0, xA1, "objetivo");
             yA = fondo(t2);
         }
         if (hayMsg) {
+            if (apilado) yB = yA + (hayObj ? gap : 0);
             var top = yB, t3 = caja("MENSAJE", S.intro_tit, top + 3.5 * k, xB0 + pad, xB1 - pad, "mensaje titulo");
             var t4 = caja(E.mensaje, S.intro_txt, fondo(t3) + 1.6 * k, xB0 + pad, xB1 - pad, "mensaje");
             var bot = fondo(t4) + 4 * k;
@@ -261,8 +333,17 @@ try {
         }
         y = Math.max(yA, yB) + 4.5 * k * gS;
     }
-    var tPr = caja(E.programa_titulo || "PROGRAMA", S.programa, y, L + CW * 0.25, R - CW * 0.25, "programa titulo");
-    var exP = extremos(tPr), bP = tPr.geometricBounds, ymP = (bP[0] + bP[2]) / 2;
+    // zona del programa: en la lateral va a la derecha de la franja, desde arriba
+    var PL = L, PR = R, yFinEnc = y;
+    if (COMP === "lateral") { PL = HR + 7 * k; y = yTop; }
+    var PW = PR - PL;
+    var tPr = PRG === "banda" ? caja(E.programa_titulo || "PROGRAMA", S.programa, y + 1.5 * k, PL, PR, "programa titulo")
+        : caja(E.programa_titulo || (PRG === "manuscrita" ? "Programa" : "PROGRAMA"), S.programa, y, PL + PW * 0.18, PR - PW * 0.18, "programa titulo");
+    var exP = PRG === "banda" ? null : extremos(tPr), bP = tPr.geometricBounds, ymP = (bP[0] + bP[2]) / 2;
+    // los divisores de fabrica solo van con el marco barroco; si no, de la biblioteca o filetes
+    if (MARCO !== "barroco" && !A.div_lib) { A.div_izq = null; A.div_der = null; }
+    if (A.div_lib) { A.div_izq = A.div_lib; A.div_der = null; }
+    if (PRG === "banda") y += 2 * k;
     if (exP && A.div_izq) {
         var dw = 46.7 * k, dh = num(A.divisor_alto_mm, 7) * k;
         var d1 = coloca(lyA, A.div_izq, [ymP - dh / 2, exP[0] - 4 * k - dw, ymP + dh / 2, exP[0] - 4 * k]); d1.name = "adorno programa izq";
@@ -283,10 +364,56 @@ try {
         var tPie = caja(E.pie, S.pie, H - 29.2 * k, L - 8 * k, R + 8 * k, "pie"); maxLineas(tPie, 1, 8);
     }
 
+    // pie de imprenta (como en los PDF del taller: chiquito, abajo a la derecha, dentro del marco)
+    if (D.impreso) {
+        var tImp = caja(D.impreso, S.impreso, H - 25.5 * k, W / 2, W - 49 * k, "pie de imprenta");
+        try { var bi = tImp.geometricBounds; tImp.move(undefined, [0, (H - 18.9 * k) - bi[2]]); } catch (e) {}
+    }
+
+    // =================== BLOQUES AL PIE (de abajo hacia arriba) ===================
+    // creditos lado a lado (Sacerdotes / Organizadores...), mayordomia y agradecimiento; el programa usa lo que queda
+    var cBotPie = H - 38.65 * k, bloques = [];
+    function bloque(frames, gapDespues) { bloques.push({ f: frames, gap: gapDespues }); }
+    var creds = E.creditos || [];
+    if (creds.length) {
+        var nC = Math.min(creds.length, 3), anchoC = CW / nC, fs = [];
+        for (var c = 0; c < nC; c++) {
+            var tc = pg.textFrames.add(lyT, undefined, undefined, { geometricBounds: [0, L + c * anchoC + 2 * k, 60 * k, L + (c + 1) * anchoC - 2 * k], name: "credito " + (c + 1) });
+            try { tc.textFramePreferences.insetSpacing = [0, 0, 0, 0]; } catch (e) {}
+            tc.contents = creds[c][0] + "\r" + creds[c][1].join("\r");
+            tc.parentStory.paragraphs[0].appliedParagraphStyle = S.cred_tit;
+            for (var pi = 1; pi < tc.parentStory.paragraphs.length; pi++) tc.parentStory.paragraphs[pi].appliedParagraphStyle = S.cred_txt;
+            try { tc.textFramePreferences.autoSizingReferencePoint = AutoSizingReferenceEnum.TOP_CENTER_POINT; tc.textFramePreferences.autoSizingType = AutoSizingTypeEnum.HEIGHT_ONLY; } catch (e) {}
+            tc.recompose(); fs.push(tc);
+        }
+        bloque(fs, 3 * k);
+    }
+    if (E.mayordomia) {
+        var tMy = caja("MAYORDOM\u00CDA\r" + E.mayordomia, S.cred_tit, 0, L + CW * 0.08, R - CW * 0.08, "mayordomia");
+        try { tMy.parentStory.paragraphs[1].appliedParagraphStyle = S.cred_txt; tMy.recompose(); } catch (e) {}
+        bloque([tMy], 2.5 * k);
+    }
+    if (E.agradecimiento) { var tAg = caja(E.agradecimiento, S.agradece, 0, L, R, "agradecimiento"); maxLineas(tAg, 2, 6); bloque([tAg], 2 * k); }
+    // acomodar: el ultimo bloque queda pegado al pie; cada uno sube segun su alto
+    var yCur = cBotPie;
+    for (var bq = bloques.length - 1; bq >= 0; bq--) {
+        var hMax = 0;
+        for (var fi = 0; fi < bloques[bq].f.length; fi++) { var gbq = bloques[bq].f[fi].geometricBounds; hMax = Math.max(hMax, gbq[2] - gbq[0]); }
+        var top = yCur - hMax;
+        for (var fj = 0; fj < bloques[bq].f.length; fj++) { var g0 = bloques[bq].f[fj].geometricBounds; bloques[bq].f[fj].move(undefined, [0, top - g0[0]]); }
+        yCur = top - bloques[bq].gap;
+    }
+    if (bloques.length) {
+        var yl = yCur + bloques[0].gap / 2;
+        grupo([linea(lyA, L + CW * 0.2, yl, W / 2 - 3 * k, yl, 0.25 * k), rombo(W / 2, yl, 1.2 * k), linea(lyA, W / 2 + 3 * k, yl, R - CW * 0.2, yl, 0.25 * k)], "adorno bloques pie");
+        cBotPie = yCur - 1.5 * k;
+    }
+
     // =================== PROGRAMA (columnas) ===================
-    var cTop = y, cBot = H - 38.65 * k;
+    var cTop = y, cBot = cBotPie;
+    if (COMP === "lateral") { var xSep = HR + 3.5 * k; linea(lyA, xSep, yTop, xSep, cBot, 0.3 * k).name = "filete franja lateral"; }
     if (cBot - cTop < 60) avisos.push("Queda poco espacio para el programa (" + Math.round(cBot - cTop) + " mm). Considera ocultar objetivo/mensaje.");
-    var ncol = num(P.columnas, HORIZ ? (W >= 560 ? 5 : 4) : (W < 260 ? 2 : 3)), gut = 7 * k;
+    var ncol = num(P.columnas, COMP === "lateral" ? (HORIZ ? 3 : 2) : (HORIZ ? (W >= 560 ? 5 : 4) : (W < 260 ? 2 : 3))), gut = 7 * k;
     var LS = 1.28, prog = {};
     function PP(name, f, p) { var s = PS(name, p); prog[name] = [s, f]; return s; }
     var sDia = num(P.espacio_dias, 2.6), sCin = num(P.espacio_cintilla, 4.2), tD = num(P.sombra_dias, 16), tC = num(P.sombra_cintillas, 20);
@@ -310,20 +437,42 @@ try {
         paragraphBorderTopLineWeight: 0, paragraphBorderRightLineWeight: 0, paragraphBorderBottomLineWeight: 0,
         paragraphBorderTopOffset: 0.6, paragraphBorderBottomOffset: 0.5
     });
+    // VARIANTES DE CINTILLA (gris | negra | recuadro | filetes) Y DE DIA (barra | negrita | invertido | subrayado)
+    var sCinV = prog["cintilla"][0], sDiaV = prog["dia"][0], CIN = P.cintilla_estilo || "gris", DIAv = P.dia_estilo || "barra";
+    if (CIN === "negra") setP(sCinV, { paragraphShadingOn: true, paragraphShadingTint: 100, fillColor: PAPER, ruleAbove: false, ruleBelow: false, tracking: 220 });
+    if (CIN === "recuadro") setP(sCinV, { paragraphShadingOn: false, ruleAbove: false, ruleBelow: false, paragraphBorderOn: true, paragraphBorderColor: K,
+        paragraphBorderTopLineWeight: "0.9pt", paragraphBorderBottomLineWeight: "0.9pt", paragraphBorderLeftLineWeight: "0.9pt", paragraphBorderRightLineWeight: "0.9pt",
+        paragraphBorderTopOffset: 1.2, paragraphBorderBottomOffset: 1.0, paragraphBorderLeftOffset: 0.5, paragraphBorderRightOffset: 0.5 });
+    if (CIN === "filetes") setP(sCinV, { paragraphShadingOn: false, ruleAboveLineWeight: "0.5pt", ruleBelowLineWeight: "0.5pt", tracking: 320, fontStyle: "Regular" });
+    if (DIAv === "negrita") setP(sDiaV, { paragraphShadingOn: false, paragraphBorderOn: false, leftIndent: 0,
+        ruleBelow: true, ruleBelowLineWeight: "0.4pt", ruleBelowColor: K, ruleBelowOffset: 1.0, ruleBelowWidth: RuleWidth.COLUMN_WIDTH });
+    if (DIAv === "invertido") setP(sDiaV, { paragraphShadingTint: 100, paragraphBorderOn: false, fillColor: PAPER, leftIndent: 1.5 });
+    if (DIAv === "subrayado") setP(sDiaV, { paragraphShadingOn: false, paragraphBorderOn: false, leftIndent: 0, tracking: 80,
+        ruleBelow: true, ruleBelowLineWeight: "1.2pt", ruleBelowColor: K, ruleBelowOffset: 1.2, ruleBelowWidth: RuleWidth.TEXT_WIDTH });
+
     // la sangria de horas y la columna de ciudad se calculan en escala() segun el texto real
-    var sEv = PP("evento", 1, { basedOn: sBase, keepAllLinesTogether: true });
-    var sTema = PP("tema", 1, { basedOn: sBase, keepAllLinesTogether: true });
+    var sEv = PP("evento", 1, { basedOn: sBase, keepLinesTogether: true, keepAllLinesTogether: true });
+    var sTema = PP("tema", 1, { basedOn: sBase, keepLinesTogether: true, keepAllLinesTogether: true });
     PP("previo", 1, { basedOn: sBase, leftIndent: 4, firstLineIndent: -4, bulletsAndNumberingListType: ListType.BULLET_LIST, spaceAfter: 1 });
     PP("nov_tit", 0.98, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Bold", tracking: 50, justification: Cc, hyphenation: false, keepWithNext: 2, capitalization: Capitalization.ALL_CAPS });
     PP("nov_sub", 0.88, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Regular", tracking: 110, justification: Cc, hyphenation: false, spaceAfter: 2, keepWithNext: 2, capitalization: Capitalization.ALL_CAPS });
     PP("nov_dia", 1, { basedOn: sBase, justification: LA, leftIndent: 4, firstLineIndent: -4, spaceAfter: 0.6 });
-    PP("nov_num", 1, { basedOn: sBase, leftIndent: 5, firstLineIndent: -5, spaceAfter: 1.2, keepAllLinesTogether: true });
-    PP("oracion", 1, { basedOn: sBase, fontStyle: "Italic", justification: Cc, hyphenation: false, keepAllLinesTogether: true, spaceBefore: 4, spaceAfter: 4,
+    PP("nov_num", 1, { basedOn: sBase, leftIndent: 5, firstLineIndent: -5, spaceAfter: 1.2, keepLinesTogether: true, keepAllLinesTogether: true });
+    PP("oracion", 1, { basedOn: sBase, fontStyle: "Italic", justification: Cc, hyphenation: false, keepLinesTogether: true, keepAllLinesTogether: true, spaceBefore: 4, spaceAfter: 4,
         leftIndent: 3, rightIndent: 3,
         paragraphBorderOn: true, paragraphBorderColor: K, paragraphBorderLeftLineWeight: "0.8pt", paragraphBorderTopLineWeight: "0.8pt",
         paragraphBorderRightLineWeight: "0.8pt", paragraphBorderBottomLineWeight: "0.8pt",
         paragraphBorderTopOffset: 2, paragraphBorderBottomOffset: 2, paragraphBorderLeftOffset: 1, paragraphBorderRightOffset: 1,
         paragraphShadingOn: true, paragraphShadingColor: K, paragraphShadingTint: 6, paragraphShadingTopOffset: 2, paragraphShadingBottomOffset: 2 });
+    // aprendidos de los PDF del taller: tabla fecha|tema, decima en recuadro y firma (Sr. Cura...)
+    var sTabla = PP("tabla", 0.95, { basedOn: sBase, justification: LA, hyphenation: false, spaceAfter: 0.3 });
+    PP("decima", 1, { basedOn: sBase, fontStyle: "Italic", justification: Cc, hyphenation: false, keepLinesTogether: true, keepAllLinesTogether: true, spaceBefore: 4, spaceAfter: 4,
+        leftIndent: 3, rightIndent: 3,
+        paragraphBorderOn: true, paragraphBorderColor: K, paragraphBorderLeftLineWeight: "0.5pt", paragraphBorderTopLineWeight: "1.2pt",
+        paragraphBorderRightLineWeight: "0.5pt", paragraphBorderBottomLineWeight: "1.2pt",
+        paragraphBorderTopOffset: 2.2, paragraphBorderBottomOffset: 2.2, paragraphBorderLeftOffset: 1, paragraphBorderRightOffset: 1 });
+    PP("firma", 0.92, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Regular", justification: Cc, hyphenation: false, capitalization: Capitalization.SMALL_CAPS,
+        tracking: 40, spaceBefore: 3, keepWithNext: 0 });
     var sMayEnc = PP("may_enc", 0.85, { basedOn: sBase, appliedFont: F_DIS, fontStyle: "Bold", tracking: 200, justification: LA, hyphenation: false, keepWithNext: 2,
         ruleBelow: true, ruleBelowLineWeight: "1pt", ruleBelowColor: K, ruleBelowOffset: 1.4, ruleBelowWidth: RuleWidth.COLUMN_WIDTH, spaceAfter: 1.8 });
     var sMay = PP("may", 1, { basedOn: sBase, justification: LA, hyphenation: false, spaceAfter: 0, keepWithNext: 1 });
@@ -331,10 +480,11 @@ try {
         ruleBelow: true, ruleBelowLineWeight: "0.5pt", ruleBelowColor: K, ruleBelowTint: 45, ruleBelowOffset: 1.4, ruleBelowWidth: RuleWidth.COLUMN_WIDTH });
 
     // ancho real (mm, a 10 pt) de las horas y de las ciudades, para que nada rebase su tabulador
-    var list = D.prog || [], horas = [], ciudades = [];
+    var list = D.prog || [], horas = [], ciudades = [], colTabla = [];
     for (var i = 0; i < list.length; i++) {
         var mh = /^\t\*\*(.*?)\*\*\t/.exec(list[i][1]); if (list[i][0] == "evento" && mh) horas.push(mh[1]);
         var mc = /^~~(.*?)~~/.exec(list[i][1]); if (mc) ciudades.push(mc[1]);
+        var mt = /^\*\*(.*?)\*\*\t/.exec(list[i][1]); if (list[i][0] == "tabla" && mt) colTabla.push(mt[1]);
     }
     function anchoMax(lineas, cs) {
         if (!lineas.length) return 0;
@@ -352,8 +502,8 @@ try {
         tf.remove();
         return mx;
     }
-    var wHora = anchoMax(horas, csB), wCiudad = anchoMax(ciudades, csCity);
-    var colW = (CW - gut * (ncol - 1)) / ncol;
+    var wHora = anchoMax(horas, csB), wCiudad = anchoMax(ciudades, csCity), wTabla = anchoMax(colTabla, csB);
+    var colW = (PW - gut * (ncol - 1)) / ncol;
     var RT = TabStopAlignment.RIGHT_ALIGN, LT = TabStopAlignment.LEFT_ALIGN;
     var sangria = 0, tabMay = 0;
     function escala(sz) {
@@ -366,8 +516,10 @@ try {
         tabMay = Math.min(Math.max(tabMay, num(P.ancho_ciudad, 0)), colW * 0.5);
         setP(sMay, { leftIndent: tabMay, firstLineIndent: -tabMay, tabStops: [{ alignment: LT, position: tabMay }] });
         setP(sMayEnc, { tabStops: [{ alignment: LT, position: tabMay }] });
+        var tT = Math.min((wTabla || 18) * sz * 0.95 / 10 + 0.25 * sz, colW * 0.45);
+        setP(sTabla, { leftIndent: tT, firstLineIndent: -tT, tabStops: [{ alignment: LT, position: tT }] });
     }
-    var ptf = pg.textFrames.add(lyT, undefined, undefined, { geometricBounds: [cTop, L, cBot, R], name: "programa" });
+    var ptf = pg.textFrames.add(lyT, undefined, undefined, { geometricBounds: [cTop, PL, cBot, PR], name: "programa" });
     ptf.textFramePreferences.textColumnCount = ncol;
     ptf.textFramePreferences.textColumnGutter = gut;
     try { ptf.textFramePreferences.insetSpacing = [0, 0, 0, 0]; } catch (e) {}
@@ -396,9 +548,9 @@ try {
     if (ptf.overflows) avisos.push("El programa NO cabe completo ni a " + best.toFixed(1) + " pt.");
 
     if (P.lineas_columnas !== false && ncol > 1) {
-        var cw = (CW - gut * (ncol - 1)) / ncol;
+        var cw = (PW - gut * (ncol - 1)) / ncol;
         for (var c = 1; c < ncol; c++) {
-            var xx = L + c * cw + (c - 0.5) * gut;
+            var xx = PL + c * cw + (c - 0.5) * gut;
             var gl = linea(lyA, xx, cTop, xx, cBot, 0.18, 35); gl.name = "linea entre columnas";
         }
     }

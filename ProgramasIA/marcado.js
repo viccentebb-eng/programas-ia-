@@ -33,7 +33,9 @@ function revisarFechas(txt) {
 }
 // ------------------------------------------------------------------ marcado -> datos del motor
 const CLAVES = ["PRE", "NOMBRE", "FECHAS", "ANIOS", "AÑOS", "LEMA", "LEMA_ETIQUETA", "OBJETIVO", "MENSAJE", "PIE", "PROGRAMA_TITULO",
-  "CINTILLA", "DIA", "DÍA", "EVENTO", "TEMA", "TEXTO", "PREVIO", "SUBTITULO", "SUB2", "LISTA", "NUM", "ORACION", "ORACIÓN", "MAYORDOMOS"];
+  "CINTILLA", "DIA", "DÍA", "EVENTO", "TEMA", "TEXTO", "PREVIO", "SUBTITULO", "SUB2", "LISTA", "NUM", "ORACION", "ORACIÓN", "MAYORDOMOS",
+  // aprendidas de los PDF del taller (nov-2026)
+  "DECIMA", "DÉCIMA", "TABLA", "FIRMA", "CREDITO", "CRÉDITO", "AGRADECIMIENTO", "MAYORDOMIA", "MAYORDOMÍA", "SUBTITULO_ENC"];
 const SALTO = String.fromCharCode(10); // en InDesign "\n" es salto de linea forzado ("\r" es parrafo nuevo)
 function limpia(t) { return String(t || "").replace(/[\r\n]+/g, " ").trim(); }
 function parseMarcado(txt) {
@@ -76,7 +78,32 @@ function parseMarcado(txt) {
       case "PIE": enc.pie = v; break;
       case "PROGRAMA_TITULO": enc.programa_titulo = v; break;
       case "CINTILLA": ultimo = ["cintilla", v.toUpperCase()]; prog.push(ultimo); break;
-      case "DIA": case "DÍA": ultimo = ["dia", v]; prog.push(ultimo); break;
+      case "DIA": case "DÍA": {
+        // DIA: VIERNES 04 | “María nos llama…”  -> el tema va en la misma linea, sin mayusculas forzadas
+        const p = v.split("|");
+        ultimo = ["dia", p.length > 1 ? p[0].trim() + ". %%" + p.slice(1).join("|").trim() + "%%" : v]; prog.push(ultimo); break;
+      }
+      case "TABLA": {
+        const p = v.split("|");
+        ultimo = ["tabla", p.length > 1 ? "**" + p[0].trim() + "**\t" + p.slice(1).join("|").trim() : v]; prog.push(ultimo); break;
+      }
+      case "DECIMA": case "DÉCIMA": {
+        // DECIMA: Título | verso / verso / ... | firma
+        const p = v.split("|").map(s => s.trim());
+        const versos = (p.length > 1 ? p[1] : p[0]).split("/").map(s => s.trim()).filter(Boolean).join(SALTO);
+        ultimo = ["decima", (p.length > 1 && p[0] ? "**" + p[0] + "**" + SALTO : "") + versos + (p[2] ? SALTO + "~~" + p[2] + "~~" : "")];
+        prog.push(ultimo); break;
+      }
+      case "FIRMA": ultimo = ["firma", v.split("/").map(s => s.trim()).join(SALTO)]; prog.push(ultimo); break;
+      case "CREDITO": case "CRÉDITO": {
+        // CREDITO: SACERDOTES DE LA PARROQUIA | Sr. Cura ... / Pbro. ...   (van al pie, lado a lado)
+        const p = v.split("|");
+        (enc.creditos = enc.creditos || []).push([p[0].trim(), (p.slice(1).join("|") || "").split("/").map(s => s.trim()).filter(Boolean)]);
+        ultimo = null; break;
+      }
+      case "AGRADECIMIENTO": enc.agradecimiento = v; ultimo = null; break;
+      case "MAYORDOMIA": case "MAYORDOMÍA": enc.mayordomia = v; ultimo = null; break;
+      case "SUBTITULO_ENC": enc.subtitulo = v; break;
       case "EVENTO": {
         const p = v.split("|");
         ultimo = p.length > 1 ? ["evento", "\t**" + p[0].trim() + "**\t" + p.slice(1).join("|").trim()] : ["evento", "\t\t" + v];
@@ -94,7 +121,8 @@ function parseMarcado(txt) {
       case "NUM": num++; ultimo = ["nov_num", "**" + num + ".**\t" + v]; prog.push(ultimo); break;
       case "ORACION": case "ORACIÓN": {
         const p = v.split("|");
-        ultimo = ["oracion", p.length > 1 ? "**" + p[0].trim() + "**" + SALTO + p.slice(1).join("|").trim() : v];
+        // ORACION: Título | texto | firma (la firma es opcional; ej. Papa Francisco)
+        ultimo = ["oracion", p.length > 1 ? "**" + p[0].trim() + "**" + SALTO + p[1].trim() + (p[2] ? SALTO + "~~" + p.slice(2).join("|").trim() + "~~" : "") : v];
         prog.push(ultimo); break;
       }
       case "MAYORDOMOS": enMay = true; ultimo = null; break;

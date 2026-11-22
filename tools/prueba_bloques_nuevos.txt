@@ -1,0 +1,35 @@
+PRE: Fiestas en Honor a la
+NOMBRE: Virgen de Guadalupe
+SUBTITULO_ENC: Barrio Guadalupe, Tizapán el Alto
+FECHAS: Del 04 al 12 de Diciembre del 2026
+LEMA: “De la mano de María de Guadalupe; Caminemos Juntos en Comunidad”
+OBJETIVO: Celebrar a Santa María de Guadalupe, para concientizarnos del cuidado de la Casa Común e impulsar la iniciación cristiana a todos que viven indiferentes y alejados de la iglesia.
+PIE: Tizapán el Alto, Jalisco, Diciembre 2026
+CINTILLA: TODOS LOS DÍAS
+EVENTO: 5:00 a.m. | Repique de alba.
+EVENTO: 5:30 a.m. | Rosario.
+EVENTO: 6:00 a.m. | Celebración Eucarística.
+EVENTO: 7:30 p.m. | Evento cultural.
+CINTILLA: TEMAS DE PREDICACIÓN
+TABLA: 23 de abril | La tentación de abandonar a los jóvenes.
+TABLA: 24 de abril | Convertidos, para transformar la realidad juvenil.
+TABLA: 25 de abril | Ser discípulos de Jesús junto con los jóvenes.
+CINTILLA: LA FIESTA DÍA A DÍA
+DIA: VIERNES 04 | “María nos llama al encuentro con su hijo”.
+TEXTO: **Intención:** Iniciación cristiana en la Fe (Catecumenado).
+TEXTO: **Peregrinos:** La Cruz, Camino a la Cañada y La Cañada.
+TEXTO: **Donantes:** Papelería y regalos “POLO”, Fam. Vera Gudiño, Fam. Flores Zaragoza, Farmacia “La Purísima”, María de Jesús Ruiz Pulido, Fam. Anaya Cervantes.
+DIA: SÁBADO 05 | “María Madre de la unidad, enséñanos a no dividir al mundo”.
+TEXTO: **Intención:** Diálogo y reconciliación.
+TEXTO: **Peregrinos:** Santo Niño, Divino Pastor y el Refugio.
+ORACION: Oración | Tú, Virgen de la escucha y la contemplación, Madre del amor, esposa de las bodas eternas, intercede por la Iglesia, de la cual eres el icono purísimo, para que ella nunca se encierre ni se detenga en su pasión por instaurar el Reino. Amén. | Evangelii Gaudium, Papa Francisco
+DECIMA: Décima | Salve San Antonio, flor de la iglesia, / que al Niño Jesús en tus brazos llevas; / te pedimos con fe que nos protejas / y a nuestra tierra des tu bendición. / Eres presencia viva del Señor, / consuelo del pobre y del que llora, / guía al que busca y al que implora / la luz de Cristo y su redención. / Danos la gracia de tu intercesión, / San Antonio, en esta y en toda hora. | Pbro. Abraham Villa
+CINTILLA: EVENTOS ESPECIALES
+DIA: SÁBADO 12
+EVENTO: 4:00 p.m. | Recorrido de la Virgen de Guadalupe por el Barrio.
+EVENTO: 6:00 p.m. | Misa de función con las familias del pueblo.
+FIRMA: Sr. Cura / José Luis Huerta Rodríguez
+CREDITO: SACERDOTES DE LA PARROQUIA | Señor Cura José Luis Huerta Rodríguez / Pbro. José Emmanuel Hernández Mejía
+CREDITO: ORGANIZADORES DE LA FIESTA | Consejo Barrial, Grupos Coordinadores / de cada una de las comisiones así como donantes
+MAYORDOMIA: Josefina Ramírez Morán, José Manuel Juárez Delgado, Petra Bautista Ortega, Ma. Guadalupe González Loza.
+AGRADECIMIENTO: Agradecimiento a todas las personas que hacen posible esta fiesta a la Virgen de Guadalupe

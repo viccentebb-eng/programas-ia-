@@ -65,6 +65,7 @@ Parametros disponibles (pon solo los que cambian):
 - sombra_dias, sombra_cintillas, sombra_mensaje (porcentaje de gris 0-40; 0 = sin sombra)
 - lineas_columnas, balancear_columnas, mostrar_objetivo, mostrar_mensaje, mostrar_lema (true/false)
 - ancho_ciudad (mm de la columna de ciudad en mayordomos, normal 29)
+- Diseño (cada reverso debe verse distinto a los demás; cambia estas piezas si te piden otro look): composicion (clasica | lateral | banda | asimetrica), marco (barroco | filetes | grueso | esquinas | doble_grueso | abierto), titulo_estilo (manuscrita | romana | mixta), cintilla_estilo (gris | negra | recuadro | filetes), dia_estilo (barra | negrita | invertido | subrayado), programa_estilo (espaciado | manuscrita | banda)
 Te llega la VISTA ACTUAL de la pagina completa y a veces CAPTURAS que el disenador pego (recortes con lo que quiere corregir, a veces con marcas o flechas): usalas para entender a que parte se refiere.
 Si te piden cambiar o corregir texto, devuelve el marcado COMPLETO ya corregido. Si no cambia el texto, no mandes marcado.
 Si algo no se puede hacer con esto, dilo en la explicacion y sugiere como hacerlo a mano en InDesign.

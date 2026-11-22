@@ -26,7 +26,7 @@ const ESTILOS = [
       ["divisor", "baroque rose flourish divider engraving vector"], ["otro", "ornate guadalupe rays halo engraving vector"],
       ["divisor", "victorian roses scroll divider line art vector"]] },
   { id: "sagrado_corazon", nombre: "Sagrado Corazón", claves: ["sagrado corazón", "sagrado corazon", "corazón de jesús", "corazon de jesus", "corazón de maría", "inmaculado corazón"],
-    fuentes: { titulo: "Alex Brush", display: "Cormorant Garamond", texto: "EB Garamond" },
+    fuentes: { titulo: "Alex Brush", display: "Spectral", texto: "EB Garamond" },
     params: { sombra_cintillas: 18 },
     magnific: [["otro", "ornate sacred heart flames engraving vector"], ["esquina", "baroque acanthus corner ornament engraving vector"],
       ["divisor", "ornate crown of thorns flourish divider engraving"], ["esquina", "baroque lily filigree corner vector black"]] },

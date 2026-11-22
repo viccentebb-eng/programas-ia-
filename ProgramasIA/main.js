@@ -554,13 +554,19 @@ async function generar() {
   // estilo: el elegido, o el que toca segun el nombre de la fiesta
   const idEstilo = $("estilo").value === "auto" || !$("estilo").value ? estiloAutomatico(datos.enc).id : $("estilo").value;
   const est = await resolverEstilo(idEstilo);
-  try { await revisarFuentes(true, [est.fuentes.titulo, est.fuentes.display, est.fuentes.texto]); } catch (e) { estado("No pude revisar las fuentes (" + e.message + "). Genero de todos modos...", "trabajando"); }
+  // VARIANTE: ningún reverso se parece a otro. Se elige una nueva para cada programa (o con "Otra propuesta")
+  // y se conserva al corregir. El historial evita repetir combinaciones.
+  if (!S.variante || S.varianteDe !== (datos.enc.nombre || "") + "|" + (datos.enc.fechas || "")) nuevaVariante(idEstilo, datos.enc);
+  const vap = aplicarVariante(S.variante), u = estilosUsuario()[idEstilo] || {};
+  const fuentes = Object.assign({}, vap.fuentes, u.fuentes || {});     // lo que el usuario fijó para el estilo manda
+  const adornos = Object.assign({}, est.adornos, await adornosDeBiblioteca(idEstilo, u));
+  try { await revisarFuentes(true, [fuentes.titulo, fuentes.display, fuentes.texto]); } catch (e) { estado("No pude revisar las fuentes (" + e.message + "). Genero de todos modos...", "trabajando"); }
   estado("Generando el diseño en InDesign (" + est.estilo.nombre + ")...", "trabajando");
   const engine = await (await rutaPlugin(null, "engine.jsx")).read();
   const DATA = {
-    // los ajustes del estilo van primero; los de la pantalla y el chat mandan sobre ellos
-    formato, enc: datos.enc, prog: datos.prog, params: Object.assign({}, est.params, paramsUI()), assets: est.adornos, cerrarId: S.docId,
-    fuentes: est.fuentes
+    // estilo, luego la variante, luego lo de la pantalla y el chat (manda lo último)
+    formato, enc: datos.enc, prog: datos.prog, params: Object.assign({}, est.params, vap.params, paramsUI()), assets: adornos, cerrarId: S.docId,
+    fuentes, impreso: cfg("impreso", IMPRESO_DEF)
   };
   // con funcion para que un "$" del programa no se tome como patron de reemplazo
   const code = engine.replace("/*__DATA__*/", () => "var DATA = " + es3(DATA) + ";");
@@ -570,10 +576,46 @@ async function generar() {
   S.docId = kv.id; setCfg("docId", kv.id);
   const avisos = kv.aviso ? kv.aviso.split(" // ") : [];
   mostrarResultado((kv.desborde === "1" ? "¡Ojo! No cupo todo el texto. Quita el objetivo o el mensaje, o pide letra más chica.\n" : "Diseño listo.\n") +
-    "Texto del programa a " + kv.cuerpo + " pt." + (avisos.length ? "\n" + avisos.join("\n") : ""), kv.desborde === "1");
+    "Propuesta: " + describirVariante(S.variante) + "\nTexto del programa a " + kv.cuerpo + " pt." + (avisos.length ? "\n" + avisos.join("\n") : ""), kv.desborde === "1");
   estado("Diseño listo.", "ok");
   marcarPasos();
   return true;
+}
+
+
+// ------------------------------------------------------------------ variantes (que ningún reverso se parezca)
+const IMPRESO_DEF = "Impreso en: Imprenta Gutiérrez\nCd. Guzmán, Jal., Tel. (341) 412.0105 / 412.5508 · contacto@imprentagutierrez.com";
+function historialVariantes() { try { return JSON.parse(cfg("historial_variantes", "[]")) || []; } catch (e) { return []; } }
+function nuevaVariante(idEstilo, enc) {
+  const h = historialVariantes();
+  S.variante = elegirVariante(h, idEstilo, Date.now());
+  S.varianteDe = (enc.nombre || "") + "|" + (enc.fechas || "");
+  // la nueva propuesta empieza limpia de los ajustes de diseño que pidió el chat para la anterior
+  ["marco", "titulo_estilo", "cintilla_estilo", "dia_estilo", "programa_estilo"].forEach(k => delete S.params[k]);
+  h.push(S.variante); setCfg("historial_variantes", JSON.stringify(h.slice(-30)));
+}
+// adornos de la biblioteca para esta propuesta: los que el usuario fijó para el estilo, o uno al azar (no el último usado)
+async function adornosDeBiblioteca(idEstilo, u) {
+  const out = {}, ad = (u && u.adornos) || {};
+  let ind = [];
+  try { ind = await leerIndice(); } catch (e) {}
+  const elige = (ranura) => {
+    const delEstilo = ind.filter(a => a.ranura === ranura && a.estilo === idEstilo), todos = ind.filter(a => a.ranura === ranura);
+    const lista = delEstilo.length ? delEstilo : todos;
+    if (!lista.length) return null;
+    const ultimo = cfg("ultimo_" + ranura, ""), opciones = lista.length > 1 ? lista.filter(a => a.pdf !== ultimo) : lista;
+    const a = opciones[Math.floor(Math.random() * opciones.length)];
+    setCfg("ultimo_" + ranura, a.pdf); return a.pdf;
+  };
+  out.esquina_lib = ad.esquina || elige("esquina");
+  out.div_lib = ad.divisor || elige("divisor");
+  return out;
+}
+async function otraPropuesta() {
+  const datos = parseMarcado($("marcado").value);
+  const idEstilo = $("estilo").value === "auto" || !$("estilo").value ? estiloAutomatico(datos.enc).id : $("estilo").value;
+  nuevaVariante(idEstilo, datos.enc);
+  await generar();
 }
 
 // ------------------------------------------------------------------ 4) corregir
@@ -740,6 +782,7 @@ $("bIrDiseno").addEventListener("click", () => { setCfg("marcado", $("marcado").
 $("bAyuda").addEventListener("click", () => { const a = $("ayuda"); a.hidden = !a.hidden; a.textContent = FORMATO_MARCADO; });
 document.querySelectorAll("#pColumnas [role=button]").forEach(b => b.addEventListener("click", () => ponerColumnas(b.getAttribute("data-v"))));
 $("bGenerar").addEventListener("click", accion(generar, "Generando el diseño..."));
+$("bOtraPropuesta").addEventListener("click", accion(otraPropuesta, "Armando otra propuesta..."));
 $("bPDF").addEventListener("click", accion(exportarPDF, "Exportando..."));
 $("bPlaca").addEventListener("click", accion(exportarPlaca, "Montando en la placa..."));
 document.querySelectorAll("#pGiro [role=button]").forEach(b => b.addEventListener("click", () => { document.querySelectorAll("#pGiro [role=button]").forEach(x => x.classList.toggle("on", x === b)); setCfg("giroPlaca", b.getAttribute("data-v")); }));

@@ -19,6 +19,7 @@ const VERSION = (() => { try { return JSON.parse(fs.readFileSync(path.join(PANEL
 // ------------------------------------------------------------------ cargar piezas del panel
 const leer = (n) => fs.readFileSync(path.join(PANEL, n), "utf8");
 const { parseMarcado, revisarFechas } = require(path.join(PANEL, "marcado.js"));
+const VAR = require(path.join(PANEL, "variantes.js"));
 const P = vm.runInNewContext(leer("prompts.js") + "\n;({ CASA, FORMATO_MARCADO, SYS_LEER, SYS_CORREGIR })", {});
 const E = vm.runInNewContext(leer("estilos.js") + "\n;({ ESTILOS, estiloAutomatico, estiloPorId, REGLAS_ADORNOS, ADORNOS_FABRICA })",
   { cfg: (k, d) => d, setCfg: () => {} });
@@ -101,7 +102,8 @@ const HERRAMIENTAS = [
       ancho: { type: "number", description: "mm, solo si hay que cambiar la medida para este trabajo" },
       alto: { type: "number" }, sangrado: { type: "number" },
       estilo: { type: "string", description: "id del estilo o 'auto' (por omisión)" },
-      params: { type: "object", description: "Ajustes del motor (ver instrucciones)." } } } },
+      nueva_propuesta: { type: "boolean", description: "true = otro acomodo, marco y letras (ningún reverso debe parecerse a otro)." },
+      params: { type: "object", description: "Ajustes del motor y de diseño (ver instrucciones)." } } } },
   { name: "ver_reverso", description: "Regresa una imagen de cómo va el reverso en InDesign (incluye retoques hechos a mano).",
     inputSchema: { type: "object", properties: { resolucion: { type: "number", description: "dpi, 50 a 150 (72 por omisión)" } } } },
   { name: "exportar", description: "Exporta el reverso a PDF. en_placa=true lo monta en la placa de CTP del formato (girado, dentro de márgenes, sin marcas, solo K).",
@@ -138,15 +140,21 @@ async function llamar(nombre, a) {
     const est = !a.estilo || a.estilo === "auto" ? E.estiloAutomatico(datos.enc) : E.estiloPorId(a.estilo);
     const adornos = {};
     for (const k in E.ADORNOS_FABRICA) adornos[k] = path.join(PANEL, E.ADORNOS_FABRICA[k]).replace(/\\/g, "/");
+    // variante: nueva para cada programa (o si piden nueva_propuesta); se conserva al corregir
+    const clave = (datos.enc.nombre || "") + "|" + (datos.enc.fechas || "");
+    let variante = st.variante;
+    if (!variante || st.varianteDe !== clave || a.nueva_propuesta) { const hist = st.historial || []; variante = VAR.elegirVariante(hist, est.id, Date.now()); st.historial = hist.concat([variante]).slice(-30); }
+    const vap = VAR.aplicarVariante(variante);
     const DATA = { formato: { nombre: f.nombre, ancho: w, alto: h, sangrado: a.sangrado != null ? a.sangrado : f.sangrado },
-      enc: datos.enc, prog: datos.prog, params: Object.assign({}, est.params, a.params || {}), assets: adornos,
-      fuentes: est.fuentes, cerrarId: st.docId || null };
+      enc: datos.enc, prog: datos.prog, params: Object.assign({}, est.params, vap.params, a.params || {}), assets: adornos,
+      fuentes: vap.fuentes, cerrarId: st.docId || null,
+      impreso: ["Impreso en: Imprenta Gutiérrez", "Cd. Guzmán, Jal., Tel. (341) 412.0105 / 412.5508 · contacto@imprentagutierrez.com"].join(String.fromCharCode(10)) };
     const r = indesign(leer("engine.jsx").replace("/*__DATA__*/", () => "var DATA = " + es3(DATA) + ";"));
     if (r.indexOf("OK") !== 0) return texto("No se pudo generar: " + r);
     const kv = kvDe(r);
-    guardarEstado({ docId: kv.id, formato: f.nombre, ancho: w, alto: h, sangrado: DATA.formato.sangrado, estilo: est.id });
+    guardarEstado({ docId: kv.id, formato: f.nombre, ancho: w, alto: h, sangrado: DATA.formato.sangrado, estilo: est.id, variante, varianteDe: clave, historial: st.historial || [] });
     try { fs.writeFileSync(path.join(DATOS, "ultimo_marcado.txt"), a.marcado, "utf8"); } catch (e) {}
-    const res = "Reverso generado en InDesign (" + f.nombre + " " + w + "×" + h + " mm, estilo " + est.nombre + "). Texto del programa a " + kv.cuerpo + " pt." +
+    const res = "Reverso generado en InDesign (" + f.nombre + " " + w + "×" + h + " mm, estilo " + est.nombre + "). Propuesta: " + VAR.describirVariante(variante) + " Texto del programa a " + kv.cuerpo + " pt." +
       (kv.desborde === "1" ? " ¡OJO! No cupo todo el texto." : "") + (kv.aviso ? "\nAvisos del motor: " + kv.aviso.split(" // ").join("; ") : "");
     let img = null; try { img = vistaJPG(kv.id, 72); } catch (e) {}
     return { content: [{ type: "text", text: res }].concat(img ? [{ type: "image", data: img, mimeType: "image/jpeg" }] : []) };
